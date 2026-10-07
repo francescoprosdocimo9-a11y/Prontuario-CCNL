@@ -11,3 +11,4 @@ Materiale di lavoro dell'artefatto «Prontuario CCNL» (database condiviso con l
 
 Tutte le schede generate sono marcate «Da verificare»: vanno controllate sul testo del CCNL prima dell'uso.
 - `gen/contratti_termine.py` – importa lo scadenziario Excel dei contratti a termine nella collezione `contratti` (un documento per contratto: cliente, sede, dipendente, tipo, assunzione, scadenze e proroghe, note, stato). I dati dei dipendenti non sono salvati nel repository.
+- `gen/agevolazioni.py` – catalogo delle agevolazioni per le assunzioni (collezione `agevolazioni`, dati in `data/agevolazioni/`), verificato il 07/10/2026 con norma, circolare, requisiti, punti da verificare e fonti. Il motore di verifica è nella pagina; le pratiche dei clienti sono nella collezione `pratiche_agevolazioni`.

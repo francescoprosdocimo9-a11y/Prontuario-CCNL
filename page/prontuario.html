@@ -191,6 +191,28 @@ table.cl td.sc-date{white-space:nowrap;font-weight:600}
 .ct-tag.st{border-color:var(--ok);color:var(--ok)}.ct-tag.warn{border-color:var(--warn);color:var(--warn);background:var(--warn-bg)}
 .ct-dates{display:block;font-size:12px;color:var(--muted);margin-top:2px;white-space:normal}
 .fg .dates{display:flex;flex-direction:column;gap:6px}
+/* Agevolazioni */
+.ag-intro{background:var(--warn-bg);border-radius:10px;padding:10px 14px;font-size:13.5px;margin:0 0 14px}
+.ag-grid{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:980px){.ag-grid{grid-template-columns:minmax(0,1fr)}}
+.ag-form{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+.ag-form fieldset{border:0;border-top:1px solid var(--line);margin:12px 0 0;padding:12px 0 0}
+.ag-form fieldset:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.ag-form legend{font-weight:700;font-size:14px;padding:0;margin-bottom:8px}
+.ag-form .field{margin-bottom:9px}
+.ag-form small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.ag-card{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--line-strong);border-radius:12px;padding:12px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.ag-card.ok{border-left-color:var(--ok)}.ag-card.maybe{border-left-color:var(--warn)}.ag-card.no{border-left-color:var(--danger);opacity:.85}
+.ag-card h3{margin:0;font-size:16px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.ag-card .ag-ben{font-size:14px;margin:6px 0}
+.ag-checks{list-style:none;margin:6px 0 0;padding:0;font-size:13px}
+.ag-checks li{display:grid;grid-template-columns:22px 1fr;gap:4px;padding:3px 0;border-top:1px dashed var(--line)}
+.ag-checks li:first-child{border-top:0}
+.ag-i{font-weight:800;text-align:center}.ag-i.ok{color:var(--ok)}.ag-i.ko{color:var(--danger)}.ag-i.q{color:var(--warn)}
+.ag-checks small{display:block;color:var(--muted)}
+.ag-best{background:var(--ok-bg);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:14px}
+.ag-cat h3{margin:0 0 4px}.ag-cat ul{margin:4px 0 8px;padding-left:18px;font-size:13.5px}.ag-cat li{margin:2px 0}
+.ag-cat .src a{font-size:12.5px;word-break:break-all}
 /* Calculators */
 .calc-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .calc-panel{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:22px;align-items:start}
@@ -233,6 +255,7 @@ table.cl td.sc-date{white-space:nowrap;font-weight:600}
     <button class="tab" role="tab" type="button" data-view="clienti" aria-selected="false">Clienti</button>
     <button class="tab" role="tab" type="button" data-view="calcolatori" aria-selected="false">Calcolatori</button>
     <button class="tab" role="tab" type="button" data-view="termine" aria-selected="false">Contratti a termine</button>
+    <button class="tab" role="tab" type="button" data-view="agevolazioni" aria-selected="false">Agevolazioni</button>
     <button class="tab" role="tab" type="button" data-view="scadenziario" aria-selected="false">Scadenziario CCNL</button>
   </nav>
 
@@ -268,6 +291,7 @@ table.cl td.sc-date{white-space:nowrap;font-weight:600}
   <div id="viewCalcolatori" hidden></div>
   <div id="viewScadenziario" hidden></div>
   <div id="viewTermine" hidden></div>
+  <div id="viewAgevolazioni" hidden></div>
 </div>
 
 <div id="modalRoot"></div>
@@ -691,11 +715,13 @@ function setView(v){
   $("#viewCalcolatori").hidden = v!=="calcolatori";
   $("#viewScadenziario").hidden = v!=="scadenziario";
   $("#viewTermine").hidden = v!=="termine";
+  $("#viewAgevolazioni").hidden = v!=="agevolazioni";
   const ta = $("#topActions"); if(ta) ta.hidden = !state.canWrite || v!=="prontuario";
   if(v==="clienti") renderClienti();
   if(v==="calcolatori") renderCalc();
   if(v==="scadenziario") renderScad();
   if(v==="termine") renderCT();
+  if(v==="agevolazioni") renderAG();
   try{ localStorage.setItem("prontuario.view", v); }catch(e){}
   window.scrollTo({top:0});
 }
@@ -726,7 +752,7 @@ function subscribeClients(){
     if(activeClient){ const u = CL.list.find(x=>x._id===activeClient._id); if(u){ activeClient=u; renderBanner(); } }
   }, ()=>{ CL.loaded=true; if(view==="clienti") renderClienti(); });
 }
-(window.__hooks = window.__hooks||[]).push(ev=>{ if(ev==="db") subscribeClients(); if(ev==="user"||ev==="ccnl"){ if(view==="clienti") renderClienti(); if(view==="calcolatori") renderCalc(); if(view==="scadenziario") renderScad(); if(view==="termine") renderCT(); } if(ev==="db") subscribeCT(); });
+(window.__hooks = window.__hooks||[]).push(ev=>{ if(ev==="db") subscribeClients(); if(ev==="user"||ev==="ccnl"){ if(view==="clienti") renderClienti(); if(view==="calcolatori") renderCalc(); if(view==="scadenziario") renderScad(); if(view==="termine") renderCT(); if(view==="agevolazioni") renderAG(); } if(ev==="db"){ subscribeCT(); subscribeAG(); } });
 if(state.db) subscribeClients();
 
 function clientMatches(c){
@@ -751,7 +777,8 @@ function renderClienti(){
     $("#clq").addEventListener("input", e=>{ CL.q=e.target.value.trim(); renderClienti(); });
     $("#clNew").addEventListener("click", ()=>openClientEditor(null));
     root.addEventListener("click", e=>{
-      const t = e.target.closest("[data-clf],[data-open],[data-calc],[data-cledit],[data-clct]"); if(!t) return;
+      const t = e.target.closest("[data-clf],[data-open],[data-calc],[data-cledit],[data-clct],[data-clag]"); if(!t) return;
+      if(t.dataset.clag){ AG.cl = t.dataset.clag; AG.sub = "verifica"; AG.built = false; setView("agevolazioni"); return; }
       if(t.dataset.clct){ CT.az = t.dataset.clct; setView("termine"); return; }
       if(t.dataset.clf){ CL.f=t.dataset.clf; renderClienti(); }
       else if(t.dataset.open){ const c=CL.list.find(x=>x._id===t.dataset.open); if(!c) return; activeClient=c; renderBanner(); if(c.ccnl) P.setFilter(c.ccnl); setView("prontuario"); }
@@ -783,7 +810,7 @@ function renderClienti(){
         <td>${pill}<span class="ccraw">${esc(c.ccnl_testo||"—")}</span></td><td>${esc(c.settore||"")}</td>
         <td class="num">${c.ti||""}</td><td class="num">${c.td||""}${c.td_note?`<span class="ccraw">${esc(c.td_note)}</span>`:""}</td>
         <td>${esc(c.ente_bilaterale||"")}</td><td>${esc(c.sanita||"")}</td><td>${altro}</td>
-        <td><div class="rowact">${c.ccnl&&state.ccnl[c.ccnl]?`<button class="btn sm" type="button" data-open="${esc(c._id)}">Prontuario</button>${rulesOf(c.ccnl)?`<button class="btn sm" type="button" data-calc="${esc(c._id)}">Calcola</button>`:""}`:""}${CT.list.some(x=>x.cliente===c._id)?`<button class="btn sm" type="button" data-clct="${esc(c._id)}">Contratti a termine</button>`:""}${state.canWrite?`<button class="btn ghost sm" type="button" data-cledit="${esc(c._id)}">Modifica</button>`:""}</div></td></tr>`;
+        <td><div class="rowact">${c.ccnl&&state.ccnl[c.ccnl]?`<button class="btn sm" type="button" data-open="${esc(c._id)}">Prontuario</button>${rulesOf(c.ccnl)?`<button class="btn sm" type="button" data-calc="${esc(c._id)}">Calcola</button>`:""}`:""}${CT.list.some(x=>x.cliente===c._id)?`<button class="btn sm" type="button" data-clct="${esc(c._id)}">Contratti a termine</button>`:""}<button class="btn sm" type="button" data-clag="${esc(c._id)}">Agevolazioni${AG.pr.filter(x=>x.cliente===c._id).length?` (${AG.pr.filter(x=>x.cliente===c._id).length})`:""}</button>${state.canWrite?`<button class="btn ghost sm" type="button" data-cledit="${esc(c._id)}">Modifica</button>`:""}</div></td></tr>`;
     }).join("")}</tbody></table></div>`;
 }
 function openClientEditor(c){
@@ -798,6 +825,7 @@ function openClientEditor(c){
     <div class="field"><label for="k-cc">Collega al CCNL del prontuario</label><select id="k-cc">${ccOpts}</select></div>
     <div class="field"><label for="k-ab">Abbinamento</label><select id="k-ab"><option value="certo" ${c&&c.abbinamento==="certo"?"selected":""}>Confermato</option><option value="da confermare" ${c&&c.abbinamento==="da confermare"?"selected":""}>Da confermare</option></select></div>
     <div class="field"><label for="k-se">Settore</label><input id="k-se" value="${v("settore")}"></div>
+    <div class="field"><label for="k-reg">Regione della sede di lavoro</label><select id="k-reg"><option value="">— Non indicata —</option>${REGIONI.map(r=>`<option ${c&&c.regione===r?"selected":""}>${r}</option>`).join("")}</select></div>
     <div class="field"><label for="k-ti">Dipendenti T.I.</label><input id="k-ti" inputmode="numeric" value="${v("ti")}"></div>
     <div class="field"><label for="k-td">Dipendenti T.D.</label><input id="k-td" inputmode="numeric" value="${v("td")}"></div>
     <div class="field"><label for="k-eb">Ente bilaterale</label><input id="k-eb" value="${v("ente_bilaterale")}"></div>
@@ -818,7 +846,7 @@ function openClientEditor(c){
     const nRaw = $("#k-n").value.trim(); const n = /^\d+$/.test(nRaw) ? parseInt(nRaw,10) : null;
     const cc = $("#k-cc").value;
     const doc = { ...(c?Object.fromEntries(Object.entries(c).filter(([k])=>k!=="_id")):{}),
-      n, azienda:az, ccnl_testo:$("#k-ct").value.trim(), ccnl:cc, abbinamento: cc ? $("#k-ab").value : "", settore:$("#k-se").value.trim(),
+      n, azienda:az, ccnl_testo:$("#k-ct").value.trim(), ccnl:cc, abbinamento: cc ? $("#k-ab").value : "", settore:$("#k-se").value.trim(), regione:$("#k-reg").value,
       ti: parseInt($("#k-ti").value,10)||0, td: parseInt($("#k-td").value,10)||0, ente_bilaterale:$("#k-eb").value.trim(), sanita:$("#k-sa").value.trim(),
       accordo_ii: $("#k-a2").checked?"SI":"", buoni_pasto: $("#k-bp").checked?"SI":"", tfr_inps: $("#k-tf").checked?"SI":"", note:$("#k-no").value.trim(),
       aggiornatoIl:new Date().toISOString(), aggiornatoDa: state.myId||"" };
@@ -1122,6 +1150,342 @@ function openCTEditor(c){
     const id = isNew ? "t-" + Date.now().toString(36) + Math.random().toString(36).slice(2,6) : c._id;
     try{ await ctSave(id, doc, isNew?"Contratto aggiunto":"Contratto salvato"); }catch(e){ $("#e-err").textContent = P.errMsg(e); }
   };
+}
+
+/* ================= AGEVOLAZIONI ================= */
+const REGIONI = ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"];
+const ZES = ["Abruzzo","Basilicata","Calabria","Campania","Marche","Molise","Puglia","Sardegna","Sicilia","Umbria"];
+const AG = { list:[], pr:[], loaded:false, sub:"verifica", cl:"", built:false, unsub:null, unsubP:null, prCl:"tutti" };
+function subscribeAG(){
+  if(!state.db) return;
+  if(!AG.unsub) AG.unsub = state.db.collection("agevolazioni").onSnapshot(snap=>{ AG.list = snap.docs.map(d=>({...d.data(), _id:d.id})).sort((a,b)=>(a.ordine||99)-(b.ordine||99)); AG.loaded = true; if(view==="agevolazioni") renderAG(true); }, ()=>{ AG.loaded = true; });
+  if(!AG.unsubP) AG.unsubP = state.db.collection("pratiche_agevolazioni").onSnapshot(snap=>{ AG.pr = snap.docs.map(d=>({...d.data(), _id:d.id})); if(view==="agevolazioni") renderAG(true); if(view==="clienti") renderClienti(); }, ()=>{});
+}
+if(state.db) subscribeAG();
+const LEADER_RE = /\b(CGIL|CISL|UIL|FILCAMS|FISASCAT|UILTUCS|FIOM|FIM|UILM|FILLEA|FILCA|FENEAL|FILT|FIT|UILTRASPORTI|FLAI|FAI|UILA|SLC|UILCOM|FILCTEM|FEMCA|UILTEC)\b/i;
+function ccnlLeader(cc){
+  if(!cc) return null;
+  if(cc==="commercio" || cc==="metalmeccanica") return true;
+  const m = state.ccnl[cc]; if(!m) return null;
+  return LEADER_RE.test(m.nome||"");
+}
+const triVal = v => v==="si" ? true : v==="no" ? false : null;
+const agEta = (nascita, data) => nascita && data ? yearsBetween(nascita, data) : null;
+function svantaggio(F){
+  const cats = [];
+  if(F.eta!=null && F.eta>=15 && F.eta<=24) cats.push("ha 15-24 anni");
+  if(F.senzaDiploma) cats.push("senza diploma o qualifica");
+  if(F.eta!=null && F.eta>=50) cats.push("ha almeno 50 anni");
+  if(F.soloCarico) cats.push("adulto solo con persone a carico");
+  if(F.disparita) cats.push("settore/professione con disparità di genere");
+  if(F.minoranza) cats.push("minoranza etnica");
+  const m = F.mesi;
+  if(m!=null && m>=24) return {liv:"molto", txt:`privo di impiego da ${m} mesi (almeno 24)`};
+  if(m!=null && m>=12 && cats.length) return {liv:"molto", txt:`privo di impiego da ${m} mesi e ${cats.join(", ")}`, dubbio:true};
+  if((m!=null && m>=6) || cats.length) return {liv:"svantaggiato", txt: m!=null && m>=6 ? `privo di impiego da ${m} mesi` : cats.join(", ")};
+  return {liv:null, txt: m==null ? "mesi senza impiego non indicati" : `privo di impiego da ${m} mesi, nessuna categoria di svantaggio`, ignoto: m==null};
+}
+function agRead(){
+  const g = id => { const el = document.getElementById(id); return el ? (el.type==="checkbox" ? el.checked : el.value) : ""; };
+  const ass = parseD(g("g-ass")), nasc = parseD(g("g-nasc"));
+  const cl = CL.list.find(x=>x._id===g("g-cl"));
+  const F = {
+    cliente: g("g-cl"), cl, regione: g("g-reg"), dip: g("g-dip")==="" ? null : parseInt(g("g-dip"),10),
+    incremento: triVal(g("g-inc")), licenz: triVal(g("g-lic")), durc: triVal(g("g-durc")), obbligo: triVal(g("g-obb")), cig: triVal(g("g-cig")), impresa: triVal(g("g-imp")),
+    lavoratore: g("g-nome").trim(), nascita: nasc, genere: g("g-gen"), mesi: g("g-mesi")==="" ? null : Math.max(0, parseInt(g("g-mesi"),10)||0),
+    senzaDiploma: g("g-dipl"), soloCarico: g("g-car"), disparita: g("g-disp"), minoranza: g("g-min"), resZes: triVal(g("g-rzes")), figli2: g("g-figli"),
+    naspi: g("g-naspi"), naspiImp: num(g("g-naspiimp")), naspiMesi: num(g("g-naspimesi")), adi: g("g-adi"), siisl: triVal(g("g-siisl")),
+    disab: g("g-dis"), maiTI: triVal(g("g-maiti")), licCollegato: triVal(g("g-coll")), rapp6: triVal(g("g-rapp")),
+    ass, tipo: g("g-tipo"), part: g("g-part"), durataTD: num(g("g-durtd")), dirigente: g("g-dirig"),
+    ret: num(g("g-ret")), aliq: num(g("g-aliq")) || 30
+  };
+  F.eta = agEta(nasc, ass || today);
+  F.zes = F.regione ? ZES.includes(F.regione) : null;
+  F.mensil = (F.cl && F.cl.ccnl && rulesOf(F.cl.ccnl) && rulesOf(F.cl.ccnl).mensilita) || 13;
+  F.contribMese = F.ret ? F.ret*F.mensil/12*F.aliq/100 : 0;
+  F.leader = F.cl ? ccnlLeader(F.cl.ccnl) : null;
+  return F;
+}
+function agEval(A, F){
+  const P_ = A.p || {}, C = [];
+  const add = (t, v, n) => C.push({t, s: v===true ? "ok" : v===false ? "ko" : "q", n: n||""});
+  const tipoTI = ["ti","trasf"].includes(F.tipo), tipoTxt = {ti:"tempo indeterminato", trasf:"trasformazione da tempo determinato", td:"tempo determinato", stag:"stagionale", app:"apprendistato"}[F.tipo] || "non indicato";
+  const fin = () => { if(!P_.dal) return; if(!F.ass) return add("Assunzione nel 2026", null, "Data di assunzione non indicata."); add(`Assunzione tra il ${fmtD(parseD(P_.dal))} e il ${fmtD(parseD(P_.al))}`, isoD(F.ass)>=P_.dal && isoD(F.ass)<=P_.al); };
+  const tiReq = (allowApp) => { if(!F.tipo) return add("Contratto a tempo indeterminato", null, "Tipo di contratto non indicato."); if(F.tipo==="app") return add("Contratto a tempo indeterminato", allowApp ? true : null, allowApp ? "" : "Apprendistato: verificare se è ammesso dalla circolare."); add(`Contratto a tempo indeterminato (indicato: ${tipoTxt})`, tipoTI); };
+  const noDir = () => add("Personale non dirigente", !F.dirigente);
+  const incr = () => add("Incremento occupazionale netto rispetto alla media dei 12 mesi precedenti", F.incremento, F.incremento==null ? "Da verificare sui dati dell'azienda (media ULA dei 12 mesi precedenti)." : "");
+  const lic = () => add("Nessun licenziamento per GMO o collettivo nella stessa unità produttiva nei 6 mesi precedenti", F.licenz==null ? null : !F.licenz);
+  const sal = () => { const v = F.leader; add("Salario giusto: trattamento non inferiore ai CCNL comparativamente più rappresentativi", v===true ? true : null,
+      v===true ? `CCNL del cliente sottoscritto da CGIL, CISL e UIL.` : v===false ? "Il CCNL del cliente non è sottoscritto dalle organizzazioni comparativamente più rappresentative: va dimostrato che il trattamento economico complessivo non è inferiore a quello del CCNL leader del settore." : "CCNL del cliente non collegato al prontuario: verificare."); };
+  const gen = (opts={}) => {
+    add("DURC regolare e rispetto di leggi e CCNL (L. 296/2006, c. 1175)", F.durc);
+    add("L'assunzione non è dovuta per legge o contratto e non viola un diritto di precedenza", F.obbligo==null ? null : !F.obbligo);
+    if(F.cig) add("Nessuna sospensione per crisi o riorganizzazione in corso nella stessa unità produttiva", null, "Indicata CIG in corso: l'incentivo spetta solo se l'assunzione riguarda un livello diverso o un'altra unità produttiva.");
+    add("Lavoratore non licenziato nei 6 mesi precedenti da un datore collegato o con assetti proprietari coincidenti", F.licCollegato==null ? null : !F.licCollegato);
+  };
+  let stima = null, durata = null, extra = "";
+  const capMese = (perc, mass) => F.contribMese ? Math.min(F.contribMese*perc/100, mass||Infinity) : null;
+  switch(A._id){
+    case "bonus-giovani-2026": case "bonus-donne-2026": {
+      const giov = A._id==="bonus-giovani-2026";
+      fin(); tiReq(false); noDir();
+      if(giov) add(`Meno di ${P_.etaMax} anni alla data di assunzione`, F.eta==null ? null : F.eta < P_.etaMax, F.eta==null ? "Data di nascita non indicata." : `Età: ${F.eta} anni.`);
+      else add("Lavoratrice donna", F.genere ? F.genere==="F" : null);
+      const S = svantaggio(F);
+      if(S.liv==="molto"){ add(`${giov?"Lavoratore":"Lavoratrice"} molto ${giov?"svantaggiato":"svantaggiata"} (24 mesi)`, S.dubbio ? null : true, S.txt + (S.dubbio ? ": per il Reg. UE 651/2014 è «molto svantaggiato», ma le fonti sul DL 62/2026 non concordano. Verificare." : "")); durata = P_.durataMolto; }
+      else if(S.liv==="svantaggiato"){ add(`${giov?"Lavoratore":"Lavoratrice"} ${giov?"svantaggiato":"svantaggiata"} secondo il Reg. UE 651/2014 (12 mesi)`, true, S.txt); durata = P_.durataSvant; }
+      else add("Condizione di svantaggio (Reg. UE 651/2014)", S.ignoto ? null : false, S.txt);
+      incr(); lic(); sal(); gen();
+      const mass = F.zes ? P_.massMeseZes : P_.massMese;
+      if(F.zes==null) extra = `Regione non indicata: massimale ordinario di ${fmtE(P_.massMese)}, ${fmtE(P_.massMeseZes)} nella ZES unica.`;
+      else if(F.zes) extra = `Sede nella ZES unica: massimale di ${fmtE(P_.massMeseZes)} al mese${giov?"":" (verificare se conta la sede o la residenza della lavoratrice)"}.`;
+      const m = capMese(P_.perc, mass); if(m!=null && durata) stima = {mese:m, tot:m*durata};
+      break; }
+    case "bonus-zes-2026": {
+      fin(); tiReq(false); noDir();
+      add(`Sede o unità produttiva nella ZES unica`, F.zes, F.regione ? `Regione: ${F.regione}.` : "Regione della sede non indicata.");
+      add(`Datore con non più di ${P_.dipMax} dipendenti nel mese di assunzione`, F.dip==null ? null : F.dip <= P_.dipMax, F.dip!=null ? `Indicati ${F.dip} dipendenti (al netto dei lavoratori agevolati).` : "");
+      add(`Almeno ${P_.etaMin} anni alla data di assunzione`, F.eta==null ? null : F.eta >= P_.etaMin, F.eta!=null ? `Età: ${F.eta} anni.` : "Data di nascita non indicata.");
+      add(`Disoccupato da almeno ${P_.mesiMin} mesi`, F.mesi==null ? null : F.mesi >= P_.mesiMin, F.mesi!=null ? `Indicati ${F.mesi} mesi.` : "");
+      incr(); lic(); sal(); gen();
+      durata = P_.durata; const m = capMese(P_.perc, P_.massMese); if(m!=null) stima = {mese:m, tot:m*durata};
+      break; }
+    case "donne-l92": {
+      add("Lavoratrice donna", F.genere ? F.genere==="F" : null);
+      const m = F.mesi; let ok = null, n = "";
+      if(m!=null && m>=P_.mesiOvunque){ ok = true; n = `Priva di impiego da ${m} mesi.`; }
+      else if(m!=null && m>=P_.mesiAree){ if(F.disparita){ ok = true; n = `Priva di impiego da ${m} mesi in professione/settore con disparità di genere.`; } else if(F.resZes){ ok = null; n = `Priva di impiego da ${m} mesi: verificare che risieda in un'area svantaggiata ammessa.`; } else { ok = F.resZes===false ? false : null; n = `Priva di impiego da ${m} mesi: servono 24 mesi, oppure 6 mesi con residenza in area svantaggiata o settore con disparità di genere.`; } }
+      else if(m!=null){ ok = false; n = `Priva di impiego da ${m} mesi: ne servono almeno ${P_.mesiAree}.`; } else n = "Mesi senza impiego non indicati.";
+      add("Priva di impiego regolarmente retribuito da 24 mesi (o 6 mesi in aree/settori ammessi)", ok, n);
+      add("Contratto a termine, a tempo indeterminato o trasformazione", F.tipo ? ["ti","trasf","td","stag","app"].includes(F.tipo) : null, F.tipo==="app" ? "Apprendistato: verificare." : "");
+      incr(); gen();
+      durata = ["td","stag"].includes(F.tipo) ? Math.min(P_.durataTD, F.durataTD||P_.durataTD) : P_.durataTI;
+      if(F.tipo==="trasf") extra = "Per le trasformazioni la durata complessiva è di 18 mesi dalla prima assunzione agevolata.";
+      const mm = capMese(P_.perc); if(mm!=null) stima = {mese:mm, tot:mm*durata};
+      break; }
+    case "over50-l92": {
+      add(`Almeno ${P_.etaMin} anni`, F.eta==null ? null : F.eta >= P_.etaMin, F.eta!=null ? `Età: ${F.eta} anni.` : "Data di nascita non indicata.");
+      add(`Disoccupato da oltre ${P_.mesiMin} mesi`, F.mesi==null ? null : F.mesi > P_.mesiMin, F.mesi!=null ? `Indicati ${F.mesi} mesi.` : "");
+      add("Contratto a termine, a tempo indeterminato o trasformazione", F.tipo ? ["ti","trasf","td","stag","app"].includes(F.tipo) : null);
+      incr(); gen();
+      durata = ["td","stag"].includes(F.tipo) ? Math.min(P_.durataTD, F.durataTD||P_.durataTD) : P_.durataTI;
+      const mm = capMese(P_.perc); if(mm!=null) stima = {mese:mm, tot:mm*durata};
+      break; }
+    case "naspi-20": {
+      add("Lavoratore percettore di NASpI alla data di assunzione", F.naspi);
+      add("Assunzione a tempo indeterminato", F.tipo ? (F.tipo==="ti" || F.tipo==="app") : null, F.tipo==="trasf" ? "La trasformazione non è un'assunzione di un percettore di NASpI." : "");
+      add("Assunzione a tempo pieno", F.tipo ? !F.part : null, F.part ? "Indicato part-time: la norma richiede il tempo pieno." : "");
+      add("Nessun rapporto con lo stesso datore (o collegato) negli ultimi 6 mesi", F.rapp6==null ? null : !F.rapp6);
+      gen();
+      if(F.naspi && F.naspiImp && F.naspiMesi){ durata = Math.round(F.naspiMesi); stima = {mese:F.naspiImp*P_.perc/100, tot:F.naspiImp*P_.perc/100*F.naspiMesi}; }
+      else if(F.naspi) extra = "Indica importo mensile e mesi residui della NASpI per stimare il contributo.";
+      break; }
+    case "adi-sfl": {
+      add("Lavoratore beneficiario di Assegno di inclusione o SFL", F.adi);
+      add("Offerta di lavoro pubblicata prima sul SIISL", F.siisl);
+      add("Tipo di contratto ammesso", F.tipo ? true : null, F.tipo ? `Indicato: ${tipoTxt}.` : "");
+      gen();
+      if(["td","stag"].includes(F.tipo)){ durata = Math.min(P_.durataTD, F.durataTD||P_.durataTD); const mm = capMese(P_.percTD, P_.massAnnoTD/12); if(mm!=null) stima = {mese:mm, tot:mm*durata}; }
+      else if(F.tipo){ durata = F.tipo==="trasf" ? P_.durataTrasf : P_.durataTI; const mm = capMese(P_.percTI, P_.massAnnoTI/12); if(mm!=null) stima = {mese:mm, tot:mm*durata}; }
+      extra = "Licenziamento nei 24 mesi successivi (salvo giusta causa o giustificato motivo): restituzione dell'esonero con sanzioni.";
+      break; }
+    case "under30-l205": {
+      add(`Meno di ${P_.etaMax} anni alla data di assunzione`, F.eta==null ? null : F.eta < P_.etaMax, F.eta!=null ? `Età: ${F.eta} anni.` : "Data di nascita non indicata.");
+      add("Mai occupato a tempo indeterminato", F.maiTI);
+      tiReq(false); noDir(); lic(); gen();
+      durata = P_.durata; const mm = capMese(P_.perc, P_.massAnno/12); if(mm!=null) stima = {mese:mm, tot:mm*durata};
+      extra = "Revoca se nei 6 mesi successivi viene licenziato per GMO il lavoratore agevolato o un collega con la stessa qualifica nella stessa unità produttiva.";
+      break; }
+    case "disabili-art13": {
+      const d = F.disab;
+      add("Lavoratore con disabilità nelle percentuali previste", d ? true : false, d==="alta" ? "Oltre il 79% o I-III categoria: 70%." : d==="media" ? "Tra 67% e 79% o IV-VI categoria: 35%." : d==="psi" ? "Disabilità intellettiva o psichica oltre il 45%: 70%." : "Nessuna disabilità indicata.");
+      if(d==="psi") add("Tempo indeterminato, o tempo determinato di almeno 12 mesi", F.tipo ? (["ti","trasf","app"].includes(F.tipo) || (["td","stag"].includes(F.tipo) && F.durataTD>=12)) : null, ["td","stag"].includes(F.tipo) ? `Durata indicata: ${F.durataTD||"non indicata"} mesi.` : "");
+      else if(d) tiReq(true);
+      incr();
+      add("Domanda telematica all'INPS prima dell'assunzione e fondi disponibili", null, "La domanda va presentata prima dell'assunzione; il contratto va stipulato entro 7 giorni dalla conferma dell'INPS.");
+      gen();
+      if(d){ const perc = d==="media" ? P_.media : P_.alta; durata = d==="psi" ? (["td","stag"].includes(F.tipo) ? Math.min(P_.durataPsi, F.durataTD||0) : P_.durataPsi) : P_.durata;
+        if(F.ret) { const mm = F.ret*F.mensil/12*perc/100; stima = {mese:mm, tot:mm*durata}; } }
+      break; }
+    case "maxi-deduzione": {
+      add("Titolare di reddito d'impresa o di lavoro autonomo (non forfettario)", F.impresa);
+      tiReq(true);
+      add("Incremento dei dipendenti a tempo indeterminato e del costo del personale rispetto all'anno precedente", F.incremento, F.incremento==null ? "Da verificare a fine periodo d'imposta." : "");
+      const S = svantaggio(F);
+      const mag30 = S.liv==="molto" || !!F.disab || (F.genere==="F" && (F.figli2 || (F.mesi!=null && F.mesi>=6 && F.resZes))) || (F.eta!=null && F.eta<30 && F.maiTI);
+      const perc = mag30 ? P_.maggSvant : P_.magg;
+      extra = `Maggiorazione del ${perc}%${mag30 ? " (categoria meritevole di maggiore tutela: verificare la documentazione)" : ""}. Cumulabile con gli esoneri contributivi.`;
+      if(F.ret){ const costo = F.ret*F.mensil + F.contribMese*12; stima = {anno: costo*perc/100*P_.aliqFiscale/100, base: costo*perc/100}; }
+      break; }
+  }
+  const esito = C.some(c=>c.s==="ko") ? "no" : C.some(c=>c.s==="q") ? "maybe" : "ok";
+  return { A, C, esito, stima, durata, extra };
+}
+const AG_ESITO = { ok:["ok","Requisiti soddisfatti"], maybe:["warn","Possibile: completa le verifiche"], no:["bad","Non spetta"] };
+function agFormHTML(){
+  const cls = [...CL.list].sort((a,b)=>a.azienda.localeCompare(b.azienda));
+  const tri = (id, lbl, help) => `<div class="field"><label for="${id}">${lbl}</label><select id="${id}"><option value="">Non so / da verificare</option><option value="si">Sì</option><option value="no">No</option></select>${help?`<small>${help}</small>`:""}</div>`;
+  return `<form class="ag-form" id="agForm" novalidate autocomplete="off">
+    <fieldset><legend>1. Azienda</legend>
+      <div class="field"><label for="g-cl">Cliente</label><select id="g-cl"><option value="">— Nessun cliente (verifica libera) —</option>${cls.map(c=>`<option value="${esc(c._id)}" ${AG.cl===c._id?"selected":""}>${esc(c.azienda)}${c.n!=null?` (n. ${c.n})`:""}</option>`).join("")}</select><small id="g-clinfo"></small></div>
+      <div class="row2"><div class="field"><label for="g-reg">Regione della sede di lavoro</label><select id="g-reg"><option value="">—</option>${REGIONI.map(r=>`<option>${r}</option>`).join("")}</select></div>
+      <div class="field"><label for="g-dip">Dipendenti nel mese di assunzione</label><input id="g-dip" type="number" min="0"></div></div>
+      ${tri("g-inc","L'assunzione crea un incremento occupazionale netto?","Rispetto alla media dei lavoratori dei 12 mesi precedenti.")}
+      ${tri("g-lic","Licenziamenti per GMO o collettivi nella stessa unità produttiva negli ultimi 6 mesi?")}
+      ${tri("g-durc","DURC regolare?")}
+      ${tri("g-obb","L'assunzione è obbligatoria per legge/CCNL o viola un diritto di precedenza?")}
+      ${tri("g-cig","Cassa integrazione o sospensioni in corso nella stessa unità produttiva?")}
+      ${tri("g-imp","Il datore ha reddito d'impresa o di lavoro autonomo (non forfettario)?","Serve solo per la maxi-deduzione.")}
+    </fieldset>
+    <fieldset><legend>2. Lavoratore</legend>
+      ${(()=>{ const ct = AG.cl ? CT.list.filter(x=>x.cliente===AG.cl && x.stato!=="cessato") : []; return ct.length ? `<div class="field"><label for="g-fromct">Prendi da un contratto a termine del cliente</label><select id="g-fromct"><option value="">—</option>${ct.map(x=>`<option value="${esc(x._id)}">${esc(x.dipendente)}${x.sede?` · ${esc(x.sede)}`:""}</option>`).join("")}</select><small>Imposta la trasformazione a tempo indeterminato.</small></div>` : ""; })()}
+      <div class="field"><label for="g-nome">Nome (facoltativo)</label><input id="g-nome"></div>
+      <div class="row2"><div class="field"><label for="g-nasc">Data di nascita</label><input id="g-nasc" type="date"></div>
+      <div class="field"><label for="g-gen">Genere</label><select id="g-gen"><option value="">—</option><option value="F">Donna</option><option value="M">Uomo</option></select></div></div>
+      <div class="field"><label for="g-mesi">Mesi senza impiego regolarmente retribuito</label><input id="g-mesi" type="number" min="0" placeholder="Vuoto = non so"><small>Per i disoccupati, i mesi di disoccupazione documentati (DID).</small></div>
+      <label class="check field"><input type="checkbox" id="g-dipl"> Senza diploma di scuola superiore o qualifica professionale</label>
+      <label class="check field"><input type="checkbox" id="g-car"> Adulto che vive solo con una o più persone a carico</label>
+      <label class="check field"><input type="checkbox" id="g-disp"> Assunto in professione/settore con disparità di genere ≥25% (genere sottorappresentato)</label>
+      <label class="check field"><input type="checkbox" id="g-min"> Appartenente a una minoranza etnica</label>
+      <label class="check field"><input type="checkbox" id="g-figli"> Donna con almeno due figli minori</label>
+      ${tri("g-rzes","Residente in una regione della ZES unica / area svantaggiata?")}
+      ${tri("g-maiti","Mai occupato a tempo indeterminato?")}
+      ${tri("g-coll","Licenziato negli ultimi 6 mesi da un datore collegato o con stessi assetti proprietari?")}
+      ${tri("g-rapp","Ha avuto un rapporto con questo datore negli ultimi 6 mesi?")}
+      <label class="check field"><input type="checkbox" id="g-naspi"> Percettore di NASpI</label>
+      <div class="row2"><div class="field"><label for="g-naspiimp">NASpI mensile (€)</label><input id="g-naspiimp" inputmode="decimal"></div><div class="field"><label for="g-naspimesi">Mesi di NASpI residui</label><input id="g-naspimesi" inputmode="decimal"></div></div>
+      <label class="check field"><input type="checkbox" id="g-adi"> Beneficiario di Assegno di inclusione o SFL</label>
+      ${tri("g-siisl","Offerta pubblicata sul SIISL prima dell'assunzione?")}
+      <div class="field"><label for="g-dis">Disabilità</label><select id="g-dis"><option value="">Nessuna</option><option value="alta">Oltre 79% o I-III categoria</option><option value="media">Tra 67% e 79% o IV-VI categoria</option><option value="psi">Intellettiva o psichica oltre 45%</option></select><small>Il dato non viene salvato nelle pratiche.</small></div>
+    </fieldset>
+    <fieldset><legend>3. Contratto</legend>
+      <div class="row2"><div class="field"><label for="g-ass">Data di assunzione o trasformazione</label><input id="g-ass" type="date" value="${isoD(today)}"></div>
+      <div class="field"><label for="g-tipo">Tipo</label><select id="g-tipo"><option value="ti">Tempo indeterminato</option><option value="trasf">Trasformazione da TD</option><option value="td">Tempo determinato</option><option value="stag">Stagionale</option><option value="app">Apprendistato</option></select></div></div>
+      <div class="row2"><div class="field"><label for="g-durtd">Durata del termine (mesi)</label><input id="g-durtd" type="number" min="1"></div>
+      <div class="field" style="align-self:end"><label class="check"><input type="checkbox" id="g-part"> Part-time</label><label class="check"><input type="checkbox" id="g-dirig"> Dirigente</label></div></div>
+      <div class="row2"><div class="field"><label for="g-ret">Retribuzione mensile lorda (€)</label><input id="g-ret" inputmode="decimal" placeholder="Per stimare il beneficio"></div>
+      <div class="field"><label for="g-aliq">Contributi INPS datore esonerabili (%)</label><input id="g-aliq" inputmode="decimal" value="30"></div></div>
+      <small>Gli esoneri non riguardano INAIL e alcune contribuzioni minori: indica l'aliquota effettivamente esonerabile del cliente.</small>
+    </fieldset></form>`;
+}
+function agPrefill(){
+  const cl = CL.list.find(x=>x._id===$("#g-cl").value);
+  const info = $("#g-clinfo");
+  if(cl){
+    if(cl.regione) $("#g-reg").value = cl.regione;
+    $("#g-dip").value = (cl.ti||0) + (cl.td||0);
+    const L = ccnlLeader(cl.ccnl);
+    info.innerHTML = `CCNL: <b>${esc(cl.ccnl ? P.ccName(cl.ccnl) : (cl.ccnl_testo||"non indicato"))}</b>${L===true?" · firmato da CGIL, CISL, UIL":L===false?" · <span style=\"color:var(--warn)\">CCNL non sottoscritto da CGIL, CISL, UIL: verificare il salario giusto</span>":""} · ${cl.ti||0} T.I. e ${cl.td||0} T.D. in anagrafica${cl.regione?"":" · regione non indicata in anagrafica"}`;
+  } else info.textContent = "";
+}
+function agResults(force){
+  const out = $("#agOut"); if(!out) return;
+  const sig = [...document.querySelectorAll("#agForm input,#agForm select")].map(el=>el.type==="checkbox"?el.checked:el.value).join("|") + "|" + AG.list.length + "|" + CL.list.length;
+  if(force!==true && sig===AG.sig) return;
+  AG.sig = sig;
+  if(!AG.loaded){ out.innerHTML = `<div class="empty"><h3>Caricamento del catalogo…</h3></div>`; return; }
+  if(!AG.list.length){ out.innerHTML = `<div class="empty"><h3>Catalogo delle agevolazioni vuoto</h3></div>`; return; }
+  const F = agRead();
+  const R = AG.list.map(A=>agEval(A, F)).sort((a,b)=>({ok:0,maybe:1,no:2}[a.esito]-{ok:0,maybe:1,no:2}[b.esito]) || ((b.stima&&b.stima.tot)||0)-((a.stima&&a.stima.tot)||0));
+  AG.lastF = F; AG.lastR = R;
+  const contrib = R.filter(r=>r.A._id!=="maxi-deduzione" && r.esito!=="no" && r.stima && r.stima.tot);
+  const best = contrib.sort((a,b)=>b.stima.tot-a.stima.tot)[0];
+  let html = "";
+  if(best) html += `<div class="ag-best">Tra gli incentivi contributivi (non cumulabili tra loro) il più conveniente risulta <b>${esc(best.A.nome)}</b>: circa <b>${fmtE(best.stima.tot)}</b> in ${best.durata} mesi${best.esito==="maybe"?", se le verifiche indicate danno esito positivo":""}.</div>`;
+  else if(!F.ret) html += `<div class="ag-intro">Indica la retribuzione mensile lorda per stimare il valore di ogni agevolazione.</div>`;
+  html += R.map(r=>{ const [c,l] = AG_ESITO[r.esito];
+    const val = r.esito==="no" ? "" : r.stima ? (r.stima.anno!=null ? `Risparmio d'imposta stimato: <b>${fmtE(r.stima.anno)}</b> l'anno (deduzione aggiuntiva ${fmtE(r.stima.base)})` : `Valore stimato: <b>${fmtE(r.stima.tot)}</b> (${fmtE(r.stima.mese)} al mese per ${r.durata} mesi)`) : (r.durata ? `Durata: ${r.durata} mesi` : "");
+    return `<div class="ag-card ${r.esito==="ok"?"ok":r.esito==="maybe"?"maybe":"no"}">
+      <h3>${esc(r.A.nome)} <span class="sc-st ${c}">${l}</span></h3>
+      <div class="ag-ben">${val}${r.extra&&r.esito!=="no"?`<span class="sc-sub">${esc(r.extra)}</span>`:""}${r.esito==="no"?`<span class="sc-sub">Requisiti non soddisfatti: ${esc(r.C.filter(x=>x.s==="ko").map(x=>x.t).join("; "))}.</span>`:""}</div>
+      <details ${r.esito!=="no"?"open":""}><summary class="sc-sub" style="cursor:pointer">Requisiti (${r.C.filter(x=>x.s==="ok").length} soddisfatti, ${r.C.filter(x=>x.s==="q").length} da verificare, ${r.C.filter(x=>x.s==="ko").length} non soddisfatti)</summary>
+      <ul class="ag-checks">${r.C.map(x=>`<li><span class="ag-i ${x.s==="ok"?"ok":x.s==="ko"?"ko":"q"}">${x.s==="ok"?"✓":x.s==="ko"?"✗":"?"}</span><span>${esc(x.t)}${x.n?`<small>${esc(x.n)}</small>`:""}</span></li>`).join("")}</ul></details>
+      <div class="rowact" style="margin-top:8px"><button class="btn ghost sm" type="button" data-agcat="${esc(r.A._id)}">Scheda normativa</button>${state.canWrite&&F.cliente&&r.esito!=="no"?`<button class="btn sm" type="button" data-agsave="${esc(r.A._id)}">Salva come pratica del cliente</button>`:""}</div>
+      <p class="sc-sub" style="margin:6px 0 0">${esc(r.A.norma)} · ${esc(r.A.prassi||"")} · verificato il ${fmtD(parseD(r.A.verificatoIl))}</p></div>`; }).join("");
+  out.innerHTML = html;
+}
+function agCatalogHTML(){
+  return AG.list.map(A=>`<div class="ag-card ag-cat" id="cat-${esc(A._id)}"><h3>${esc(A.nome)} <span class="ct-tag">${esc(A.categoria||"")}</span><span class="ct-tag st">${esc(A.stato||"")}</span></h3>
+    <p class="sc-sub" style="margin:2px 0 6px">${esc(A.norma)} · ${esc(A.prassi||"")} · verificato il ${fmtD(parseD(A.verificatoIl))}</p>
+    <p style="margin:4px 0">${esc(A.sintesi)}</p>
+    <b>Requisiti</b><ul>${(A.requisiti||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+    <b>Beneficio</b><p style="margin:4px 0 8px">${esc(A.beneficio||"")}</p>
+    ${(A.punti||[]).length?`<div class="att"><b>Punti da verificare</b><ul>${A.punti.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+    <div class="src" style="margin-top:6px"><b>Fonti</b><ul>${(A.fonti||[]).map(u=>`<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u)}</a></li>`).join("")}</ul></div></div>`).join("");
+}
+const PR_STATI = { valutata:"Valutata", richiesta:"Domanda INPS inviata", autorizzata:"Autorizzata", respinta:"Respinta", conclusa:"Conclusa" };
+function agPraticheHTML(){
+  const cls = [...new Set(AG.pr.map(x=>x.cliente))].map(id=>({id, n:(CL.list.find(c=>c._id===id)||{}).azienda || id})).sort((a,b)=>a.n.localeCompare(b.n));
+  const rows = AG.pr.filter(x=>AG.prCl==="tutti" || x.cliente===AG.prCl).sort((a,b)=>(a.fineBeneficio||"9").localeCompare(b.fineBeneficio||"9"));
+  return `<div class="ct-bar" style="grid-template-columns:minmax(220px,1fr)"><div class="az"><label for="prCl">Azienda</label><select id="prCl"><option value="tutti">Tutte le aziende (${AG.pr.length} pratiche)</option>${cls.map(c=>`<option value="${esc(c.id)}" ${AG.prCl===c.id?"selected":""}>${esc(c.n)} (${AG.pr.filter(x=>x.cliente===c.id).length})</option>`).join("")}</select></div></div>` +
+   (!rows.length ? `<div class="empty"><h3>Nessuna pratica</h3><p>Dalla verifica, scegli un cliente e premi «Salva come pratica del cliente».</p></div>` :
+   `<div class="tblwrap"><table class="cl"><thead><tr><th>Azienda</th><th>Lavoratore</th><th>Agevolazione</th><th>Esito verifica</th><th class="num">Valore stimato</th><th>Assunzione</th><th>Fine beneficio</th><th>Stato</th><th></th></tr></thead><tbody>
+   ${rows.map(x=>{ const [c,l] = AG_ESITO[x.esito]||["none","—"]; const fine = parseD(x.fineBeneficio); return `<tr><td class="az">${esc((CL.list.find(c=>c._id===x.cliente)||{}).azienda||x.azienda||"")}</td><td>${esc(x.lavoratore||"—")}</td><td>${esc(x.agNome)}</td><td><span class="sc-st ${c}">${l}</span>${(x.daVerificare||[]).length?`<span class="ccraw">${x.daVerificare.length} punti da verificare</span>`:""}</td><td class="num">${x.stima?fmtE(x.stima):"—"}</td><td>${x.dataAssunzione?fmtD(parseD(x.dataAssunzione)):"—"}</td><td>${fine?`${fmtD(fine)}<span class="sc-sub">${esc(ggTxt(dayDiff(today,fine)))}</span>`:"—"}</td><td>${esc(PR_STATI[x.stato]||x.stato||"")}</td><td><div class="rowact">${state.canWrite?`<button class="btn ghost sm" type="button" data-prpr="${esc(x._id)}">Aggiorna</button>`:""}</div></td></tr>`; }).join("")}</tbody></table></div>`);
+}
+function renderAG(fromData){
+  const root = $("#viewAgevolazioni");
+  if(!root.dataset.shell){
+    root.dataset.shell = "1";
+    root.innerHTML = `<div class="toolbar"><div style="flex:1"><h2 style="margin:0 0 2px;font-size:20px">Agevolazioni per le assunzioni</h2>
+      <p class="sc-sub" style="margin:0">Verifica dei requisiti per le agevolazioni in vigore, collegata ai dati dei clienti.</p></div></div>
+      <div class="calc-nav" role="group" aria-label="Sezione agevolazioni"><button class="chip" type="button" data-agsub="verifica">Verifica requisiti</button><button class="chip" type="button" data-agsub="pratiche">Pratiche dei clienti</button><button class="chip" type="button" data-agsub="catalogo">Catalogo e normativa</button></div>
+      <p class="ag-intro"><b>Pre-verifica, non parere definitivo.</b> Le regole sono aggiornate alla data indicata su ogni scheda, con i punti ancora incerti segnalati. Prima di applicare un'agevolazione controlla la circolare INPS vigente, la disponibilità dei fondi e la documentazione del lavoratore.</p>
+      <div id="agBody"></div>`;
+    root.addEventListener("click", e=>{
+      const t = e.target.closest("[data-agsub],[data-agcat],[data-agsave],[data-prpr]"); if(!t) return;
+      if(t.dataset.agsub){ AG.sub = t.dataset.agsub; AG.built = false; renderAG(); }
+      else if(t.dataset.agcat){ AG.sub = "catalogo"; AG.built = false; renderAG(); setTimeout(()=>{ const el = document.getElementById("cat-"+t.dataset.agcat); if(el) el.scrollIntoView({behavior:"smooth"}); }, 30); }
+      else if(t.dataset.agsave){ openAGSave(t.dataset.agsave); }
+      else if(t.dataset.prpr){ openPRUpdate(AG.pr.find(x=>x._id===t.dataset.prpr)); }
+    });
+  }
+  root.querySelectorAll("[data-agsub]").forEach(b=>b.setAttribute("aria-pressed", b.dataset.agsub===AG.sub));
+  const body = $("#agBody");
+  if(AG.sub==="catalogo"){ body.innerHTML = AG.loaded ? agCatalogHTML() : `<div class="empty"><h3>Caricamento…</h3></div>`; AG.built=false; return; }
+  if(AG.sub==="pratiche"){ body.innerHTML = agPraticheHTML(); AG.built=false; const s = $("#prCl"); if(s) s.onchange = ()=>{ AG.prCl = s.value; renderAG(); }; return; }
+  if(fromData && AG.built){ agResults(true); return; }
+  body.innerHTML = `<div class="ag-grid">${agFormHTML()}<div id="agOut"></div></div>`;
+  AG.built = true;
+  const form = $("#agForm");
+  form.addEventListener("input", agResults); form.addEventListener("change", agResults);
+  $("#g-cl").addEventListener("change", ()=>{ AG.cl = $("#g-cl").value; const keep = {}; form.querySelectorAll("input,select").forEach(el=>{ if(el.id && !["g-cl","g-reg","g-dip","g-fromct"].includes(el.id)) keep[el.id] = el.type==="checkbox"?el.checked:el.value; }); AG.built=false; renderAG(); Object.entries(keep).forEach(([id,v])=>{ const el=document.getElementById(id); if(el){ if(el.type==="checkbox") el.checked=v; else el.value=v; } }); agPrefill(); agResults(true); });
+  const fc = $("#g-fromct"); if(fc) fc.addEventListener("change", ()=>{ const c = CT.list.find(x=>x._id===fc.value); if(!c) return; $("#g-nome").value = c.dipendente||""; $("#g-tipo").value = "trasf"; $("#g-ass").value = isoD(today); agResults(true); });
+  agPrefill(); agResults(true);
+}
+function openAGSave(agId){
+  const F = AG.lastF, r = (AG.lastR||[]).find(x=>x.A._id===agId); if(!F || !r || !F.cliente) return;
+  const fine = F.ass && r.durata ? addDays(addMonths(F.ass, r.durata), -1) : null;
+  P.modal(`<h2>Salva pratica · ${esc(r.A.nome)}</h2>
+    <p class="sc-sub">${esc(F.cl ? F.cl.azienda : "")} · ${esc(F.lavoratore || "lavoratore senza nome")} · esito: ${AG_ESITO[r.esito][1]}</p>
+    <form class="fg" novalidate><div class="field"><label for="ap-lav">Lavoratore</label><input id="ap-lav" value="${esc(F.lavoratore)}"></div>
+    <div class="field"><label for="ap-st">Stato</label><select id="ap-st">${Object.entries(PR_STATI).map(([k,l])=>`<option value="${k}">${l}</option>`).join("")}</select></div>
+    <div class="field full"><label for="ap-no">Note</label><textarea id="ap-no" rows="2"></textarea></div>
+    <p class="sc-sub full" style="grid-column:1/-1">Vengono salvati l'esito, i requisiti verificati e le date. Data di nascita, disabilità e altri dati personali del lavoratore non vengono salvati.</p>
+    <div class="err full" id="ap-err" style="grid-column:1/-1"></div></form>
+    <div class="modal-actions"><div class="r"><button class="btn" type="button" id="ap-cancel">Annulla</button><button class="btn primary" type="button" id="ap-save">Salva pratica</button></div></div>`);
+  $("#ap-cancel").onclick = P.closeModal;
+  $("#ap-save").onclick = async ()=>{
+    const doc = { cliente:F.cliente, azienda:F.cl?F.cl.azienda:"", lavoratore:$("#ap-lav").value.trim(), agevolazione:agId, agNome:r.A.nome, esito:r.esito,
+      requisiti:r.C.map(x=>({t:x.t, s:x.s})), daVerificare:r.C.filter(x=>x.s==="q").map(x=>x.t),
+      stima: r.stima ? (r.stima.tot ?? r.stima.anno ?? null) : null, durataMesi:r.durata||null, dataAssunzione:F.ass?isoD(F.ass):"", fineBeneficio: fine?isoD(fine):"",
+      tipoContratto:F.tipo, regione:F.regione, stato:$("#ap-st").value, note:$("#ap-no").value.trim(), normativaVerificataIl:r.A.verificatoIl,
+      creatoIl:new Date().toISOString(), aggiornatoIl:new Date().toISOString(), aggiornatoDa:state.myId||"" };
+    const id = "p-" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+    try{ await state.db.collection("pratiche_agevolazioni").doc(id).set(doc); P.closeModal(); P.toast("Pratica salvata"); }catch(e){ $("#ap-err").textContent = P.errMsg(e); }
+  };
+}
+function openPRUpdate(x){
+  if(!x) return;
+  P.modal(`<h2>Pratica · ${esc(x.agNome)}</h2><p class="sc-sub">${esc(x.azienda||"")} · ${esc(x.lavoratore||"")}</p>
+    ${(x.daVerificare||[]).length?`<div class="att"><b>Punti che erano da verificare</b><ul>${x.daVerificare.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`:""}
+    <form class="fg" novalidate><div class="field"><label for="u-st">Stato</label><select id="u-st">${Object.entries(PR_STATI).map(([k,l])=>`<option value="${k}" ${x.stato===k?"selected":""}>${l}</option>`).join("")}</select></div>
+    <div class="field"><label for="u-fine">Fine beneficio</label><input id="u-fine" type="date" value="${esc(x.fineBeneficio||"")}"></div>
+    <div class="field full"><label for="u-no">Note</label><textarea id="u-no" rows="2">${esc(x.note||"")}</textarea></div><div class="err full" id="u-err" style="grid-column:1/-1"></div></form>
+    <div class="modal-actions"><button class="btn danger" type="button" id="u-del">Elimina</button><div class="r"><button class="btn" type="button" id="u-cancel">Annulla</button><button class="btn primary" type="button" id="u-save">Salva</button></div></div>`);
+  $("#u-cancel").onclick = P.closeModal;
+  let armed = false; $("#u-del").onclick = async ()=>{ if(!armed){ armed=true; $("#u-del").textContent="Conferma eliminazione"; return; } try{ await state.db.collection("pratiche_agevolazioni").doc(x._id).delete(); P.closeModal(); P.toast("Pratica eliminata"); }catch(e){ $("#u-err").textContent=P.errMsg(e); } };
+  $("#u-save").onclick = async ()=>{ const doc = {...Object.fromEntries(Object.entries(x).filter(([k])=>k!=="_id")), stato:$("#u-st").value, fineBeneficio:$("#u-fine").value, note:$("#u-no").value.trim(), aggiornatoIl:new Date().toISOString(), aggiornatoDa:state.myId||""};
+    try{ await state.db.collection("pratiche_agevolazioni").doc(x._id).set(doc); P.closeModal(); P.toast("Pratica aggiornata"); }catch(e){ $("#u-err").textContent=P.errMsg(e); } };
 }
 
 /* ================= CALCOLATORI ================= */
@@ -1749,7 +2113,7 @@ function wirePeriods(){
 let startView = "prontuario";
 try{ const v = localStorage.getItem("prontuario.view"); if(v) startView = v; }catch(e){}
 const h = (location.hash||"").replace("#","");
-if(["prontuario","clienti","calcolatori","scadenziario","termine"].includes(h)) startView = h;
+if(["prontuario","clienti","calcolatori","scadenziario","termine","agevolazioni"].includes(h)) startView = h;
 setView(startView);
 })();
 </script>
