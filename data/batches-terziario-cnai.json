@@ -1,0 +1,312 @@
+[
+[
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--appalti",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--appalti.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--apprendistato",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--apprendistato.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--aspettative",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--aspettative.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--codici",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--codici.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--congedo-matrimoniale",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--congedo-matrimoniale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--contrattazione-aziendale",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--contrattazione-aziendale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--contributi-sindacali",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--contributi-sindacali.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--danni",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--danni.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--diritti-sindacali",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--diritti-sindacali.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--disciplinare",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--disciplinare.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--divise",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--divise.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--divisori",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--divisori.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--ente-bilaterale",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--ente-bilaterale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--ferie",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--ferie.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--festivita",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--festivita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--flessibilita",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--flessibilita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--indennita-varie",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--indennita-varie.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--infortunio",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--infortunio.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--inquadramento",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--inquadramento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--lavoro-agile",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--lavoro-agile.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--lavoro-intermittente",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--lavoro-intermittente.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--lettera-assunzione",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--lettera-assunzione.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--malattia-comporto",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--malattia-comporto.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--malattia-obblighi",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--malattia-obblighi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--malattia-trattamento",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--malattia-trattamento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--mansioni",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--mansioni.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--maternita",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--maternita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--mensilita-aggiuntive",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--mensilita-aggiuntive.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--minimi",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--minimi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--molestie",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--molestie.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--notturno-domenicale",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--notturno-domenicale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--orario",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--orario.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--pagamento",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--pagamento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--part-time",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--part-time.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--permessi-lutto",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--permessi-lutto.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--permessi-rol",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--permessi-rol.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--preavviso",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--preavviso.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--prova",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--prova.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--quadri",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--quadri.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--ratei",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--ratei.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--riepilogo-costi",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--riepilogo-costi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--sanita",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--sanita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--scatti",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--scatti.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--sicurezza",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--sicurezza.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--somministrazione",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--somministrazione.json"
+}
+],
+[
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--stagionali",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--stagionali.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--straordinario",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--straordinario.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--tempo-determinato",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--tempo-determinato.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--tfr",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--tfr.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--trasferta",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--trasferta.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "terziario-cnai--vigenza",
+"file_path": "/home/user/Prontuario-CCNL/data/terziario-cnai--vigenza.json"
+}
+]
+]

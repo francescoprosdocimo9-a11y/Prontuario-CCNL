@@ -1,0 +1,244 @@
+[
+[
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--apprendistato",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--apprendistato.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--aspettative",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--aspettative.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--codici",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--codici.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--congedo-matrimoniale",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--congedo-matrimoniale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--contrattazione-aziendale",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--contrattazione-aziendale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--disciplinare",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--disciplinare.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--divisori",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--divisori.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--ente-bilaterale",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--ente-bilaterale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--ferie",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--ferie.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--festivita",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--festivita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--indennita-varie",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--indennita-varie.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--infortunio",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--infortunio.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--inquadramento",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--inquadramento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--lavoro-agile",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--lavoro-agile.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--lavoro-intermittente",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--lavoro-intermittente.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--malattia-comporto",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--malattia-comporto.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--malattia-trattamento",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--malattia-trattamento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--mensilita-aggiuntive",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--mensilita-aggiuntive.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--minimi",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--minimi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--minimi-servizi",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--minimi-servizi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--notturno-domenicale",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--notturno-domenicale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--orario",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--orario.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--part-time",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--part-time.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--permessi-lutto",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--permessi-lutto.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--permessi-rol",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--permessi-rol.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--preavviso",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--preavviso.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--previdenza-complementare",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--previdenza-complementare.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--prova",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--prova.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--quadri",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--quadri.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--ratei",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--ratei.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--riepilogo-costi",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--riepilogo-costi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--sanita",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--sanita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--scatti",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--scatti.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--somministrazione",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--somministrazione.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--stagionali",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--stagionali.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--straordinario",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--straordinario.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--tempo-determinato",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--tempo-determinato.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--tfr",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--tfr.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--trasferta",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--trasferta.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "turismo-cifa--vigenza",
+"file_path": "/home/user/Prontuario-CCNL/data/turismo-cifa--vigenza.json"
+}
+]
+]

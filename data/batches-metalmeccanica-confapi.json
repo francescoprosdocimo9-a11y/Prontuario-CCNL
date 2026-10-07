@@ -1,0 +1,312 @@
+[
+[
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--appalti",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--appalti.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--apprendistato",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--apprendistato.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--aspettative",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--aspettative.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--codici",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--codici.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--congedo-matrimoniale",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--congedo-matrimoniale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--congedo-violenza",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--congedo-violenza.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--contrattazione-aziendale",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--contrattazione-aziendale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--contributi-sindacali",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--contributi-sindacali.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--danni",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--danni.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--diritti-sindacali",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--diritti-sindacali.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--disciplinare",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--disciplinare.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--divise",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--divise.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--divisori",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--divisori.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--elemento-garanzia",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--elemento-garanzia.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--ente-bilaterale",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--ente-bilaterale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--ferie",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--ferie.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--festivita",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--festivita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--flessibilita",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--flessibilita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--indennita-varie",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--indennita-varie.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--infortunio",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--infortunio.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--inquadramento",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--inquadramento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--lavoro-agile",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--lavoro-agile.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--lettera-assunzione",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--lettera-assunzione.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--malattia-comporto",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--malattia-comporto.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--malattia-obblighi",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--malattia-obblighi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--malattia-trattamento",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--malattia-trattamento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--mansioni",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--mansioni.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--maternita",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--maternita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--mensilita-aggiuntive",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--mensilita-aggiuntive.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--minimi",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--minimi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--notturno-domenicale",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--notturno-domenicale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--orario",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--orario.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--part-time",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--part-time.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--permessi-lutto",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--permessi-lutto.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--permessi-rol",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--permessi-rol.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--preavviso",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--preavviso.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--previdenza",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--previdenza.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--prova",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--prova.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--ratei",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--ratei.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--reperibilita",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--reperibilita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--riepilogo-costi",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--riepilogo-costi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--sanita",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--sanita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--scatti",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--scatti.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--sicurezza",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--sicurezza.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--straordinario",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--straordinario.json"
+}
+],
+[
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--studio",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--studio.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--tempo-determinato",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--tempo-determinato.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--tfr",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--tfr.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--trasferta",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--trasferta.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--vigenza",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--vigenza.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "metalmeccanica-confapi--welfare",
+"file_path": "/home/user/Prontuario-CCNL/data/metalmeccanica-confapi--welfare.json"
+}
+]
+]

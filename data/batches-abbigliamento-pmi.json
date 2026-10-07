@@ -1,0 +1,226 @@
+[
+[
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--apprendistato",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--apprendistato.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--codici",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--codici.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--congedo-matrimoniale",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--congedo-matrimoniale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--contrattazione-aziendale",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--contrattazione-aziendale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--contributi-sindacali",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--contributi-sindacali.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--danni",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--danni.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--diritti-sindacali",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--diritti-sindacali.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--disciplinare",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--disciplinare.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--divise",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--divise.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--divisori",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--divisori.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--ferie",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--ferie.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--infortunio",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--infortunio.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--inquadramento",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--inquadramento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--lavoro-agile",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--lavoro-agile.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--malattia-comporto",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--malattia-comporto.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--malattia-obblighi",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--malattia-obblighi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--malattia-trattamento",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--malattia-trattamento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--mansioni",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--mansioni.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--maternita",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--maternita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--mensilita-aggiuntive",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--mensilita-aggiuntive.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--minimi",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--minimi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--notturno-domenicale",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--notturno-domenicale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--orario",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--orario.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--part-time",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--part-time.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--permessi-lutto",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--permessi-lutto.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--permessi-rol",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--permessi-rol.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--preavviso",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--preavviso.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--previdenza",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--previdenza.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--prova",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--prova.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--scatti",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--scatti.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--sicurezza",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--sicurezza.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--straordinario",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--straordinario.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--studio",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--studio.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--tempo-determinato",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--tempo-determinato.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--tfr",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--tfr.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--trasferta",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--trasferta.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "abbigliamento-pmi--vigenza",
+"file_path": "/home/user/Prontuario-CCNL/data/abbigliamento-pmi--vigenza.json"
+}
+]
+]

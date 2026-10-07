@@ -1,0 +1,250 @@
+[
+[
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--allineamento",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--allineamento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--apprendistato",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--apprendistato.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--aspettative",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--aspettative.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--codici",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--codici.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--collaborazioni",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--collaborazioni.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--congedo-matrimoniale",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--congedo-matrimoniale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--contrattazione-aziendale",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--contrattazione-aziendale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--diritti-sindacali",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--diritti-sindacali.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--disciplinare",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--disciplinare.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--divisori",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--divisori.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--ente-bilaterale",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--ente-bilaterale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--ferie",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--ferie.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--festivita",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--festivita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--indennita-varie",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--indennita-varie.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--infortunio",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--infortunio.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--inquadramento",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--inquadramento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--lavoro-agile",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--lavoro-agile.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--lavoro-intermittente",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--lavoro-intermittente.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--malattia-comporto",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--malattia-comporto.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--malattia-trattamento",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--malattia-trattamento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--mansioni",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--mansioni.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--maternita",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--maternita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--mensilita-aggiuntive",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--mensilita-aggiuntive.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--minimi",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--minimi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--orario",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--orario.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--pagamento",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--pagamento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--part-time",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--part-time.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--permessi-rol",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--permessi-rol.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--preavviso",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--preavviso.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--prova",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--prova.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--ratei",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--ratei.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--riepilogo-costi",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--riepilogo-costi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--sanita",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--sanita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--scatti",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--scatti.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--somministrazione",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--somministrazione.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--stagionali",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--stagionali.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--straordinario",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--straordinario.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--tempo-determinato",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--tempo-determinato.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--tfr",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--tfr.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--trasferta",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--trasferta.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "formazione-fidef--vigenza",
+"file_path": "/home/user/Prontuario-CCNL/data/formazione-fidef--vigenza.json"
+}
+]
+]

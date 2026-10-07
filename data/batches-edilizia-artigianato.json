@@ -1,0 +1,238 @@
+[
+[
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--appalti",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--appalti.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--apprendistato",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--apprendistato.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--aspettative",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--aspettative.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--codici",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--codici.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--congedo-matrimoniale",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--congedo-matrimoniale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--contrattazione-aziendale",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--contrattazione-aziendale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--contributi-sindacali",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--contributi-sindacali.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--disciplinare",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--disciplinare.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--divisori",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--divisori.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--ente-bilaterale",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--ente-bilaterale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--ferie",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--ferie.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--festivita",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--festivita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--indennita-varie",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--indennita-varie.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--infortunio",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--infortunio.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--inquadramento",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--inquadramento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--malattia-comporto",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--malattia-comporto.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--malattia-obblighi",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--malattia-obblighi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--malattia-trattamento",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--malattia-trattamento.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--mansioni",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--mansioni.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--mensilita-aggiuntive",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--mensilita-aggiuntive.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--minimi",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--minimi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--notturno-domenicale",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--notturno-domenicale.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--orario",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--orario.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--part-time",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--part-time.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--permessi-lutto",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--permessi-lutto.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--permessi-rol",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--permessi-rol.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--preavviso",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--preavviso.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--previdenza",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--previdenza.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--prova",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--prova.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--riepilogo-costi",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--riepilogo-costi.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--sanita",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--sanita.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--scatti",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--scatti.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--sicurezza",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--sicurezza.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--straordinario",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--straordinario.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--studio",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--studio.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--tempo-determinato",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--tempo-determinato.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--tfr",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--tfr.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--trasferta",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--trasferta.json"
+},
+{
+"op": "set",
+"collection": "schede",
+"doc_id": "edilizia-artigianato--vigenza",
+"file_path": "/home/user/Prontuario-CCNL/data/edilizia-artigianato--vigenza.json"
+}
+]
+]

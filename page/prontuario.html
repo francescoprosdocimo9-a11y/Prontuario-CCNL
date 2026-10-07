@@ -167,6 +167,16 @@ table.cl .num{text-align:right}
 .ccraw{display:block;font-size:12px;color:var(--muted);margin-top:3px}
 .rowact{display:flex;gap:4px;flex-wrap:wrap}
 .btn.sm{padding:4px 9px;font-size:12.5px}
+/* Scadenziario */
+.sc-st{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.sc-st.bad{background:color-mix(in srgb,var(--danger) 14%,transparent);color:var(--danger)}
+.sc-st.warn{background:var(--warn-bg);color:var(--warn)}
+.sc-st.ok{background:var(--ok-bg);color:var(--ok)}
+.sc-st.none{border:1px dashed var(--line-strong);color:var(--muted)}
+table.cl td.sc-date{white-space:nowrap;font-weight:600}
+.sc-sub{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.sc-name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:440px}
+.sc-legend{font-size:12.5px;color:var(--muted);margin:10px 0 0}
 /* Calculators */
 .calc-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .calc-panel{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:22px;align-items:start}
@@ -208,6 +218,7 @@ table.cl .num{text-align:right}
     <button class="tab" role="tab" type="button" data-view="prontuario" aria-selected="true">Prontuario</button>
     <button class="tab" role="tab" type="button" data-view="clienti" aria-selected="false">Clienti</button>
     <button class="tab" role="tab" type="button" data-view="calcolatori" aria-selected="false">Calcolatori</button>
+    <button class="tab" role="tab" type="button" data-view="scadenziario" aria-selected="false">Scadenziario</button>
   </nav>
 
   <div id="clientBanner"></div>
@@ -240,6 +251,7 @@ table.cl .num{text-align:right}
   </div>
   <div id="viewClienti" hidden></div>
   <div id="viewCalcolatori" hidden></div>
+  <div id="viewScadenziario" hidden></div>
 </div>
 
 <div id="modalRoot"></div>
@@ -658,9 +670,11 @@ function setView(v){
   $("#viewProntuario").hidden = v!=="prontuario";
   $("#viewClienti").hidden = v!=="clienti";
   $("#viewCalcolatori").hidden = v!=="calcolatori";
+  $("#viewScadenziario").hidden = v!=="scadenziario";
   const ta = $("#topActions"); if(ta) ta.hidden = !state.canWrite || v!=="prontuario";
   if(v==="clienti") renderClienti();
   if(v==="calcolatori") renderCalc();
+  if(v==="scadenziario") renderScad();
   try{ localStorage.setItem("prontuario.view", v); }catch(e){}
   window.scrollTo({top:0});
 }
@@ -686,10 +700,11 @@ function subscribeClients(){
     CL.list = snap.docs.map(d=>({...d.data(), _id:d.id}));
     CL.loaded = true;
     if(view==="clienti") renderClienti();
+    if(view==="scadenziario") renderScad();
     if(activeClient){ const u = CL.list.find(x=>x._id===activeClient._id); if(u){ activeClient=u; renderBanner(); } }
   }, ()=>{ CL.loaded=true; if(view==="clienti") renderClienti(); });
 }
-(window.__hooks = window.__hooks||[]).push(ev=>{ if(ev==="db") subscribeClients(); if(ev==="user"||ev==="ccnl"){ if(view==="clienti") renderClienti(); if(view==="calcolatori") renderCalc(); } });
+(window.__hooks = window.__hooks||[]).push(ev=>{ if(ev==="db") subscribeClients(); if(ev==="user"||ev==="ccnl"){ if(view==="clienti") renderClienti(); if(view==="calcolatori") renderCalc(); if(view==="scadenziario") renderScad(); } });
 if(state.db) subscribeClients();
 
 function clientMatches(c){
@@ -788,6 +803,102 @@ function openClientEditor(c){
     if(isNew && CL.list.some(x=>x._id===id)){ $("#k-err").textContent="Esiste già un cliente con questo numero."; return; }
     try{ await state.db.collection("clienti").doc(id).set(doc); P.closeModal(); P.toast(isNew?"Cliente aggiunto":"Cliente salvato"); }
     catch(e){ $("#k-err").textContent=P.errMsg(e); }
+  };
+}
+
+
+/* ================= SCADENZIARIO ================= */
+const SC = { f:"tutti", soglia:180 };
+const dmy = (d,m,y) => { const x = new Date(+y, +m-1, +d); return (x.getMonth()===+m-1 && x.getDate()===+d) ? x : null; };
+function scadInfo(c){
+  const v = String(c.vigenza||"");
+  if(c.scadenza){ const d = parseD(c.scadenza); if(d) return {d, src:"manuale"}; }
+  let m = v.match(/[-–]\s*(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if(!m){ const all = [...v.matchAll(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g)]; m = all.length>1 ? all[all.length-1] : null; }
+  const d = m ? dmy(m[1],m[2],m[3]) : null;
+  return {d, src: d ? "vigenza" : null};
+}
+function scadRows(){
+  const cl = CL.list;
+  return P.ccnlList().map(c=>{
+    const {d, src} = scadInfo(c);
+    const gg = d ? dayDiff(today, d) : null;
+    const st = !d ? "none" : gg < 0 ? "bad" : gg <= SC.soglia ? "warn" : "ok";
+    const clienti = cl.filter(x=>x.ccnl===c.id);
+    const rinn = /rinnov/i.test(c.vigenza||"") && !c.scadenza;
+    return { c, d, gg, st, src, rinn, nCl: clienti.length, nDip: clienti.reduce((a,x)=>a+(x.ti||0)+(x.td||0),0) };
+  }).sort((a,b)=> (a.d?0:1)-(b.d?0:1) || (a.d&&b.d ? a.d-b.d : 0) || (a.c.ordine||99)-(b.c.ordine||99));
+}
+function ggTxt(gg){
+  if(gg===null) return "";
+  const a = Math.abs(gg);
+  const t = a < 62 ? `${a} ${a===1?"giorno":"giorni"}` : (()=>{ const m = Math.round(a/30.44); return m < 24 ? `${m} mesi` : `${(a/365.25).toLocaleString("it-IT",{maximumFractionDigits:1})} anni`; })();
+  return gg < 0 ? `scaduto da ${t}` : gg === 0 ? "scade oggi" : `tra ${t}`;
+}
+const ST_LBL = { bad:"Scaduto", warn:"In scadenza", ok:"In vigore", none:"Data non indicata" };
+function renderScad(){
+  const root = $("#viewScadenziario");
+  if(!root.dataset.built){
+    root.dataset.built = "1";
+    root.innerHTML = `
+      <div class="toolbar"><div><h2 style="margin:0 0 2px;font-size:20px">Scadenziario CCNL</h2>
+        <p class="sc-sub" style="margin:0">Le date di scadenza sono lette dalla vigenza di ogni CCNL caricato nel prontuario. Così sai quali contratti aggiornare e quando.</p></div></div>
+      <div class="chips" id="scChips" role="group" aria-label="Filtra per stato"></div>
+      <div class="kpis" id="scKpi"></div>
+      <div id="scBody"></div>
+      <p class="sc-legend">«In scadenza» = scade entro 6 mesi. Dopo la scadenza il CCNL resta di norma applicabile fino al rinnovo (ultrattività): controlla se sono stati firmati rinnovi o nuove tabelle. Chi può modificare il prontuario può correggere la data con «Aggiorna».</p>`;
+    root.addEventListener("click", e=>{
+      const t = e.target.closest("[data-scf],[data-scopen],[data-scedit]"); if(!t) return;
+      if(t.dataset.scf){ SC.f = t.dataset.scf; renderScad(); }
+      else if(t.dataset.scopen){ P.setFilter(t.dataset.scopen); setView("prontuario"); }
+      else if(t.dataset.scedit){ openScadEditor(t.dataset.scedit); }
+    });
+  }
+  const rows = scadRows();
+  const n = k => rows.filter(r=>r.st===k).length;
+  const chip = (k, lbl, col) => `<button class="chip" type="button" data-scf="${k}" aria-pressed="${SC.f===k}"><span class="dot" style="--cc:${col}"></span>${lbl} <span class="n">${k==="tutti"?rows.length:n(k)}</span></button>`;
+  $("#scChips").innerHTML = chip("tutti","Tutti","var(--ink)") + chip("bad","Scaduti","var(--danger)") + chip("warn","In scadenza (6 mesi)","var(--warn)") + chip("ok","In vigore","var(--ok)") + (n("none")?chip("none","Senza data","var(--muted)"):"");
+  const next = rows.find(r=>r.st!=="bad" && r.d);
+  $("#scKpi").innerHTML = state.loadedC ? `<span><b>${n("bad")}</b> scaduti</span><span><b>${n("warn")}</b> in scadenza entro 6 mesi</span><span><b>${n("ok")}</b> in vigore</span>${next?`<span>Prossima scadenza: <b>${esc(next.c.sigla||next.c.id)}</b> il <b>${fmtD(next.d)}</b></span>`:""}` : "";
+  const body = $("#scBody");
+  if(!state.loadedC){ body.innerHTML = `<div class="empty"><h3>Caricamento dei CCNL…</h3></div>`; return; }
+  if(!rows.length){ body.innerHTML = `<div class="empty"><h3>Nessun CCNL caricato</h3><p>Le scadenze compariranno quando aggiungi i CCNL al prontuario.</p></div>`; return; }
+  const vis = rows.filter(r=> SC.f==="tutti" || r.st===SC.f);
+  if(!vis.length){ body.innerHTML = `<div class="empty"><h3>Nessun CCNL in questo stato</h3><p>Scegli un altro filtro.</p></div>`; return; }
+  body.innerHTML = `<div class="tblwrap"><table class="cl"><thead><tr><th>Scadenza</th><th>Stato</th><th>CCNL</th><th>Vigenza</th><th class="num">Clienti</th><th class="num">Dipendenti</th><th></th></tr></thead><tbody>
+    ${vis.map(r=>{
+      const c = r.c;
+      const sub = [r.rinn?"Rinnovo indicato nella vigenza: inserisci la nuova scadenza":"", c.notaScadenza?esc(c.notaScadenza):"", r.src==="manuale"?"Data inserita a mano":""].filter(Boolean).join(" · ");
+      return `<tr>
+        <td class="sc-date">${r.d?fmtD(r.d):"—"}<span class="sc-sub">${esc(ggTxt(r.gg))}</span></td>
+        <td><span class="sc-st ${r.st}">${ST_LBL[r.st]}</span></td>
+        <td><span class="ccpill" style="--cc:${P.ccColor(c.id)}">${esc(c.sigla||c.id)}</span><span class="ccraw sc-name" title="${esc(c.nome||"")}">${esc(c.nome||"")}</span></td>
+        <td>${esc(c.vigenza||"—")}${c.testo?`<span class="sc-sub">${esc(c.testo)}</span>`:""}${sub?`<span class="sc-sub" style="color:var(--warn)">${sub}</span>`:""}</td>
+        <td class="num">${CL.loaded?r.nCl:"…"}</td><td class="num">${CL.loaded?fmtN(r.nDip):"…"}</td>
+        <td><div class="rowact"><button class="btn sm" type="button" data-scopen="${esc(c.id)}">Prontuario</button>${state.canWrite?`<button class="btn ghost sm" type="button" data-scedit="${esc(c.id)}">Aggiorna</button>`:""}</div></td></tr>`;
+    }).join("")}</tbody></table></div>`;
+}
+function openScadEditor(id){
+  const c = state.ccnl[id]; if(!c) return;
+  const {d} = scadInfo(c);
+  P.modal(`<h2>Aggiorna scadenza · ${esc(c.sigla||id)}</h2>
+   <form class="fg" novalidate>
+    <div class="field full"><label for="s-vi">Vigenza (come appare nel prontuario)</label><input id="s-vi" value="${esc(c.vigenza||"")}"></div>
+    <div class="field"><label for="s-sc">Data di scadenza</label><input id="s-sc" type="date" value="${d?isoD(d):""}"></div>
+    <div class="field"><label for="s-no">Nota (es. rinnovo in trattativa)</label><input id="s-no" value="${esc(c.notaScadenza||"")}"></div>
+    <p class="sc-sub full" style="grid-column:1/-1">Se la data coincide con quella letta dalla vigenza non viene salvata a parte. Svuotala per tornare alla data della vigenza.</p>
+    <div class="err full" id="s-err" style="grid-column:1/-1"></div>
+   </form>
+   <div class="modal-actions"><div class="r"><button class="btn" type="button" id="s-cancel">Annulla</button><button class="btn primary" type="button" id="s-save">Salva</button></div></div>`);
+  $("#s-cancel").onclick = P.closeModal;
+  $("#s-save").onclick = async ()=>{
+    const vig = $("#s-vi").value.trim(), sc = $("#s-sc").value, nota = $("#s-no").value.trim();
+    const doc = { ...c, vigenza: vig, notaScadenza: nota };
+    delete doc.scadenza;
+    const auto = scadInfo({vigenza: vig}).d;
+    if(sc && !(auto && isoD(auto)===sc)) doc.scadenza = sc;
+    try{ await state.db.collection("ccnl").doc(id).set(doc); P.closeModal(); P.toast("Scadenza aggiornata"); }
+    catch(e){ $("#s-err").textContent = P.errMsg(e); }
   };
 }
 
@@ -1278,7 +1389,7 @@ function wirePeriods(){
 let startView = "prontuario";
 try{ const v = localStorage.getItem("prontuario.view"); if(v) startView = v; }catch(e){}
 const h = (location.hash||"").replace("#","");
-if(["prontuario","clienti","calcolatori"].includes(h)) startView = h;
+if(["prontuario","clienti","calcolatori","scadenziario"].includes(h)) startView = h;
 setView(startView);
 })();
 </script>
