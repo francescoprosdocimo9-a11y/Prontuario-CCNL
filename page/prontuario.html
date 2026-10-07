@@ -1,0 +1,1287 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Prontuario CCNL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,650&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a code-book style reference. Search bar on top, chapter index on the left,
+   each topic shown as a block with one column per CCNL so contracts compare side by side. */
+:root{
+  --paper:#f4f6f7; --surface:#ffffff; --ink:#152029; --muted:#5a6672; --line:#dbe1e6; --line-strong:#c3ccd4;
+  --accent:#0d5d72; --accent-ink:#ffffff; --accent-soft:#e2eff2; --mark:#fff0b8; --mark-ink:#3a2c00;
+  --warn:#8f5300; --warn-bg:#fbf1df; --ok:#2b7346; --ok-bg:#e5f3ea; --danger:#a12a2a;
+  --c1:#0d5d72; --c2:#6b3fa0; --c3:#a14f12; --c4:#2b7346; --c5:#8c2c48; --c6:#3a5a9b; --c7:#7a6a0e; --c8:#0f6b62; --c9:#9a3b8a; --c10:#5b5f68;
+  --shadow:0 1px 2px rgba(15,35,50,.06),0 4px 14px rgba(15,35,50,.05);
+  --f-display:"Literata",Georgia,"Times New Roman",serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0e1317; --surface:#151c21; --ink:#e4e9ed; --muted:#94a1ac; --line:#26313a; --line-strong:#34424d;
+  --accent:#62b5c9; --accent-ink:#0b1a1f; --accent-soft:#16313a; --mark:#5c4a0c; --mark-ink:#fff3c4;
+  --warn:#e6aa52; --warn-bg:#30250f; --ok:#71c493; --ok-bg:#12291b; --danger:#ef8a8a;
+  --c1:#62b5c9; --c2:#b493e0; --c3:#e59a5f; --c4:#71c493; --c5:#e48aa5; --c6:#8eaaf0; --c7:#d6c35a; --c8:#5ccdbf; --c9:#df8fd2; --c10:#aab0ba;
+  --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0e1317; --surface:#151c21; --ink:#e4e9ed; --muted:#94a1ac; --line:#26313a; --line-strong:#34424d;
+  --accent:#62b5c9; --accent-ink:#0b1a1f; --accent-soft:#16313a; --mark:#5c4a0c; --mark-ink:#fff3c4;
+  --warn:#e6aa52; --warn-bg:#30250f; --ok:#71c493; --ok-bg:#12291b; --danger:#ef8a8a;
+  --c1:#62b5c9; --c2:#b493e0; --c3:#e59a5f; --c4:#71c493; --c5:#e48aa5; --c6:#8eaaf0; --c7:#d6c35a; --c8:#5ccdbf; --c9:#df8fd2; --c10:#aab0ba;
+  --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:22px 60px}
+@media (max-width:600px){.wrap{padding-inline:16px}}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Header */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:18px}
+.brand h1{font-family:var(--f-display);font-weight:650;font-size:30px;letter-spacing:-.01em;margin:0;line-height:1.1}
+.brand p{margin:4px 0 0;color:var(--muted);font-size:13.5px}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line-strong);background:var(--surface);border-radius:8px;padding:7px 12px;font-size:13.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.07);color:var(--accent-ink)}
+.btn.ghost{border-color:transparent;background:transparent;padding:5px 8px}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn[disabled]{opacity:.55;cursor:default}
+
+/* Search */
+.search{position:relative;margin-bottom:12px}
+.search input{width:100%;padding:15px 16px 15px 46px;border-radius:12px;border:1.5px solid var(--line-strong);background:var(--surface);font-size:17px;box-shadow:var(--shadow)}
+.search input:focus{outline:none;border-color:var(--accent)}
+.search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search .clear{position:absolute;right:10px;top:50%;transform:translateY(-50%)}
+.hints{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:16px}
+.hint{border:1px dashed var(--line-strong);background:transparent;border-radius:999px;padding:2px 10px;cursor:pointer;font-size:12.5px;color:var(--muted)}
+.hint:hover{color:var(--accent);border-color:var(--accent)}
+@media (max-width:600px){.hint:nth-of-type(n+6){display:none}}
+
+/* CCNL chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;align-items:center}
+.dubbi{margin-top:6px}.dubbi summary{cursor:pointer;color:var(--warn);font-weight:600}.dubbi ul{margin:6px 0 0;padding-left:18px}.dubbi li{margin:3px 0}
+.chip-hint{margin:0 0 14px;min-height:1.2em;font-size:12.5px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:6px 14px 6px 10px;cursor:pointer;font-weight:600;font-size:14px}
+.chip .dot{width:10px;height:10px;border-radius:50%;background:var(--cc,var(--muted))}
+.chip[aria-pressed="true"]{border-color:var(--cc,var(--ink));box-shadow:inset 0 0 0 1px var(--cc,var(--ink))}
+.chip .n{font-weight:500;color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+
+/* Main layout */
+.main{display:grid;grid-template-columns:250px minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:minmax(0,1fr)}}
+.index{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px)}
+.index h2{font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 8px;font-weight:700}
+.index ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.index button{width:100%;text-align:left;border:0;background:transparent;padding:7px 10px;border-radius:7px;cursor:pointer;display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.index button:hover{background:var(--accent-soft)}
+.index button[aria-current="true"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.index .cnt{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12.5px}
+.index-select{display:none;width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface)}
+@media (max-width:900px){.index{position:static}.index ol,.index h2{display:none}.index-select{display:block}}
+.ccnl-info{margin-top:22px;display:flex;flex-direction:column;gap:12px;font-size:12.5px;color:var(--muted)}
+.ccnl-info .ci{border-left:3px solid var(--cc);padding-left:10px}
+.ccnl-info b{color:var(--ink);font-size:13px}
+@media (max-width:900px){.ccnl-info{display:none}}
+
+/* Results */
+.status{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;color:var(--muted);font-size:13.5px}
+.status strong{color:var(--ink)}
+.group{margin-bottom:26px}
+.group-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.group-head h3{font-family:var(--f-display);font-weight:650;font-size:20px;margin:0;text-wrap:balance;line-height:1.25}
+.group-head .cap{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--cc);border-radius:10px;padding:14px 16px 12px;box-shadow:var(--shadow);min-width:0;display:flex;flex-direction:column;gap:10px}
+.card-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tagc{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cc)}
+.subvoce{font-size:13px;color:var(--muted);flex-basis:100%;margin-top:-4px}
+.pill{font-size:11.5px;font-weight:600;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}
+.pill.todo{background:var(--warn-bg);color:var(--warn)}
+.card-top .spacer{flex:1}
+.sintesi{font-size:15.5px;line-height:1.55;margin:0}
+.toggle{align-self:flex-start;border:0;background:none;color:var(--accent);font-weight:600;cursor:pointer;padding:2px 0;font-size:13.5px}
+.det{display:flex;flex-direction:column;gap:12px}
+.det ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.det li::marker{color:var(--muted)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+.tbl table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+.tbl th,.tbl td{padding:6px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{background:var(--accent-soft);font-weight:600;font-size:12px;white-space:nowrap}
+.tbl tr:last-child td{border-bottom:0}
+.att{background:var(--warn-bg);color:var(--ink);border-radius:8px;padding:9px 12px;font-size:13.5px}
+.att b{color:var(--warn)}
+.foot{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.art{font-family:var(--f-mono);font-size:12px;color:var(--ink)}
+mark{background:var(--mark);color:var(--mark-ink);border-radius:2px;padding:0 1px}
+
+.empty{background:var(--surface);border:1px dashed var(--line-strong);border-radius:12px;padding:28px;text-align:center;color:var(--muted)}
+.empty h3{font-family:var(--f-display);color:var(--ink);margin:0 0 6px;font-size:19px}
+.notice{background:var(--warn-bg);color:var(--ink);border-radius:10px;padding:10px 14px;font-size:13.5px;margin-bottom:16px}
+.notice b{color:var(--warn)}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(10,20,28,.45);display:flex;align-items:flex-start;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 24px) 16px 24px;overflow-y:auto;z-index:50}
+.modal{background:var(--surface);border-radius:14px;width:100%;max-width:720px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:14px}
+.modal h2{font-family:var(--f-display);margin:0;font-size:22px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:600px){.fg{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font-size:12.5px;font-weight:600;color:var(--muted)}
+.field small{font-size:12px;color:var(--muted)}
+.field input,.field select,.field textarea{border:1px solid var(--line-strong);background:var(--paper);border-radius:8px;padding:8px 10px;width:100%}
+.field textarea{min-height:90px;resize:vertical;line-height:1.45}
+.check{display:flex;align-items:center;gap:8px;font-size:14px}
+.modal-actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.modal-actions .r{display:flex;gap:8px;margin-left:auto}
+.err{color:var(--danger);font-size:13.5px}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:999px;font-size:14px;z-index:60}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px;overflow-x:auto}
+.tab{border:0;background:none;padding:10px 14px;font-weight:600;font-size:14.5px;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.tab:hover{color:var(--ink)}
+.client-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--accent-soft);border-radius:10px;padding:9px 14px;margin-bottom:14px;font-size:14px}
+.client-banner b{font-weight:700}
+/* Clients */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.toolbar .search{flex:1 1 280px;margin:0}
+.toolbar .search input{padding:11px 14px 11px 42px;font-size:15px}
+.kpis{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:13.5px;margin-bottom:12px}
+.kpis b{color:var(--ink);font-variant-numeric:tabular-nums}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table.cl{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+table.cl th{position:sticky;top:0;background:var(--accent-soft);text-align:left;font-size:12px;font-weight:700;padding:8px 10px;white-space:nowrap;border-bottom:1px solid var(--line)}
+table.cl td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+table.cl tr:last-child td{border-bottom:0}
+table.cl tr:hover td{background:color-mix(in srgb,var(--accent-soft) 45%,transparent)}
+table.cl .az{font-weight:600;min-width:200px}
+table.cl .num{text-align:right}
+.ccpill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px;border:1px solid var(--cc,var(--line-strong));color:var(--cc,var(--muted));white-space:nowrap}
+.ccpill.none{border-style:dashed}
+.ccraw{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.rowact{display:flex;gap:4px;flex-wrap:wrap}
+.btn.sm{padding:4px 9px;font-size:12.5px}
+/* Calculators */
+.calc-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.calc-panel{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:820px){.calc-panel{grid-template-columns:minmax(0,1fr)}}
+.calc-form{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
+.calc-form h3{font-family:var(--f-display);margin:0;font-size:19px}
+.calc-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.calc-out{display:flex;flex-direction:column;gap:12px;min-width:0}
+.big{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--cc,var(--accent));border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+.big .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700}
+.big .val{font-family:var(--f-display);font-size:30px;font-weight:650;line-height:1.15;margin-top:4px;font-variant-numeric:tabular-nums}
+.big .sub{color:var(--muted);font-size:13.5px;margin-top:4px}
+.outgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px}
+.note{font-size:13px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.periods{display:flex;flex-direction:column;gap:6px}
+[hidden]{display:none!important}
+.period{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;padding-bottom:6px;border-bottom:1px dashed var(--line)}
+.period select{grid-column:1 / 3}
+.period-h{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;font-size:12px;color:var(--muted)}
+.period input,.period select{border:1px solid var(--line-strong);background:var(--paper);border-radius:8px;padding:6px 8px;width:100%;min-width:0}
+.meter{height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.meter>span{display:block;height:100%;background:var(--cc,var(--accent))}
+.meter.over>span{background:var(--danger)}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Prontuario CCNL</h1>
+      <p>Le regole dei contratti collettivi usati dallo studio, voce per voce, con l'articolo di riferimento.</p>
+    </div>
+    <div class="top-actions" id="topActions" hidden>
+      <button class="btn" id="btnNewCcnl" type="button">+ Aggiungi CCNL</button>
+      <button class="btn primary" id="btnNew" type="button">+ Nuova scheda</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sezioni">
+    <button class="tab" role="tab" type="button" data-view="prontuario" aria-selected="true">Prontuario</button>
+    <button class="tab" role="tab" type="button" data-view="clienti" aria-selected="false">Clienti</button>
+    <button class="tab" role="tab" type="button" data-view="calcolatori" aria-selected="false">Calcolatori</button>
+  </nav>
+
+  <div id="clientBanner"></div>
+  <div id="viewProntuario">
+  <div class="search">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Cerca: malattia, preavviso, straordinario, 13ª, apprendistato…" autocomplete="off" aria-label="Cerca nel prontuario">
+    <button class="btn ghost clear" id="qClear" type="button" hidden aria-label="Cancella ricerca">✕</button>
+  </div>
+  <div class="hints" id="hints"><span>Prova:</span></div>
+
+  <div class="chips" id="chips" role="group" aria-label="Filtra per CCNL"></div>
+  <p class="chip-hint" id="chipHint" aria-live="polite"></p>
+
+  <div class="main">
+    <aside class="index">
+      <h2>Argomenti</h2>
+      <ol id="chapters"></ol>
+      <select class="index-select" id="chapterSelect" aria-label="Argomento"></select>
+      <div class="ccnl-info" id="ccnlInfo"></div>
+    </aside>
+    <section aria-live="polite">
+      <div id="notice"></div>
+      <div class="status" id="status"></div>
+      <div id="results">
+        <div class="empty"><h3>Caricamento del prontuario…</h3><p>Le schede dei CCNL arrivano dal database condiviso dello studio.</p></div>
+      </div>
+    </section>
+  </div>
+  </div>
+  <div id="viewClienti" hidden></div>
+  <div id="viewCalcolatori" hidden></div>
+</div>
+
+<div id="modalRoot"></div>
+
+<script>
+(function(){
+const CHAPTERS = ["Il contratto","3. L'assunzione","4. Le tipologie contrattuali","5. Orario di lavoro, riposi, ferie e permessi","6. La retribuzione","10. Malattia, infortunio, maternità e congedi","12. Il potere disciplinare","13. La cessazione del rapporto","Rapporti sindacali, sicurezza e tutele","Appalti e vicende d'azienda","Enti bilaterali e welfare"];
+// order = chapter position, then the voce's position inside the chapter (ordine % 100)
+const sortKey = s => { const ci = CHAPTERS.indexOf(s.capitolo); return (ci<0?CHAPTERS.length:ci)*1000 + ((s.ordine??99)%100); };
+const COLORS = ["var(--c1)","var(--c2)","var(--c3)","var(--c4)","var(--c5)","var(--c6)","var(--c7)","var(--c8)","var(--c9)","var(--c10)"];
+const HINTS = ["malattia","comporto","preavviso dimissioni","straordinario","13ª","permessi","prova","apprendistato","ferie","trasferta"];
+const STOP = new Set("di del della dello dei degli delle da dal dalla la il lo le gli i e ed per in a al alla allo ai agli con come quanto quanti quanta viene vengono che cosa quando quale quali un una uno nel nella nei su sul sulla si ci mi ti è come".split(" "));
+const SYN = {
+  "tredicesima":["13a","13ª","tredicesima"], "13a":["tredicesima","13a"], "13":["tredicesima","13a"],
+  "quattordicesima":["14a","quattordicesima"], "14a":["quattordicesima","14a"], "14":["quattordicesima","14a"],
+  "rol":["rol","par","permessi"], "par":["par","rol","permessi"], "exfestivita":["ex festivita"],
+  "td":["tempo determinato","td"], "termine":["tempo determinato","termine"], "pt":["part-time","part time"], "parttime":["part-time","part time"],
+  "stipendio":["minimi","retribuzione","paga"], "paga":["minimi","paga","retribuzione"], "busta":["retribuzione","minimi"],
+  "visita":["visita","fasce","controll"], "fiscale":["fiscale","fasce","controll"],
+  "licenziamento":["licenziamento","preavviso"], "dimissioni":["dimissioni","preavviso"],
+  "liquidazione":["tfr","fine rapporto"], "pagata":["trattamento","integra","indennit"], "pagato":["trattamento","integra","indennit"], "pagamento":["trattamento","integra","indennit","pagat"], "indennizzata":["trattamento","integra","indennit"], "indennizzo":["trattamento","integra","indennit"], "retribuita":["trattamento","integra","retribu"], "spetta":["spett"], "spettano":["spett"], "maternita":["maternita","gravidanza"], "lutto":["lutto","decesso"],
+  "inail":["infortunio","inail"], "inps":["inps"], "notte":["notturno"], "domenica":["domenica","domenicale"],
+  "trasferta":["trasferta","missione"], "missione":["missione","trasferta"], "anzianita":["anzianita","scatti"],
+  "sanzioni":["disciplinare","sanzioni"], "contestazione":["disciplinare","contestazione"], "fondo":["fondo","previdenza","sanita"]
+};
+
+const $ = (s,el=document)=>el.querySelector(s);
+const norm = s => String(s||"").toLowerCase().replace(/ª/g,"a").replace(/º/g,"o").normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const slug = s => norm(s).replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60) || ("voce-"+Date.now());
+
+const state = { db:null, user:null, canWrite:false, myId:null, ccnl:{}, schede:[], loadedC:false, loadedS:false,
+  q:"", filterCcnl:"tutti", chapter:"tutti", open:new Map(), names:{} };
+try{ const c = localStorage.getItem("prontuario.ccnl"); if(c) state.filterCcnl = c; }catch(e){}
+
+/* ---------- search ---------- */
+function tokens(q){
+  return norm(q).split(/[\s,;.]+/).filter(t=>t && !STOP.has(t)).map(t=>{
+    const alts = new Set([t]);
+    (SYN[t]||[]).forEach(a=>alts.add(norm(a)));
+    if(t.length>=6) alts.add(t.slice(0,-1));
+    return [...alts];
+  });
+}
+function hay(s){
+  const tab = s.tabella ? [ (s.tabella.intest||[]).join(" "), ...(s.tabella.righe||[]).map(r=>(r.c||[]).join(" ")) ].join(" ") : "";
+  return { voce:norm(s.voce), tag:norm((s.tag||[]).join(" ")), sintesi:norm(s.sintesi), corpo:norm((s.punti||[]).join(" ")+" "+tab+" "+(s.attenzione||"")), art:norm(s.articoli), cap:norm(s.capitolo) };
+}
+const W = {voce:6, tag:4, sintesi:2, art:1, cap:1, corpo:1};
+function score(s, toks){
+  if(!toks.length) return 1;
+  const h = s._h || (s._h = hay(s));
+  let total = 0;
+  for(const alts of toks){
+    let sc = 0;
+    for(const f in W){ if(alts.some(a=>h[f].includes(a))) sc += W[f]; }
+    if(alts.some(a=>h.voce.startsWith(a))) sc += 4;
+    if(!sc) return 0;
+    total += sc;
+  }
+  return total;
+}
+let hlRe = null;
+function buildHl(toks){
+  const parts = [];
+  toks.flat().filter(a=>a.length>=2).forEach(a=>{
+    parts.push(a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/a/g,"[aàáâª]").replace(/e/g,"[eèéê]").replace(/i/g,"[iìí]").replace(/o/g,"[oòóº]").replace(/u/g,"[uùú]"));
+  });
+  hlRe = parts.length ? new RegExp("("+parts.sort((x,y)=>y.length-x.length).join("|")+")","gi") : null;
+}
+function hl(text){
+  const t = esc(text);
+  if(!hlRe) return t;
+  return t.split(/(<[^>]*>|&[a-z#0-9]+;)/i).map(p=> /^(<|&)/.test(p)?p:p.replace(hlRe,"<mark>$1</mark>")).join("");
+}
+
+/* ---------- helpers ---------- */
+function ccnlList(){ return Object.entries(state.ccnl).map(([id,m])=>({id,...m})).sort((a,b)=>(a.ordine||99)-(b.ordine||99)||a.id.localeCompare(b.id)); }
+function ccColor(id){ const i = ccnlList().findIndex(c=>c.id===id); return COLORS[(i<0?5:i)%COLORS.length]; }
+function selOf(){ return state.filterCcnl==="tutti" ? [] : String(state.filterCcnl).split(",").filter(Boolean); }
+function ccName(id){ return state.ccnl[id]?.sigla || id; }
+function fmtDate(iso){ if(!iso) return ""; const d=new Date(iso); if(isNaN(d)) return ""; return d.toLocaleDateString("it-IT",{day:"numeric",month:"short",year:"numeric"}); }
+function toast(msg){ const t=document.createElement("div"); t.className="toast"; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2600); }
+
+/* ---------- render ---------- */
+function render(){
+  let toks = tokens(state.q);
+  $("#qClear").hidden = !state.q;
+  const list = ccnlList();
+  // a word naming a CCNL ("malattia commercio") works as a CCNL filter
+  let ccFromQ = null;
+  toks = toks.filter(alts=>{
+    const t = alts[0]; if(t.length<5) return true;
+    const hit = list.find(c=>{ const sg=norm(c.sigla||c.id); return sg===t || (t.length>=6 && sg.slice(0,6)===t.slice(0,6)) || norm(c.nome).includes(t); });
+    if(hit && !ccFromQ){ ccFromQ = hit.id; return false; }
+    return true;
+  });
+  buildHl(toks);
+  const ccEff = ccFromQ || state.filterCcnl;
+  if(state.filterCcnl!=="tutti" && state.loadedC){ const ok=selOf().filter(id=>state.ccnl[id]); state.filterCcnl = ok.length?ok.join(","):"tutti"; }
+  const sel = selOf();
+
+  // chips
+  const countBy = {}; state.schede.forEach(s=>countBy[s.ccnl]=(countBy[s.ccnl]||0)+1);
+  $("#chips").innerHTML = `<button class="chip" type="button" data-cc="tutti" aria-pressed="${!ccFromQ && !sel.length}"><span class="dot" style="--cc:var(--ink)"></span>Tutti i CCNL <span class="n">${state.schede.length}</span></button>` +
+    list.map(c=>`<button class="chip" type="button" data-cc="${esc(c.id)}" style="--cc:${ccColor(c.id)}" aria-pressed="${ccFromQ?ccFromQ===c.id:sel.includes(c.id)}"><span class="dot"></span>${esc(c.sigla||c.id)} <span class="n">${countBy[c.id]||0}</span></button>`).join("");
+
+  // ccnl info
+  $("#chipHint").textContent = sel.length===1 ? "Tocca un altro CCNL per confrontarli" : sel.length>1 ? `${sel.length} CCNL a confronto · tocca di nuovo per toglierne uno` : "";
+  const infoIds = ccFromQ ? [ccFromQ] : sel;
+  $("#ccnlInfo").innerHTML = (infoIds.length ? "" : `<div class="ci">${list.length} CCNL nel prontuario. Scegline uno o più per vedere vigenza e testo di riferimento.</div>`) + list.filter(c=>infoIds.includes(c.id)).map(c=>
+    `<div class="ci" style="--cc:${ccColor(c.id)}"><b>${esc(c.sigla||c.id)}</b><br>${esc(c.nome||"")}${c.vigenza?`<br>Vigenza: ${esc(c.vigenza)}`:""}${c.testo?`<br>${esc(c.testo)}`:""}${(c.dubbi||[]).length?`<details class="dubbi"><summary>Punti da verificare (${c.dubbi.length})</summary><ul>${c.dubbi.map(d=>`<li>${esc(d)}</li>`).join("")}</ul></details>`:""}</div>`).join("");
+
+  // filter + score
+  const inCc = state.schede.filter(s=> ccFromQ ? s.ccnl===ccFromQ : (!sel.length || sel.includes(s.ccnl)));
+  const scored = new Map();
+  inCc.forEach(s=>{ const sc = score(s,toks); if(sc) scored.set(s,sc); });
+
+  // chapters with counts (after search, before chapter filter)
+  const chapCount = {}; const groupsSeen = {};
+  scored.forEach((sc,s)=>{ const k=s.capitolo+"|"+s.voce_id; if(!groupsSeen[k]){groupsSeen[k]=1; chapCount[s.capitolo]=(chapCount[s.capitolo]||0)+1;} });
+  const allCh = [...CHAPTERS, ...[...new Set(state.schede.map(s=>s.capitolo))].filter(c=>!CHAPTERS.includes(c))];
+  const totalGroups = Object.values(chapCount).reduce((a,b)=>a+b,0);
+  $("#chapters").innerHTML = `<li><button type="button" data-ch="tutti" aria-current="${state.chapter==="tutti"}"><span>Tutti gli argomenti</span><span class="cnt">${totalGroups}</span></button></li>` +
+    allCh.filter(c=>chapCount[c]||state.chapter===c).map(c=>`<li><button type="button" data-ch="${esc(c)}" aria-current="${state.chapter===c}"><span>${esc(c)}</span><span class="cnt">${chapCount[c]||0}</span></button></li>`).join("");
+  $("#chapterSelect").innerHTML = `<option value="tutti">Tutti gli argomenti (${totalGroups})</option>` + allCh.filter(c=>chapCount[c]).map(c=>`<option value="${esc(c)}" ${state.chapter===c?"selected":""}>${esc(c)} (${chapCount[c]})</option>`).join("");
+
+  // groups
+  const groups = new Map();
+  scored.forEach((sc,s)=>{
+    if(state.chapter!=="tutti" && s.capitolo!==state.chapter) return;
+    const k = s.voce_id;
+    if(!groups.has(k)) groups.set(k,{id:k, best:0, ordine:1e9, items:[]});
+    const g = groups.get(k); g.best=Math.max(g.best,sc); g.ordine=Math.min(g.ordine, sortKey(s));
+  });
+  // include all CCNL entries of a matched voce (comparison), within ccnl filter
+  inCc.forEach(s=>{ const g=groups.get(s.voce_id); if(g && (state.chapter==="tutti"||s.capitolo===state.chapter)) g.items.push(s); });
+  let arr = [...groups.values()];
+  arr.sort((a,b)=> toks.length ? (b.best-a.best)||(a.ordine-b.ordine) : (a.ordine-b.ordine));
+  // keep the strongest matches; voci that only mention the word in passing stay behind a button
+  let weak = [];
+  if(toks.length && arr.length){
+    const cut = Math.max(4, arr[0].best*0.4);
+    weak = arr.filter(g=>g.best<cut); arr = arr.filter(g=>g.best>=cut);
+    if(state.showWeak){ arr = arr.concat(weak); weak = []; }
+  }
+  arr.forEach(g=>g.items.sort((a,b)=>(state.ccnl[a.ccnl]?.ordine||99)-(state.ccnl[b.ccnl]?.ordine||99)));
+
+  const autoOpen = toks.length>0 && arr.length<=4;
+  const nSchede = arr.reduce((a,g)=>a+g.items.length,0);
+  $("#status").innerHTML = (state.loadedS && state.schede.length) ?
+    `<span><strong>${arr.length}</strong> ${arr.length===1?"voce":"voci"} · ${nSchede} ${nSchede===1?"scheda":"schede"}${state.q?` per «${esc(state.q)}»`:""}${ccFromQ?` · solo ${esc(ccName(ccFromQ))}`:""}</span>
+     <button class="btn ghost" type="button" id="btnAll">${state._allOpen?"Chiudi tutti i dettagli":"Apri tutti i dettagli"}</button>` : "";
+
+  const res = $("#results");
+  if(!state.loadedS){ return; }
+  if(!state.schede.length){
+    res.innerHTML = `<div class="empty"><h3>Il prontuario è vuoto</h3><p>Qui compariranno le schede dei CCNL: una per ogni voce (malattia, prova, preavviso…) e per ogni contratto.${state.canWrite?" Inizia con «Nuova scheda».":""}</p></div>`;
+    return;
+  }
+  if(!arr.length){
+    res.innerHTML = `<div class="empty"><h3>Nessuna scheda trovata</h3><p>Nessuna voce corrisponde a «${esc(state.q)}»${sel.length?` in ${esc(sel.map(ccName).join(", "))}`:""}${state.chapter!=="tutti"?` nell'argomento «${esc(state.chapter)}»`:""}. Prova una parola più generica o togli i filtri.</p></div>`;
+    return;
+  }
+  res.innerHTML = arr.map(g=>{
+    const head = g.items[0];
+    return `<article class="group"><div class="group-head"><h3>${hl(head.voce)}</h3><span class="cap">${esc(head.capitolo)}</span></div>
+      <div class="cols">${g.items.map(s=>card(s, head, autoOpen)).join("")}</div></article>`;
+  }).join("") + (weak.length?`<div class="empty" style="padding:16px"><button class="btn" type="button" id="btnWeak">Mostra altre ${weak.length} ${weak.length===1?"voce che cita":"voci che citano"} «${esc(state.q)}» di passaggio</button></div>`:"");
+  resolveNames();
+}
+
+function card(s, head, autoOpen){
+  const key = s._id; const open = state.open.has(key) ? state.open.get(key) : (state._allOpen || autoOpen);
+  const tab = s.tabella && (s.tabella.intest||[]).length ? `<div class="tbl"><table><thead><tr>${s.tabella.intest.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${(s.tabella.righe||[]).map(r=>`<tr>${(r.c||[]).map(c=>`<td>${hl(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : "";
+  const by = s.aggiornatoDa ? ` da <span data-uid="${esc(s.aggiornatoDa)}">${esc(state.names[s.aggiornatoDa]||"…")}</span>` : "";
+  return `<div class="card" style="--cc:${ccColor(s.ccnl)}">
+    <div class="card-top"><span class="tagc">${esc(ccName(s.ccnl))}</span>
+      <span class="pill ${s.verificata?"ok":"todo"}">${s.verificata?"Verificata":"Da verificare"}</span>
+      <span class="spacer"></span>
+      ${state.canWrite?`<button class="btn ghost" type="button" data-edit="${esc(key)}">Modifica</button>`:""}
+      ${s.voce!==head.voce?`<span class="subvoce">${hl(s.voce)}</span>`:""}
+    </div>
+    <p class="sintesi">${hl(s.sintesi)}</p>
+    ${(s.punti&&s.punti.length)||tab||s.attenzione?`<button class="toggle" type="button" data-tog="${esc(key)}" aria-expanded="${open}">${open?"Nascondi dettagli":"Dettagli e casi particolari"}</button>`:""}
+    ${open?`<div class="det">${tab}${s.punti&&s.punti.length?`<ul>${s.punti.map(p=>`<li>${hl(p)}</li>`).join("")}</ul>`:""}${s.attenzione?`<div class="att"><b>Attenzione:</b> ${hl(s.attenzione)}</div>`:""}</div>`:""}
+    <div class="foot"><span class="art">${hl(s.articoli||"")}</span><span>${esc(state.ccnl[s.ccnl]?.testo||"")}</span><span>Agg. ${esc(fmtDate(s.aggiornatoIl))}${by}</span></div>
+  </div>`;
+}
+
+async function resolveNames(){
+  if(!state.user || !state.user.profiles) return;
+  const ids = [...new Set(state.schede.map(s=>s.aggiornatoDa).filter(Boolean))].filter(id=>!(id in state.names));
+  if(!ids.length) return;
+  try{
+    const ps = await state.user.profiles(ids);
+    ids.forEach(id=>{ state.names[id] = (ps && ps[id] && ps[id].name) || "un collega"; });
+    document.querySelectorAll("[data-uid]").forEach(el=>{ const n=state.names[el.dataset.uid]; if(n) el.textContent=n; });
+  }catch(e){}
+}
+
+/* ---------- events ---------- */
+let qTimer;
+$("#q").addEventListener("input", e=>{ clearTimeout(qTimer); qTimer=setTimeout(()=>{ state.q=e.target.value.trim(); state.open.clear(); state.showWeak=false; render(); },120); });
+$("#qClear").addEventListener("click", ()=>{ $("#q").value=""; state.q=""; render(); $("#q").focus(); });
+$("#hints").insertAdjacentHTML("beforeend", HINTS.map(h=>`<button class="hint" type="button" data-hint="${esc(h)}">${esc(h)}</button>`).join(""));
+document.addEventListener("click", e=>{
+  const t = e.target.closest("[data-hint],[data-cc],[data-ch],[data-tog],[data-edit],#btnAll,#btnWeak");
+  if(!t) return;
+  if(t.dataset.hint){ $("#q").value=t.dataset.hint; state.q=t.dataset.hint; render(); }
+  else if(t.dataset.cc){ const id=t.dataset.cc; if(id==="tutti") state.filterCcnl="tutti"; else { let cur=selOf(); cur = cur.includes(id) ? cur.filter(x=>x!==id) : cur.concat(id); state.filterCcnl = cur.length?cur.join(","):"tutti"; } try{localStorage.setItem("prontuario.ccnl",state.filterCcnl)}catch(_){} render(); }
+  else if(t.dataset.ch){ state.chapter=t.dataset.ch; render(); }
+  else if(t.dataset.tog){ const k=t.dataset.tog; const isOpen=t.getAttribute("aria-expanded")==="true"; state.open.set(k,!isOpen); render(); }
+  else if(t.dataset.edit){ const s=state.schede.find(x=>x._id===t.dataset.edit); if(s) openEditor(s); }
+  else if(t.id==="btnWeak"){ state.showWeak=true; render(); }
+  else if(t.id==="btnAll"){ state._allOpen=!state._allOpen; state.open.clear(); render(); }
+});
+$("#chapterSelect").addEventListener("change", e=>{ state.chapter=e.target.value; render(); });
+$("#btnNew").addEventListener("click", ()=>openEditor(null));
+$("#btnNewCcnl").addEventListener("click", openCcnlEditor);
+
+/* ---------- editor ---------- */
+function closeModal(){ $("#modalRoot").innerHTML=""; }
+function modal(html){
+  $("#modalRoot").innerHTML = `<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
+  $("#ov").addEventListener("mousedown", e=>{ if(e.target.id==="ov") closeModal(); });
+  document.addEventListener("keydown", function k(e){ if(e.key==="Escape"){ closeModal(); document.removeEventListener("keydown",k);} });
+}
+function tabToText(t){ if(!t||!(t.intest||[]).length) return ""; return [t.intest.join(" | "), ...(t.righe||[]).map(r=>(r.c||[]).join(" | "))].join("\n"); }
+function textToTab(txt){
+  const lines = txt.split("\n").map(l=>l.trim()).filter(Boolean);
+  if(!lines.length) return null;
+  const cells = l=>l.split("|").map(c=>c.trim());
+  return { intest: cells(lines[0]), righe: lines.slice(1).map(l=>({c:cells(l)})) };
+}
+function openEditor(s){
+  const isNew = !s;
+  const vociEsistenti = [...new Map(state.schede.map(x=>[x.voce_id,x])).values()].sort((a,b)=>sortKey(a)-sortKey(b));
+  const ccOpts = ccnlList().map(c=>`<option value="${esc(c.id)}" ${(s?s.ccnl:(selOf().length===1?selOf()[0]:""))===c.id?"selected":""}>${esc(c.sigla||c.id)}</option>`).join("");
+  modal(`<h2>${isNew?"Nuova scheda":"Modifica scheda"}</h2>
+   <form id="fEd" class="fg" novalidate>
+    <div class="field"><label for="e-ccnl">CCNL</label><select id="e-ccnl" ${isNew?"":"disabled"}>${ccOpts}</select></div>
+    <div class="field"><label for="e-cap">Argomento (capitolo della Bibbia)</label><input id="e-cap" list="capList" value="${esc(s?s.capitolo:(state.chapter!=="tutti"?state.chapter:""))}"><datalist id="capList">${CHAPTERS.map(c=>`<option value="${esc(c)}">`).join("")}</datalist></div>
+    <div class="field full"><label for="e-voce">Voce</label><input id="e-voce" list="voceList" value="${esc(s?s.voce:"")}" placeholder="Es. Malattia: comporto e aspettativa"><datalist id="voceList">${vociEsistenti.map(v=>`<option value="${esc(v.voce)}">`).join("")}</datalist>
+      <small>Se scegli una voce già presente in un altro CCNL, le due schede compariranno affiancate nel confronto.</small></div>
+    <div class="field full"><label for="e-sint">Risposta in sintesi</label><textarea id="e-sint" rows="3">${esc(s?s.sintesi:"")}</textarea></div>
+    <div class="field full"><label for="e-punti">Dettagli e casi particolari</label><textarea id="e-punti" rows="7">${esc(s?(s.punti||[]).join("\n"):"")}</textarea><small>Un punto per riga.</small></div>
+    <div class="field full"><label for="e-tab">Tabella (facoltativa)</label><textarea id="e-tab" rows="4" style="font-family:var(--f-mono);font-size:13px">${esc(s?tabToText(s.tabella):"")}</textarea><small>Prima riga = intestazioni. Separa le colonne con «|».</small></div>
+    <div class="field"><label for="e-art">Articoli del CCNL</label><input id="e-art" value="${esc(s?s.articoli:"")}" placeholder="Es. Artt. 190-191"></div>
+    <div class="field"><label for="e-tag">Parole chiave</label><input id="e-tag" value="${esc(s?(s.tag||[]).join(", "):"")}" placeholder="malattia, carenza, inps"></div>
+    <div class="field full"><label for="e-att">Attenzione (facoltativo)</label><textarea id="e-att" rows="2">${esc(s?s.attenzione:"")}</textarea></div>
+    <label class="check field full"><input type="checkbox" id="e-ver" ${s&&s.verificata?"checked":""}> Scheda verificata sul testo del CCNL</label>
+    <div class="err full" id="e-err" style="grid-column:1/-1"></div>
+   </form>
+   <div class="modal-actions">${isNew?"":`<button class="btn danger" type="button" id="e-del">Elimina scheda</button>`}
+     <div class="r"><button class="btn" type="button" id="e-cancel">Annulla</button><button class="btn primary" type="button" id="e-save">Salva</button></div></div>`);
+  $("#e-cancel").onclick = closeModal;
+  if(!isNew){
+    const del = $("#e-del"); let armed=false;
+    del.onclick = async ()=>{
+      if(!armed){ armed=true; del.textContent="Conferma eliminazione"; return; }
+      del.disabled=true;
+      try{ await state.db.collection("schede").doc(s._id).delete(); closeModal(); toast("Scheda eliminata"); }
+      catch(e){ $("#e-err").textContent = errMsg(e); del.disabled=false; }
+    };
+  }
+  $("#e-save").onclick = async ()=>{
+    const ccnl = $("#e-ccnl").value, capitolo=$("#e-cap").value.trim(), voce=$("#e-voce").value.trim(), sintesi=$("#e-sint").value.trim();
+    if(!ccnl||!capitolo||!voce||!sintesi){ $("#e-err").textContent="Compila CCNL, argomento, voce e sintesi."; return; }
+    let voce_id = s ? s.voce_id : null;
+    if(!voce_id){ const ex = state.schede.find(x=>norm(x.voce)===norm(voce)); voce_id = ex ? ex.voce_id : slug(voce); }
+    const id = s ? s._id : `${ccnl}--${voce_id}`;
+    if(isNew && state.schede.some(x=>x._id===id)){ $("#e-err").textContent=`Esiste già una scheda «${voce}» per ${ccName(ccnl)}: aprila e modificala.`; return; }
+    const same = state.schede.find(x=>x.voce_id===voce_id && x.ccnl!==ccnl);
+    const ci = CHAPTERS.indexOf(capitolo);
+    const doc = {
+      ccnl, voce_id, capitolo, voce, sintesi,
+      punti: $("#e-punti").value.split("\n").map(x=>x.trim()).filter(Boolean),
+      articoli: $("#e-art").value.trim(), attenzione: $("#e-att").value.trim(),
+      tag: $("#e-tag").value.split(",").map(x=>x.trim()).filter(Boolean),
+      verificata: $("#e-ver").checked,
+      ordine: s ? (s.capitolo===capitolo ? s.ordine : (ci<0?900:ci*100)+99) : (same ? same.ordine : (ci<0?900:ci*100)+99),
+      origine: s ? (s.origine||"") : "Inserita dallo studio",
+      aggiornatoIl: new Date().toISOString(), aggiornatoDa: state.myId || ""
+    };
+    const tab = textToTab($("#e-tab").value); if(tab) doc.tabella = tab;
+    const btn=$("#e-save"); btn.disabled=true; btn.textContent="Salvataggio…";
+    try{ await state.db.collection("schede").doc(id).set(doc); closeModal(); toast(isNew?"Scheda aggiunta":"Scheda salvata"); }
+    catch(e){ $("#e-err").textContent = errMsg(e); btn.disabled=false; btn.textContent="Salva"; }
+  };
+}
+function openCcnlEditor(){
+  modal(`<h2>Aggiungi un CCNL</h2>
+   <form class="fg" novalidate>
+    <div class="field"><label for="c-sigla">Nome breve</label><input id="c-sigla" placeholder="Es. Autorimesse"></div>
+    <div class="field"><label for="c-vig">Vigenza</label><input id="c-vig" placeholder="Es. 1/1/2024 - 31/12/2026"></div>
+    <div class="field full"><label for="c-nome">Denominazione completa e firmatari</label><input id="c-nome"></div>
+    <div class="field full"><label for="c-testo">Testo di riferimento</label><input id="c-testo" placeholder="Es. Testo unico vigente al …"></div>
+    <div class="err full" id="c-err" style="grid-column:1/-1"></div>
+   </form>
+   <div class="modal-actions"><div class="r"><button class="btn" type="button" id="c-cancel">Annulla</button><button class="btn primary" type="button" id="c-save">Aggiungi</button></div></div>`);
+  $("#c-cancel").onclick=closeModal;
+  $("#c-save").onclick = async ()=>{
+    const sigla=$("#c-sigla").value.trim(); if(!sigla){ $("#c-err").textContent="Inserisci almeno il nome breve."; return; }
+    const id = slug(sigla); if(state.ccnl[id]){ $("#c-err").textContent="Questo CCNL è già presente."; return; }
+    const ord = Math.max(0,...ccnlList().map(c=>c.ordine||0))+1;
+    try{ await state.db.collection("ccnl").doc(id).set({sigla, nome:$("#c-nome").value.trim(), vigenza:$("#c-vig").value.trim(), testo:$("#c-testo").value.trim(), fonte:"", ordine:ord}); closeModal(); toast("CCNL aggiunto: ora puoi creare le sue schede"); }
+    catch(e){ $("#c-err").textContent=errMsg(e); }
+  };
+}
+function errMsg(e){
+  const c = e && e.code;
+  if(c==="invalid_argument"){ state.canWrite=false; $("#topActions").hidden=true; return "Non hai i permessi per modificare il prontuario. Chiedi al titolare di darti accesso come Collaboratore."; }
+  if(c==="quota_exceeded") return "Il database è pieno: elimina qualche scheda e riprova.";
+  if(c==="resource_exhausted") return "Troppe richieste in poco tempo: attendi qualche secondo e riprova.";
+  return "Salvataggio non riuscito. Controlla la connessione e riprova.";
+}
+
+/* ---------- bridge for the Clients and Calculators module ---------- */
+window.__pront = { state, render, ccName, ccColor, ccnlList, esc, norm, modal, closeModal, toast, errMsg, fmtDate,
+  setFilter(cc){ state.filterCcnl = cc; state.q=""; const q=document.getElementById("q"); if(q) q.value=""; render(); } };
+const fire = ev => (window.__hooks||[]).forEach(f=>{ try{ f(ev); }catch(e){ console.error(e); } });
+
+/* ---------- boot ---------- */
+render();
+(async ()=>{
+  const db = window.claude && window.claude.use ? await window.claude.use("db") : null;
+  if(!db){
+    $("#results").innerHTML = `<div class="empty"><h3>Database non raggiungibile</h3><p>Apri il prontuario da claude.ai con il tuo account per consultare le schede.</p></div>`;
+    return;
+  }
+  state.db = db; fire("db");
+  db.collection("ccnl").onSnapshot(snap=>{
+    const m={}; snap.docs.forEach(d=>m[d.id]=d.data()); state.ccnl=m; state.loadedC=true; render(); fire("ccnl");
+  }, ()=>{});
+  db.collection("schede").onSnapshot(snap=>{
+    state.schede = snap.docs.map(d=>({...d.data(), _id:d.id})); state.loadedS=true; render();
+  }, e=>{ $("#results").innerHTML = `<div class="empty"><h3>Lettura interrotta</h3><p>Ricarica la pagina per riprendere.</p></div>`; });
+  const user = window.claude.use ? await window.claude.use("user") : null;
+  state.user = user;
+  if(user){
+    try{ state.myId = await user.id(); }catch(e){}
+    let w = null; try{ w = await user.can("data.write"); }catch(e){}
+    state.canWrite = (w === true) || (w === null);
+  }
+  $("#topActions").hidden = !state.canWrite || (window.__view && window.__view!=="prontuario");
+  render(); fire("user");
+})();
+})();
+</script>
+<script>
+(function(){
+const P = window.__pront;
+const { state, esc, norm } = P;
+const $ = (s,el=document)=>el.querySelector(s);
+const fmtE = n => (isFinite(n)? n:0).toLocaleString("it-IT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " €";
+const fmtN = (n,d=0) => (isFinite(n)? n:0).toLocaleString("it-IT",{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmtD = d => d ? d.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",year:"numeric"}) : "—";
+const parseD = v => { if(!v) return null; const [y,m,d]=v.split("-").map(Number); return new Date(y,m-1,d); };
+const isoD = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const addDays = (d,n)=>{ const x=new Date(d); x.setDate(x.getDate()+n); return x; };
+const addMonths = (d,n)=>{ const x=new Date(d); const day=x.getDate(); x.setDate(1); x.setMonth(x.getMonth()+n); const last=new Date(x.getFullYear(),x.getMonth()+1,0).getDate(); x.setDate(Math.min(day,last)); return x; };
+const dayDiff = (a,b)=> Math.round((new Date(b.getFullYear(),b.getMonth(),b.getDate()) - new Date(a.getFullYear(),a.getMonth(),a.getDate()))/86400000);
+const num = v => { const x = parseFloat(String(v??"").replace(/\./g,"").replace(",",".")); return isFinite(x)?x:0; };
+const today = new Date();
+
+/* ================= CCNL rules used by the calculators ================= */
+const RULES = {
+  commercio: {
+    nome: "Commercio (Confcommercio)",
+    livelli: ["Quadri","I","II","III","IV","V","VI","VII"],
+    gruppo: l => ({Quadri:0,I:0,II:1,III:1,IV:2,V:2,VI:3,VII:3})[l],
+    gruppiNomi: ["Quadri e I","II e III","IV e V","VI e VII"],
+    preavvLic: [[60,30,20,15],[90,45,30,20],[120,60,45,20]],
+    preavvDim: [[45,20,15,10],[60,30,20,15],[90,45,30,15]],
+    prova: { Quadri:{m:6,txt:"6 mesi di calendario"}, I:{m:6,txt:"6 mesi di calendario"}, II:{g:60,txt:"60 giorni di lavoro effettivo"}, III:{g:60,txt:"60 giorni di lavoro effettivo"}, IV:{g:60,txt:"60 giorni di lavoro effettivo"}, V:{g:60,txt:"60 giorni di lavoro effettivo"}, VI:{g:45,txt:"45 giorni di lavoro effettivo"}, VII:{g:45,txt:"45 giorni di lavoro effettivo"} },
+    scatti: { anni:3, max:10, imp:{Quadri:25.46,I:24.84,II:22.83,III:21.95,IV:20.66,V:20.30,VI:19.73,VII:19.47} },
+    minimi: [ {dal:"2025-11-01", v:{Quadri:2984.22,I:2504.06,II:2233.58,III:1981.84,IV:1781.68,V:1658.01,VI:1539.70,VII:1395.89}},
+              {dal:"2026-11-01", v:{Quadri:3044.98,I:2558.80,II:2280.93,III:2022.31,IV:1816.68,V:1689.63,VI:1568.09,VII:1420.20}},
+              {dal:"2027-02-01", v:{Quadri:3114.42,I:2621.36,II:2335.04,III:2068.56,IV:1856.68,V:1725.77,VI:1600.53,VII:1447.98}} ],
+    minimiNota: "paga base + contingenza (Quadri compresa l'indennità di funzione)",
+    fraz: d => d>=15, frazTxt: "15 giorni o più",
+    divOra: 168, divGiorno: 26, mensilita: 14,
+    art: { preavviso:"Artt. 251, 252, 256", prova:"Art. 124", scatti:"Art. 209", malattia:"Artt. 190-191", comporto:"Artt. 190, 196", ratei:"Art. 208", straord:"Artt. 152, 154, 156, 96" }
+  },
+  metalmeccanica: {
+    nome: "Metalmeccanica Industria",
+    livelli: ["D1","D2","C1","C2","C3","B1","B2","B3","A1"],
+    gruppo: l => ({D1:0,D2:0,C1:0,C2:1,C3:1,B1:1,B2:2,B3:2,A1:2})[l],
+    gruppiNomi: ["D1, D2, C1","C2, C3, B1","B2, B3, A1"],
+    preavvTxt: [["10 giorni","1 mese e 15 giorni","2 mesi"],["20 giorni","2 mesi","3 mesi"],["1 mese","2 mesi e 15 giorni","4 mesi"]],
+    preavvMens: [[0.33,1.5,2],[0.67,2,3],[1,2.5,4]],
+    preavvDur: [[{g:10},{m:1,g:15},{m:2}],[{g:20},{m:2},{m:3}],[{m:1},{m:2,g:15},{m:4}]],
+    prova: { 0:{ord:{m:1,g:15,txt:"1 mese e ½"}, rid:{m:1,txt:"1 mese"}}, 1:{ord:{m:3,txt:"3 mesi"}, rid:{m:2,txt:"2 mesi"}}, 2:{ord:{m:6,txt:"6 mesi"}, rid:{m:3,txt:"3 mesi"}} },
+    scatti: { anni:2, max:5, imp:{D1:21.59,D2:25.05,C1:25.05,C2:26.75,C3:29.64,B1:32.43,B2:36.41,B3:40.96,A1:40.96} },
+    minimi: [ {dal:"2026-06-01", v:{D1:1784.94,D2:1979.37,C1:2022.12,C2:2064.88,C3:2211.43,B1:2370.33,B2:2542.98,B3:2838.99,A1:2907.01}},
+              {dal:"2027-06-01", v:{D1:1833.02,D2:2032.70,C1:2076.59,C2:2120.52,C3:2271.01,B1:2434.19,B2:2611.49,B3:2915.48,A1:2985.33}},
+              {dal:"2028-06-01", v:{D1:1885.37,D2:2090.76,C1:2135.89,C2:2181.09,C3:2335.88,B1:2503.72,B2:2686.08,B3:2998.76,A1:3070.61}} ],
+    minimiNota: "minimo tabellare (2027 e 2028: valori minimi garantiti, soggetti a verifica IPCA)",
+    fraz: d => d>15, frazTxt: "più di 15 giorni",
+    divOra: 173, divGiorno: 26, mensilita: 13,
+    art: { preavviso:"Sez. IV, Tit. VIII, art. 1", prova:"Sez. IV, Tit. I, art. 2", scatti:"Sez. IV, Tit. IV, art. 6", malattia:"Sez. IV, Tit. VI, art. 2", comporto:"Sez. IV, Tit. VI, art. 2", ratei:"Tit. III, art. 10; Tit. IV, art. 7", straord:"Sez. IV, Tit. III, art. 7; Tit. I, art. 4" }
+  }
+};
+const _rg = {};
+function dbRules(cc){ const m = state.ccnl[cc]; if(!m || !m.regoleJson) return null; if(!_rg[cc] || _rg[cc].src!==m.regoleJson){ let R=null; try{ R = Object.assign(JSON.parse(m.regoleJson), {generic:true}); if(!R.livelli||!R.livelli.length) R=null; }catch(e){ R=null; } _rg[cc] = {src:m.regoleJson, R}; } return _rg[cc].R; }
+function rulesOf(cc){ return RULES[cc] || dbRules(cc); }
+function calcIds(){ const ids = P.ccnlList().map(c=>c.id).filter(id=>rulesOf(id)); Object.keys(RULES).reverse().forEach(k=>{ if(!ids.includes(k)) ids.unshift(k); }); return ids; }
+function minimoInfo(cc, liv, data){ const R=rulesOf(cc); const L=(R&&R.minimi)||[]; if(!L.length) return {val:0,dal:null}; let t0=L[0]; L.forEach(t=>{ if(isoD(data||today)>=t.dal) t0=t; }); return {val:t0.v[liv]||0, dal:t0.dal}; }
+
+/* ================= view switching ================= */
+let view = "prontuario";
+function setView(v){
+  view = v; window.__view = v;
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", t.dataset.view===v ? "true":"false"));
+  $("#viewProntuario").hidden = v!=="prontuario";
+  $("#viewClienti").hidden = v!=="clienti";
+  $("#viewCalcolatori").hidden = v!=="calcolatori";
+  const ta = $("#topActions"); if(ta) ta.hidden = !state.canWrite || v!=="prontuario";
+  if(v==="clienti") renderClienti();
+  if(v==="calcolatori") renderCalc();
+  try{ localStorage.setItem("prontuario.view", v); }catch(e){}
+  window.scrollTo({top:0});
+}
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>setView(t.dataset.view)));
+
+/* ================= active client banner ================= */
+let activeClient = null;
+function renderBanner(){
+  const el = $("#clientBanner");
+  if(!activeClient){ el.innerHTML=""; return; }
+  const c = activeClient;
+  el.innerHTML = `<div class="client-banner"><span>Cliente: <b>${esc(c.azienda)}</b> · CCNL ${c.ccnl?`<b>${esc(P.ccName(c.ccnl))}</b>`:`<b>${esc(c.ccnl_testo||"non indicato")}</b> (non ancora nel prontuario)`}${c.abbinamento==="da confermare"?" · abbinamento da confermare":""}</span>
+    <button class="btn ghost sm" type="button" id="bannerClose" aria-label="Chiudi cliente">✕ Chiudi</button></div>`;
+  $("#bannerClose").onclick = ()=>{ activeClient=null; renderBanner(); };
+}
+document.addEventListener("click", e=>{ if(e.target.closest("[data-cc]") && view==="prontuario" && activeClient){ activeClient=null; renderBanner(); } });
+
+/* ================= CLIENTI ================= */
+const CL = { list:[], loaded:false, q:"", f:"tutti", unsub:null };
+function subscribeClients(){
+  if(CL.unsub || !state.db) return;
+  CL.unsub = state.db.collection("clienti").onSnapshot(snap=>{
+    CL.list = snap.docs.map(d=>({...d.data(), _id:d.id}));
+    CL.loaded = true;
+    if(view==="clienti") renderClienti();
+    if(activeClient){ const u = CL.list.find(x=>x._id===activeClient._id); if(u){ activeClient=u; renderBanner(); } }
+  }, ()=>{ CL.loaded=true; if(view==="clienti") renderClienti(); });
+}
+(window.__hooks = window.__hooks||[]).push(ev=>{ if(ev==="db") subscribeClients(); if(ev==="user"||ev==="ccnl"){ if(view==="clienti") renderClienti(); if(view==="calcolatori") renderCalc(); } });
+if(state.db) subscribeClients();
+
+function clientMatches(c){
+  if(CL.f==="tutti"){} else if(CL.f==="nessuno"){ if(c.ccnl) return false; } else if(CL.f==="confermare"){ if(c.abbinamento!=="da confermare") return false; } else if(c.ccnl!==CL.f) return false;
+  if(!CL.q) return true;
+  const h = norm([c.azienda,c.ccnl_testo,c.settore,c.ente_bilaterale,c.sanita,c.note,c.n].join(" "));
+  return norm(CL.q).split(/\s+/).filter(Boolean).every(t=>h.includes(t));
+}
+function renderClienti(){
+  const root = $("#viewClienti");
+  if(!root.dataset.built){
+    root.dataset.built="1";
+    root.innerHTML = `
+      <div class="toolbar">
+        <div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="clq" type="search" placeholder="Cerca cliente, CCNL, ente bilaterale…" autocomplete="off" aria-label="Cerca cliente"></div>
+        <button class="btn primary" type="button" id="clNew" hidden>+ Nuovo cliente</button>
+      </div>
+      <div class="chips" id="clChips" role="group" aria-label="Filtra clienti"></div>
+      <div class="kpis" id="clKpi"></div>
+      <div id="clBody"></div>`;
+    $("#clq").addEventListener("input", e=>{ CL.q=e.target.value.trim(); renderClienti(); });
+    $("#clNew").addEventListener("click", ()=>openClientEditor(null));
+    root.addEventListener("click", e=>{
+      const t = e.target.closest("[data-clf],[data-open],[data-calc],[data-cledit]"); if(!t) return;
+      if(t.dataset.clf){ CL.f=t.dataset.clf; renderClienti(); }
+      else if(t.dataset.open){ const c=CL.list.find(x=>x._id===t.dataset.open); if(!c) return; activeClient=c; renderBanner(); if(c.ccnl) P.setFilter(c.ccnl); setView("prontuario"); }
+      else if(t.dataset.calc){ const c=CL.list.find(x=>x._id===t.dataset.calc); if(!c) return; activeClient=c; renderBanner(); if(c.ccnl) CALC.cc=c.ccnl; setView("calcolatori"); }
+      else if(t.dataset.cledit){ const c=CL.list.find(x=>x._id===t.dataset.cledit); if(c) openClientEditor(c); }
+    });
+  }
+  $("#clNew").hidden = !state.canWrite;
+  const list = CL.list;
+  const cnt = k => list.filter(c=> k==="nessuno" ? !c.ccnl : k==="confermare" ? c.abbinamento==="da confermare" : c.ccnl===k).length;
+  const ccs = P.ccnlList();
+  $("#clChips").innerHTML = `<button class="chip" type="button" data-clf="tutti" aria-pressed="${CL.f==="tutti"}"><span class="dot" style="--cc:var(--ink)"></span>Tutti <span class="n">${list.length}</span></button>` +
+    ccs.map(c=>`<button class="chip" type="button" data-clf="${esc(c.id)}" style="--cc:${P.ccColor(c.id)}" aria-pressed="${CL.f===c.id}"><span class="dot"></span>${esc(c.sigla||c.id)} <span class="n">${cnt(c.id)}</span></button>`).join("") +
+    `<button class="chip" type="button" data-clf="confermare" aria-pressed="${CL.f==="confermare"}"><span class="dot" style="--cc:var(--warn)"></span>Abbinamento da confermare <span class="n">${cnt("confermare")}</span></button>` +
+    `<button class="chip" type="button" data-clf="nessuno" aria-pressed="${CL.f==="nessuno"}"><span class="dot" style="--cc:var(--muted)"></span>CCNL non nel prontuario <span class="n">${cnt("nessuno")}</span></button>`;
+  const rows = list.filter(clientMatches).sort((a,b)=> (a.n??1e9)-(b.n??1e9) || a.azienda.localeCompare(b.azienda));
+  const ti = rows.reduce((a,c)=>a+(c.ti||0),0), td = rows.reduce((a,c)=>a+(c.td||0),0);
+  $("#clKpi").innerHTML = CL.loaded ? `<span><b>${rows.length}</b> clienti</span><span><b>${fmtN(ti)}</b> dipendenti a tempo indeterminato</span><span><b>${fmtN(td)}</b> a tempo determinato</span>` : "";
+  const body = $("#clBody");
+  if(!CL.loaded){ body.innerHTML = `<div class="empty"><h3>Caricamento clienti…</h3></div>`; return; }
+  if(!list.length){ body.innerHTML = `<div class="empty"><h3>Nessun cliente in elenco</h3><p>Qui compariranno i clienti dello studio con il CCNL applicato.${state.canWrite?" Aggiungi il primo con «Nuovo cliente».":""}</p></div>`; return; }
+  if(!rows.length){ body.innerHTML = `<div class="empty"><h3>Nessun cliente trovato</h3><p>Prova un'altra parola o togli il filtro.</p></div>`; return; }
+  body.innerHTML = `<div class="tblwrap"><table class="cl"><thead><tr>
+      <th>N.</th><th>Azienda</th><th>CCNL</th><th>Settore</th><th class="num">T.I.</th><th class="num">T.D.</th><th>Ente bilaterale</th><th>Sanità integr.</th><th>Altro</th><th></th></tr></thead><tbody>
+    ${rows.map(c=>{
+      const pill = c.ccnl ? `<span class="ccpill" style="--cc:${P.ccColor(c.ccnl)}">${esc(P.ccName(c.ccnl))}${c.abbinamento==="da confermare"?" ?":""}</span>` : `<span class="ccpill none">Non nel prontuario</span>`;
+      const altro = [c.accordo_ii==="SI"?"Accordo II livello":"", c.buoni_pasto==="SI"?"Buoni pasto":"", c.tfr_inps==="SI"?"TFR Fondo Tesoreria":"", c.disabili?`Disabili: ${c.disabili}`:"", c.note?esc(c.note):""].filter(Boolean).join(" · ");
+      return `<tr><td class="num">${c.n??""}</td><td class="az">${esc(c.azienda)}</td>
+        <td>${pill}<span class="ccraw">${esc(c.ccnl_testo||"—")}</span></td><td>${esc(c.settore||"")}</td>
+        <td class="num">${c.ti||""}</td><td class="num">${c.td||""}${c.td_note?`<span class="ccraw">${esc(c.td_note)}</span>`:""}</td>
+        <td>${esc(c.ente_bilaterale||"")}</td><td>${esc(c.sanita||"")}</td><td>${altro}</td>
+        <td><div class="rowact">${c.ccnl&&state.ccnl[c.ccnl]?`<button class="btn sm" type="button" data-open="${esc(c._id)}">Prontuario</button>${rulesOf(c.ccnl)?`<button class="btn sm" type="button" data-calc="${esc(c._id)}">Calcola</button>`:""}`:""}${state.canWrite?`<button class="btn ghost sm" type="button" data-cledit="${esc(c._id)}">Modifica</button>`:""}</div></td></tr>`;
+    }).join("")}</tbody></table></div>`;
+}
+function openClientEditor(c){
+  const isNew = !c;
+  const ccOpts = `<option value="">— Non ancora nel prontuario —</option>` + P.ccnlList().map(x=>`<option value="${esc(x.id)}" ${c&&c.ccnl===x.id?"selected":""}>${esc(x.sigla||x.id)}</option>`).join("");
+  const v = k => esc(c ? (c[k]??"") : "");
+  P.modal(`<h2>${isNew?"Nuovo cliente":"Modifica cliente"}</h2>
+   <form class="fg" novalidate>
+    <div class="field"><label for="k-n">N. cliente</label><input id="k-n" inputmode="numeric" value="${v("n")}"></div>
+    <div class="field"><label for="k-az">Azienda</label><input id="k-az" value="${v("azienda")}"></div>
+    <div class="field"><label for="k-ct">CCNL applicato (come nel gestionale)</label><input id="k-ct" value="${v("ccnl_testo")}"></div>
+    <div class="field"><label for="k-cc">Collega al CCNL del prontuario</label><select id="k-cc">${ccOpts}</select></div>
+    <div class="field"><label for="k-ab">Abbinamento</label><select id="k-ab"><option value="certo" ${c&&c.abbinamento==="certo"?"selected":""}>Confermato</option><option value="da confermare" ${c&&c.abbinamento==="da confermare"?"selected":""}>Da confermare</option></select></div>
+    <div class="field"><label for="k-se">Settore</label><input id="k-se" value="${v("settore")}"></div>
+    <div class="field"><label for="k-ti">Dipendenti T.I.</label><input id="k-ti" inputmode="numeric" value="${v("ti")}"></div>
+    <div class="field"><label for="k-td">Dipendenti T.D.</label><input id="k-td" inputmode="numeric" value="${v("td")}"></div>
+    <div class="field"><label for="k-eb">Ente bilaterale</label><input id="k-eb" value="${v("ente_bilaterale")}"></div>
+    <div class="field"><label for="k-sa">Assistenza sanitaria integrativa</label><input id="k-sa" value="${v("sanita")}"></div>
+    <label class="check field"><input type="checkbox" id="k-a2" ${c&&c.accordo_ii==="SI"?"checked":""}> Accordo di II livello</label>
+    <label class="check field"><input type="checkbox" id="k-bp" ${c&&c.buoni_pasto==="SI"?"checked":""}> Buoni pasto</label>
+    <label class="check field"><input type="checkbox" id="k-tf" ${c&&c.tfr_inps==="SI"?"checked":""}> TFR al Fondo Tesoreria INPS</label>
+    <div class="field full"><label for="k-no">Note</label><textarea id="k-no" rows="2">${v("note")}</textarea></div>
+    <div class="err full" id="k-err" style="grid-column:1/-1"></div>
+   </form>
+   <div class="modal-actions">${isNew?"":`<button class="btn danger" type="button" id="k-del">Elimina cliente</button>`}
+    <div class="r"><button class="btn" type="button" id="k-cancel">Annulla</button><button class="btn primary" type="button" id="k-save">Salva</button></div></div>`);
+  $("#k-cancel").onclick = P.closeModal;
+  if(!isNew){ let armed=false; $("#k-del").onclick = async ()=>{ if(!armed){ armed=true; $("#k-del").textContent="Conferma eliminazione"; return; }
+    try{ await state.db.collection("clienti").doc(c._id).delete(); P.closeModal(); P.toast("Cliente eliminato"); }catch(e){ $("#k-err").textContent=P.errMsg(e); } }; }
+  $("#k-save").onclick = async ()=>{
+    const az = $("#k-az").value.trim(); if(!az){ $("#k-err").textContent="Inserisci il nome dell'azienda."; return; }
+    const nRaw = $("#k-n").value.trim(); const n = /^\d+$/.test(nRaw) ? parseInt(nRaw,10) : null;
+    const cc = $("#k-cc").value;
+    const doc = { ...(c?Object.fromEntries(Object.entries(c).filter(([k])=>k!=="_id")):{}),
+      n, azienda:az, ccnl_testo:$("#k-ct").value.trim(), ccnl:cc, abbinamento: cc ? $("#k-ab").value : "", settore:$("#k-se").value.trim(),
+      ti: parseInt($("#k-ti").value,10)||0, td: parseInt($("#k-td").value,10)||0, ente_bilaterale:$("#k-eb").value.trim(), sanita:$("#k-sa").value.trim(),
+      accordo_ii: $("#k-a2").checked?"SI":"", buoni_pasto: $("#k-bp").checked?"SI":"", tfr_inps: $("#k-tf").checked?"SI":"", note:$("#k-no").value.trim(),
+      aggiornatoIl:new Date().toISOString(), aggiornatoDa: state.myId||"" };
+    const id = c ? c._id : ("c-" + (n ?? (norm(az).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,50)||Date.now())));
+    if(isNew && CL.list.some(x=>x._id===id)){ $("#k-err").textContent="Esiste già un cliente con questo numero."; return; }
+    try{ await state.db.collection("clienti").doc(id).set(doc); P.closeModal(); P.toast(isNew?"Cliente aggiunto":"Cliente salvato"); }
+    catch(e){ $("#k-err").textContent=P.errMsg(e); }
+  };
+}
+
+/* ================= CALCOLATORI ================= */
+const CALC = { cc:"commercio", tool:"preavviso", periods:[{dal:"",al:"",tipo:"malattia"}] };
+try{ const t=localStorage.getItem("prontuario.calc"); if(t) CALC.tool=t; }catch(e){}
+const TOOLS = [["preavviso","Preavviso"],["prova","Periodo di prova"],["comporto","Comporto"],["malattia","Malattia"],["ratei","Ratei"],["scatti","Scatti di anzianità"],["straord","Straordinario e maggiorazioni"]];
+
+function ccSelect(id){ return `<div class="field"><label for="${id}">CCNL</label><select id="${id}">${calcIds().map(k=>`<option value="${k}" ${CALC.cc===k?"selected":""}>${esc(RULES[k]?RULES[k].nome:(P.ccName(k)))}</option>`).join("")}</select></div>`; }
+function livSelect(id, sel){ const R=rulesOf(CALC.cc); if(R.generic) sel = R.livelloDefault || R.livelli[Math.floor(R.livelli.length/2)]; return `<div class="field"><label for="${id}">Livello</label><select id="${id}">${R.livelli.map(l=>`<option ${sel===l?"selected":""}>${l}</option>`).join("")}</select></div>`; }
+function anzianitaFascia(anni){ return anni<=5?0 : anni<=10?1 : 2; }
+function yearsBetween(a,b){ let y=b.getFullYear()-a.getFullYear(); const m=b.getMonth()-a.getMonth(); if(m<0||(m===0&&b.getDate()<a.getDate())) y--; return y; }
+function yearsFrac(a,b){ return dayDiff(a,b)/365.25; }
+const remember = {};
+const val = (id, def="") => { const el=document.getElementById(id); return el ? (el.type==="checkbox"?el.checked:el.value) : (remember[id]??def); };
+
+function renderCalc(){
+  const root = $("#viewCalcolatori");
+  // keep values typed so far
+  root.querySelectorAll("input,select").forEach(el=>{ if(el.id) remember[el.id] = el.type==="checkbox"?el.checked:el.value; });
+  let miss = "";
+  if(!rulesOf(CALC.cc)){ if(state.ccnl[CALC.cc]) miss = `<p class="note">Per ${esc(P.ccName(CALC.cc))} le regole dei calcolatori non sono ancora disponibili: scegli un altro CCNL.</p>`; CALC.cc = calcIds()[0]; }
+  const R = rulesOf(CALC.cc), FF = R.generic ? GFORMS : FORMS;
+  const cl = activeClient && activeClient.ccnl===CALC.cc ? `<p class="note" style="border:0;padding:0;margin:0">Per il cliente <b>${esc(activeClient.azienda)}</b></p>` : "";
+  root.innerHTML = `<div class="calc-nav" role="group" aria-label="Calcolatore">${TOOLS.map(([k,l])=>`<button class="chip" type="button" data-tool="${k}" aria-pressed="${CALC.tool===k}">${l}</button>`).join("")}</div>
+    <div class="calc-panel" style="--cc:${P.ccColor(CALC.cc)}"><form class="calc-form" id="calcForm" novalidate>${FF[CALC.tool](R)}${cl}${miss}</form><div class="calc-out" id="calcOut" aria-live="polite"></div></div>`;
+  // restore remembered values
+  Object.entries(remember).forEach(([id,v])=>{ const el=document.getElementById(id); if(!el || id==="k-cc") return; if(el.type==="checkbox") el.checked=v; else if(el.tagName==="SELECT"){ if([...el.options].some(o=>o.value===v||o.text===v)) el.value=v; } else el.value=v; });
+  const ccSel = $("#c-cc"); if(ccSel){ ccSel.value = CALC.cc; ccSel.onchange = ()=>{ CALC.cc = ccSel.value; Object.keys(remember).forEach(k=>{ if(/-liv$/.test(k)) delete remember[k]; }); renderCalc(); }; }
+  root.querySelectorAll("[data-tool]").forEach(b=>b.onclick=()=>{ CALC.tool=b.dataset.tool; try{localStorage.setItem("prontuario.calc",CALC.tool)}catch(e){} renderCalc(); });
+  const form = $("#calcForm");
+  form.addEventListener("input", compute); form.addEventListener("change", compute);
+  if(CALC.tool==="comporto") wirePeriods();
+  compute();
+}
+function compute(){ const out = $("#calcOut"); try{ const R = rulesOf(CALC.cc); out.innerHTML = (R.generic ? GCALCS : CALCS)[CALC.tool](R); }catch(e){ console.error(e); out.innerHTML = `<div class="empty">Controlla i dati inseriti.</div>`; } }
+function big(lbl, valTxt, sub){ return `<div class="big"><div class="lbl">${lbl}</div><div class="val">${valTxt}</div>${sub?`<div class="sub">${sub}</div>`:""}</div>`; }
+function noteBox(t){ return `<div class="note">${t}</div>`; }
+function fld(id,label,type="text",value="",extra=""){ return `<div class="field"><label for="${id}">${label}</label><input id="${id}" type="${type}" value="${esc(value)}" ${extra}></div>`; }
+
+const FORMS = {
+  preavviso: R => `<h3>Preavviso</h3>${ccSelect("c-cc")}${livSelect("p-liv", CALC.cc==="commercio"?"IV":"C2")}
+    <div class="row2">${fld("p-ass","Data di assunzione","date")}${fld("p-ces","Data comunicazione","date",isoD(today))}</div>
+    <div class="field"><label for="p-tipo">Chi recede</label><select id="p-tipo"><option value="dim">Dimissioni del lavoratore</option><option value="lic">Licenziamento</option></select></div>
+    ${fld("p-ret","Retribuzione mensile lorda (facoltativa)","text","","inputmode=decimal placeholder='Es. 1.781,68'")}`,
+  prova: R => `<h3>Periodo di prova</h3>${ccSelect("c-cc")}${livSelect("r-liv", CALC.cc==="commercio"?"IV":"C2")}
+    ${fld("r-ass","Data di assunzione","date",isoD(today))}
+    ${CALC.cc==="commercio" ? `<div class="field"><label for="r-gg">Giorni lavorativi a settimana</label><select id="r-gg"><option value="6">6 (lunedì-sabato)</option><option value="5">5 (lunedì-venerdì)</option></select></div>` :
+      `<label class="check"><input type="checkbox" id="r-rid"> Durata ridotta (2 anni nelle stesse mansioni altrove, o apprendistato concluso)</label>${fld("r-prec","Giorni già lavorati in azienda con TD o somministrazione, stesse mansioni, negli ultimi 12 mesi","number","0","min=0")}`}`,
+  comporto: R => `<h3>Comporto</h3>${ccSelect("c-cc")}
+    ${CALC.cc==="metalmeccanica" ? fld("m-ass","Data di assunzione (per l'anzianità)","date") : ""}
+    <div class="field"><label>Periodi di assenza</label><div class="periods" id="periods"></div><button class="btn sm" type="button" id="addPeriod" style="align-self:flex-start;margin-top:4px">+ Aggiungi periodo</button>
+    <small>${CALC.cc==="commercio"?"Indica malattia e infortunio: il CCNL li conta separatamente (180 giorni ciascuno nell'anno solare).":"Malattia e infortunio non sul lavoro si sommano. Conta il triennio prima dell'ultimo episodio."}</small></div>
+    ${CALC.cc==="metalmeccanica" ? `<label class="check"><input type="checkbox" id="m-cont"> Evento continuativo (o interrotto da un solo rientro di al massimo 61 giorni)</label><label class="check"><input type="checkbox" id="m-dis"> Lavoratore con disabilità certificata</label>` : `<label class="check"><input type="checkbox" id="m-grave"> Patologia grave con terapie salvavita</label>`}`,
+  malattia: R => `<h3>Trattamento di malattia</h3>${ccSelect("c-cc")}
+    ${CALC.cc==="metalmeccanica" ? `<div class="field"><label for="s-qual">Qualifica</label><select id="s-qual"><option value="op">Operaio</option><option value="imp">Impiegato o quadro</option></select></div>
+      <div class="field"><label for="s-anz">Anzianità di servizio</label><select id="s-anz"><option value="0">Fino a 3 anni</option><option value="1">Da 3 a 6 anni</option><option value="2">Oltre 6 anni</option></select></div>
+      ${fld("s-gia","Giorni di malattia già indennizzati nel periodo (dopo l'ultimo rientro oltre 61 giorni)","number","0","min=0")}` :
+      `<label class="check"><input type="checkbox" id="s-app"> Apprendista</label>`}
+    <div class="row2">${fld("s-dur","Durata dell'evento (giorni)","number","5","min=1")}${fld("s-ev", CALC.cc==="commercio"?"N. dell'evento nell'anno":"N. di assenze brevi (fino a 5 gg) nell'anno, compresa questa","number","1","min=1")}</div>
+    <label class="check"><input type="checkbox" id="s-es"> ${CALC.cc==="commercio"?"Evento escluso dal conteggio (ricovero o day hospital, prognosi iniziale di almeno 12 giorni, patologie gravi, gravidanza)":"Assenza esclusa dalla riduzione (ricovero o day hospital, gravidanza, patologie gravi elencate)"}</label>
+    ${fld("s-ret","Retribuzione mensile lorda (facoltativa)","text","","inputmode=decimal")}`,
+  ratei: R => `<h3>Ratei</h3>${ccSelect("c-cc")}
+    <div class="row2">${fld("t-dal","Dal","date",`${today.getFullYear()}-01-01`)}${fld("t-al","Al","date",isoD(today))}</div>
+    ${fld("t-ret","Retribuzione mensile lorda (facoltativa)","text","","inputmode=decimal")}
+    ${CALC.cc==="commercio" ? `<div class="field"><label for="t-perm">Ore annue di permessi (art. 161)</label><select id="t-perm"><option value="88">88 ore (fino a 15 dipendenti)</option><option value="104">104 ore (oltre 15 dipendenti)</option><option value="32">32 ore (solo ex festività: neoassunti dall'1/3/2011 nei primi 2 anni)</option><option value="60">60 ore (neoassunti dall'1/3/2011, 3° e 4° anno, fino a 15 dip.)</option><option value="68">68 ore (neoassunti dall'1/3/2011, 3° e 4° anno, oltre 15 dip.)</option></select></div>` :
+      `<div class="row2"><div class="field"><label for="t-sett">Settimana lavorativa</label><select id="t-sett"><option value="5">5 giorni</option><option value="6">6 giorni</option></select></div><div class="field"><label for="t-anz">Anzianità</label><select id="t-anz"><option value="0">Fino a 10 anni</option><option value="1">Oltre 10 e fino a 18 anni</option><option value="2">Oltre 18 anni</option></select></div></div>
+      <div class="field"><label for="t-perm">Ore annue di PAR</label><select id="t-perm"><option value="104">104 ore</option><option value="124">124 ore (siderurgia)</option></select></div>`}`,
+  scatti: R => `<h3>Scatti di anzianità</h3>${ccSelect("c-cc")}${livSelect("a-liv", CALC.cc==="commercio"?"IV":"C2")}
+    ${fld("a-dec","Decorrenza anzianità per gli scatti","date")}${fld("a-rif","Alla data","date",isoD(today))}
+    ${CALC.cc==="metalmeccanica" ? fld("a-app","Mesi di apprendistato nella stessa azienda (contano al 65%)","number","0","min=0") : ""}`,
+  straord: R => `<h3>Straordinario e maggiorazioni</h3>${ccSelect("c-cc")}${livSelect("o-liv", CALC.cc==="commercio"?"IV":"C2")}
+    ${fld("o-ret", CALC.cc==="commercio"?"Normale retribuzione mensile (paga base, contingenza, scatti…)":"Retribuzione mensile (minimo, scatti, superminimi)","text","","inputmode=decimal placeholder='Vuoto = minimo del livello'")}
+    ${CALC.cc==="commercio" ? fld("o-fat","Retribuzione di fatto mensile (se diversa)","text","","inputmode=decimal") : `<label class="check"><input type="checkbox" id="o-turni"> Lavoro a turni</label>`}
+    <div class="field"><label for="o-tipo">Prestazione</label><select id="o-tipo">${(CALC.cc==="commercio"?STR_COM:STR_MET).map((t,i)=>`<option value="${i}">${t.l}</option>`).join("")}</select></div>
+    ${fld("o-ore","Ore","number","1","min=0 step=0.5")}`
+};
+
+const STR_COM = [
+  {l:"Straordinario dalla 41ª alla 48ª ora", m:15, full:true},
+  {l:"Straordinario oltre la 48ª ora", m:20, full:true},
+  {l:"Straordinario festivo o domenicale", m:30, full:true},
+  {l:"Straordinario notturno (22-6, non in turno)", m:50, full:true},
+  {l:"Lavoro ordinario notturno (22-6)", m:15, full:false, suFatto:true},
+  {l:"Lavoro ordinario domenicale", m:30, full:false},
+  {l:"Lavoro nel giorno di riposo settimanale", m:30, full:false},
+  {l:"Supplementare part-time", m:35, full:true, suFatto:true},
+  {l:"Clausola elastica: aumento di orario", m:36.5, full:true, suFatto:true}
+];
+const STR_MET = [
+  {l:"Straordinario: prime 2 ore", m:[25,25], full:true},
+  {l:"Straordinario: ore successive", m:[30,30], full:true},
+  {l:"Notturno fino alle 22", m:[20,20], full:false},
+  {l:"Notturno oltre le 22", m:[30,20], full:false},
+  {l:"Festivo", m:[50,50], full:true},
+  {l:"Festivo con riposo compensativo", m:[10,10], full:false},
+  {l:"Straordinario festivo", m:[55,55], full:true},
+  {l:"Straordinario festivo con riposo compensativo", m:[35,35], full:false},
+  {l:"Straordinario notturno: prime 2 ore", m:[50,40], full:true},
+  {l:"Straordinario notturno: ore successive", m:[50,45], full:true},
+  {l:"Notturno festivo", m:[60,60], full:false},
+  {l:"Notturno festivo con riposo compensativo", m:[35,35], full:false},
+  {l:"Straordinario notturno festivo", m:[75,65], full:true},
+  {l:"Straordinario notturno festivo con riposo compensativo", m:[55,50], full:false},
+  {l:"Supplementare part-time (entro il 50% annuo)", m:[10,10], full:true},
+  {l:"Supplementare part-time (oltre il 50% annuo)", m:[20,20], full:true},
+  {l:"Plurisettimanale lun-ven", m:[15,15], full:false},
+  {l:"Plurisettimanale sabato", m:[25,25], full:false}
+];
+
+function durTxt(d){ const p=[]; if(d.m) p.push(d.m===1?"1 mese":`${d.m} mesi`); if(d.g) p.push(`${d.g} giorni`); return p.join(" e "); }
+function addDur(date, d){ let x = new Date(date); if(d.m) x = addMonths(x, d.m); if(d.g) x = addDays(x, d.g); return x; }
+
+const CALCS = {
+  preavviso(R){
+    const liv = val("p-liv"), tipo = val("p-tipo"), ass = parseD(val("p-ass")), ces = parseD(val("p-ces"))||today;
+    if(!ass) return `<div class="empty">Inserisci la data di assunzione per calcolare l'anzianità.</div>`;
+    const anni = yearsFrac(ass, ces), f = anzianitaFascia(anni), g = R.gruppo(liv), ret = num(val("p-ret"));
+    const fasciaTxt = ["fino a 5 anni","oltre 5 e fino a 10 anni","oltre 10 anni"][f];
+    let out = "";
+    if(CALC.cc==="commercio"){
+      const gg = (tipo==="lic"?R.preavvLic:R.preavvDim)[f][g];
+      // decorre dal 1° o dal 16° del mese
+      // the notice runs from the 1st or the 16th of the month: the same day if the notice is given on that day, otherwise the next one
+      const c = new Date(ces); const start = c.getDate()===1 ? c : c.getDate()<=16 ? new Date(c.getFullYear(),c.getMonth(),16) : new Date(c.getFullYear(),c.getMonth()+1,1);
+      const end = addDays(start, gg-1);
+      out += big("Preavviso", `${gg} giorni di calendario`, `${tipo==="lic"?"Licenziamento":"Dimissioni"} · livello ${liv} (${R.gruppiNomi[g]}) · anzianità ${fasciaTxt} (${fmtN(anni,1)} anni)`);
+      out += `<div class="outgrid">${big("Decorre dal", fmtD(start), "1° o 16° del mese")}${big("Ultimo giorno", fmtD(end))}`;
+      if(ret) out += big("Indennità sostitutiva (stima)", fmtE(ret*14/12*gg/30), "retribuzione di fatto con ratei di 13ª e 14ª, rapportata ai giorni");
+      out += `</div>`;
+      out += noteBox(`Il termine decorre dal 1° o dal 16° giorno del mese successivo alla comunicazione. La stima dell'indennità usa mensile × 14/12 ÷ 30 × giorni: verifica in procedura paghe il criterio usato dallo studio. ${R.art.preavviso}.`);
+    } else {
+      const d = R.preavvDur[f][g], mens = R.preavvMens[f][g];
+      const start = addDays(ces,1), end = addDays(addDur(ces, d),0);
+      out += big("Preavviso", R.preavvTxt[f][g], `${tipo==="lic"?"Licenziamento":"Dimissioni"} · livello ${liv} (${R.gruppiNomi[g]}) · anzianità ${fasciaTxt} (${fmtN(anni,1)} anni)`);
+      out += `<div class="outgrid">${big("Decorre dal", fmtD(start), "giorno dopo il ricevimento")}${big("Termina il", fmtD(end))}${big("Indennità sostitutiva", `${fmtN(mens,2)} mensilità`, ret?`${fmtE(ret*mens)} sulla retribuzione indicata`:"")}</div>`;
+      out += noteBox(`I termini decorrono dal ricevimento della comunicazione; il periodo si calcola dal giorno successivo. Durante il preavviso di licenziamento spettano permessi per cercare lavoro. ${R.art.preavviso}.`);
+    }
+    return out;
+  },
+  prova(R){
+    const liv = val("r-liv"), ass = parseD(val("r-ass"));
+    if(!ass) return `<div class="empty">Inserisci la data di assunzione.</div>`;
+    if(CALC.cc==="commercio"){
+      const p = R.prova[liv]; let end, sub;
+      if(p.m){ end = addDays(addMonths(ass,p.m),-1); sub = "giorni di calendario"; }
+      else { const gg = parseInt(val("r-gg","6"),10); let d = new Date(ass), n=0; while(true){ const wd=d.getDay(); const lav = wd!==0 && !(gg===5 && wd===6); if(lav){ n++; if(n===p.g) break; } d=addDays(d,1); } end=d; sub = `stima su ${gg} giorni lavorativi a settimana, senza festività né assenze`; }
+      return big("Durata massima", p.txt, `livello ${liv}`) + `<div class="outgrid">${big("Inizio", fmtD(ass))}${big("Fine prova (indicativa)", fmtD(end), sub)}</div>` +
+        noteBox(`Per i livelli dal II al VII contano solo i giorni di lavoro effettivo: assenze e festività spostano la fine. Nei TD successivi con lo stesso lavoratore e le stesse mansioni la prova non si ripete (art. 74). ${R.art.prova}.`);
+    }
+    const g = R.gruppo(liv), rid = val("r-rid")===true, p = rid ? R.prova[g].rid : R.prova[g].ord;
+    const prec = parseInt(val("r-prec","0"),10)||0;
+    let endFull = addDays(addDur(ass,p),-1); const totDays = dayDiff(ass,endFull)+1;
+    if(prec >= totDays) return big("Periodo di prova", "Non applicabile", `il lavoratore ha già svolto ${prec} giorni nelle stesse mansioni, più della prova prevista (${p.txt})`) + noteBox(`Tit. I, art. 2: assunzione entro 12 mesi dopo TD o somministrazione per le stesse mansioni. ${R.art.prova}.`);
+    const end = addDays(endFull, -prec);
+    return big("Durata massima", p.txt + (rid?" (ridotta)":""), `livello ${liv}${prec?` · ridotta di ${prec} giorni già lavorati`:""}`) +
+      `<div class="outgrid">${big("Inizio", fmtD(ass))}${big("Fine prova", fmtD(end), "in mesi di calendario")}</div>` +
+      noteBox(`Se la prova è interrotta da malattia o infortunio, il lavoratore la completa se rientra entro 3 mesi. Non si può prorogare né rinnovare. ${R.art.prova}.`);
+  },
+  comporto(R){
+    const ps = CALC.periods.map(p=>({dal:parseD(p.dal), al:parseD(p.al), tipo:p.tipo})).filter(p=>p.dal&&p.al&&p.al>=p.dal);
+    if(!ps.length) return `<div class="empty">Inserisci almeno un periodo di assenza (dal / al).</div>`;
+    ps.sort((a,b)=>a.dal-b.dal);
+    const ref = ps.reduce((m,p)=>p.al>m?p.al:m, ps[0].al);
+    const daysIn = (p, from, to) => { const a = p.dal>from?p.dal:from, b = p.al<to?p.al:to; return b>=a ? dayDiff(a,b)+1 : 0; };
+    if(CALC.cc==="commercio"){
+      const y0 = new Date(ref.getFullYear(),0,1), y1 = new Date(ref.getFullYear(),11,31);
+      const mal = ps.filter(p=>p.tipo==="malattia").reduce((s,p)=>s+daysIn(p,y0,y1),0);
+      const inf = ps.filter(p=>p.tipo==="infortunio").reduce((s,p)=>s+daysIn(p,y0,y1),0);
+      const bar = (used,lim)=>`<div class="meter ${used>lim?"over":""}"><span style="width:${Math.min(100,used/lim*100)}%"></span></div>`;
+      const resM = 180-mal, resI = 180-inf;
+      let out = big("Malattia nell'anno "+ref.getFullYear(), `${mal} / 180 giorni`, resM>=0?`Restano ${resM} giorni. Se l'assenza prosegue senza interruzioni, il comporto si supera dopo il ${fmtD(addDays(ref,resM))}.`:`Comporto superato di ${-resM} giorni.`) + bar(mal,180);
+      if(inf) out += big("Infortunio nell'anno "+ref.getFullYear(), `${inf} / 180 giorni`, resI>=0?`Restano ${resI} giorni`:`Superato di ${-resI} giorni`) + bar(inf,180);
+      out += noteBox(`Prima del 180° giorno il lavoratore può chiedere con raccomandata un'aspettativa non retribuita fino a 120 giorni${val("m-grave")===true?"; con patologia grave e terapie salvavita può seguire un'ulteriore aspettativa fino a 12 mesi, e i primi 60 giorni dell'aspettativa sono pagati al 100%":""}. Part-time verticale o misto: il comporto è metà delle giornate lavorative annue. Nei TD vale fino alla scadenza del contratto. Conteggio per anno solare (1/1-31/12) in giorni di calendario. ${R.art.comporto}.`);
+      return out;
+    }
+    const ass = parseD(val("m-ass"));
+    if(!ass) return `<div class="empty">Inserisci la data di assunzione per stabilire la fascia di anzianità.</div>`;
+    const from = addDays(new Date(ref.getFullYear()-3, ref.getMonth(), ref.getDate()),1);
+    const mal = ps.filter(p=>p.tipo==="malattia");
+    // merge contiguous episodes
+    const eps=[]; mal.forEach(p=>{ const last=eps[eps.length-1]; if(last && dayDiff(last.al,p.dal)<=1){ if(p.al>last.al) last.al=p.al; } else eps.push({dal:p.dal,al:p.al}); });
+    const used = eps.reduce((s,p)=>s+daysIn(p,from,ref),0);
+    const anni = yearsFrac(ass, ref); const f = anni<=3?0 : anni<=6?1 : 2;
+    const breve=[183,274,365][f], lungo=[274,411,548][f];
+    const lunghi = eps.filter(p=>dayDiff(p.dal,p.al)+1>=91).length;
+    const lastLen = eps.length ? dayDiff(eps[eps.length-1].dal, eps[eps.length-1].al)+1 : 0;
+    const prol = val("m-cont")===true || lunghi>=2 || lastLen>=91;
+    const lim = prol ? lungo : breve, extra = val("m-dis")===true ? [30,45,60][f] : 0;
+    const res = lim + extra - used;
+    let out = big("Comporto " + (prol?"prolungato":"breve"), `${used} / ${lim}${extra?` + ${extra}`:""} giorni`, res>=0?`Restano ${res} giorni. Se l'assenza prosegue, il comporto si supera dopo il ${fmtD(addDays(ref,res))}.`:`Comporto superato di ${-res} giorni.`);
+    out += `<div class="meter ${res<0?"over":""}"><span style="width:${Math.min(100,used/(lim+extra)*100)}%"></span></div>`;
+    out += `<div class="outgrid">${big("Anzianità", `${fmtN(anni,1)} anni`, ["fino a 3 anni","da 3 a 6 anni","oltre 6 anni"][f])}${big("Breve / prolungato", `${breve} / ${lungo}`, prol?"Applicato il prolungato":"Il prolungato non ricorre")}${big("Triennio considerato", `${fmtD(from)} – ${fmtD(ref)}`)}</div>`;
+    out += noteBox(`Comporto prolungato: evento continuativo (o con un solo rientro di massimo 61 giorni), almeno 2 malattie di 91 giorni o più, oppure malattia in corso con prognosi di 91 giorni o più alla scadenza del breve. Qui è riconosciuto automaticamente se ci sono 2 episodi di almeno 91 giorni o se l'ultimo dura almeno 91 giorni. ${extra?`Disabilità certificata: ${extra} giorni in più con integrazione all'80%. `:""}Dopo il comporto il lavoratore può chiedere un'aspettativa fino a 24 mesi. Gli infortuni sul lavoro hanno una disciplina propria e non vanno inseriti. ${R.art.comporto}.`);
+    return out;
+  },
+  malattia(R){
+    const dur = Math.max(1, parseInt(val("s-dur","5"),10)||1), ev = Math.max(1, parseInt(val("s-ev","1"),10)||1), es = val("s-es")===true;
+    const ret = num(val("s-ret")); const gior = ret ? ret/26 : 0;
+    const days = [];
+    if(CALC.cc==="commercio"){
+      const app = val("s-app")===true;
+      const caren = es ? 100 : [100,100,66,50,0][Math.min(ev,5)-1];
+      for(let d=1; d<=Math.min(dur,180); d++){
+        const inps = d<=3 ? 0 : d<=20 ? 50 : 66.66;
+        let tot = app ? (d<=3 ? (ev<=6?60:0) : inps) : (d<=3 ? caren : d<=20 ? 75 : 100);
+        days.push({d, inps, tot});
+      }
+    } else {
+      const imp = val("s-qual")==="imp", f = parseInt(val("s-anz","0"),10)||0, gia = parseInt(val("s-gia","0"),10)||0;
+      const soglia = [122,153,214][f];
+      for(let d=1; d<=Math.min(dur,180); d++){
+        const inps = imp ? 0 : (d<=3 ? 0 : d<=20 ? 50 : 66.66);
+        let tot = (gia + d) <= soglia ? 100 : 80;
+        if(!es && dur<=5 && ev>=4 && d<=3) tot = ev===4 ? 66 : 50;
+        days.push({d, inps, tot});
+      }
+    }
+    const rows=[]; days.forEach(x=>{ const last=rows[rows.length-1]; if(last && last.inps===x.inps && last.tot===x.tot) last.to=x.d; else rows.push({from:x.d,to:x.d,inps:x.inps,tot:x.tot}); });
+    const az = r => Math.max(0, r.tot - r.inps);
+    let sumI=0,sumA=0; rows.forEach(r=>{ const n=r.to-r.from+1; sumI+=n*gior*r.inps/100; sumA+=n*gior*az(r)/100; });
+    let out = `<div class="tbl"><table><thead><tr><th>Giorni</th><th>Totale garantito</th><th>INPS</th><th>Azienda</th>${gior?"<th>INPS €</th><th>Azienda €</th>":""}</tr></thead><tbody>${rows.map(r=>{ const n=r.to-r.from+1; return `<tr><td>${r.from===r.to?r.from+"°":r.from+"°–"+r.to+"°"}</td><td>${fmtN(r.tot,r.tot%1?2:0)}%</td><td>${fmtN(r.inps,r.inps%1?2:0)}%</td><td>${fmtN(az(r),az(r)%1?2:0)}%</td>${gior?`<td>${fmtE(n*gior*r.inps/100)}</td><td>${fmtE(n*gior*az(r)/100)}</td>`:""}</tr>`; }).join("")}</tbody></table></div>`;
+    if(gior) out = `<div class="outgrid">${big("A carico INPS (stima)", fmtE(sumI))}${big("A carico azienda (stima)", fmtE(sumA))}</div>` + out;
+    else out = big("Evento di "+dur+" giorni", rows.map(r=>`${fmtN(r.tot,r.tot%1?2:0)}%`).join(" → "), "percentuale complessiva garantita per fascia di giorni") + out;
+    out += noteBox(CALC.cc==="commercio"
+      ? `Integrazione del datore fino al 100% nei primi 3 giorni (carenza: 1° e 2° evento al 100%, 3° al 66%, 4° al 50%, dal 5° nulla), 75% dal 4° al 20° giorno, 100% dal 21°. Il CCNL riferisce le percentuali alla retribuzione giornaliera netta: gli importi qui sono una stima sul lordo (mensile ÷ 26). Apprendisti: 60% nei primi 3 giorni (massimo 6 eventi l'anno, dopo la prova). Se l'INPS non paga, non paga nemmeno il datore. ${R.art.malattia}.`
+      : `L'azienda integra fino al normale trattamento netto: 100% per i primi 122, 153 o 214 giorni secondo l'anzianità, poi 80% fino alla fine del comporto. Il conteggio riparte dopo 61 giorni di rientro. Assenze brevi (fino a 5 giorni) oltre la terza nell'anno: i primi 3 giorni al 66% (4ª) e al 50% (dalla 5ª). Gli impiegati dell'industria non hanno l'indennità INPS: paga tutto l'azienda. I ricoveri oltre 10 giorni hanno un'integrazione aggiuntiva (fino a 61 giorni). Gli importi sono stime sul lordo (mensile ÷ 26). ${R.art.malattia}.`);
+    return out;
+  },
+  ratei(R){
+    const dal = parseD(val("t-dal")), al = parseD(val("t-al"));
+    if(!dal || !al || al<dal) return `<div class="empty">Inserisci un periodo valido (dal / al).</div>`;
+    const ret = num(val("t-ret"));
+    const monthsIn = (from, to) => { let m=0; const list=[]; let y=from.getFullYear(), mo=from.getMonth(); while(new Date(y,mo,1)<=to){ const ms=new Date(y,mo,1), me=new Date(y,mo+1,0); const a=from>ms?from:ms, b=to<me?to:me; const gg = b>=a ? dayDiff(a,b)+1 : 0; const full = gg===me.getDate(); const ok = full || R.fraz(gg); if(ok) m++; list.push({mese:ms, gg, ok}); mo++; if(mo>11){mo=0;y++;} } return {m, list}; };
+    // 13ª: calendar year of the end date
+    const y0 = new Date(al.getFullYear(),0,1);
+    const t13 = monthsIn(dal>y0?dal:y0, al);
+    let out = `<div class="outgrid">${big("Ratei di 13ª", `${t13.m}/12`, ret?fmtE(ret*t13.m/12):"")}`;
+    if(CALC.cc==="commercio"){
+      const s14 = al.getMonth()>=6 ? new Date(al.getFullYear(),6,1) : new Date(al.getFullYear()-1,6,1);
+      const t14 = monthsIn(dal>s14?dal:s14, al);
+      const perm = parseInt(val("t-perm","88"),10);
+      out += big("Ratei di 14ª", `${t14.m}/12`, (ret?fmtE(ret*t14.m/12)+" · ":"")+"periodo luglio-giugno") + big("Ferie maturate", `${fmtN(26*t13.m/12,2)} giorni`, "26 giorni annui, settimana di 6 giorni") + big("Permessi maturati", `${fmtN(perm*t13.m/12,2)} ore`, `${perm} ore annue`);
+    } else {
+      const sett = parseInt(val("t-sett","5"),10), anz = parseInt(val("t-anz","0"),10)||0, perm = parseInt(val("t-perm","104"),10);
+      const ferie = 4*sett + (anz===1?1:anz===2?sett:0);
+      out += big("Ferie maturate", `${fmtN(ferie*t13.m/12,2)} giorni`, `${ferie} giorni annui (${sett} giorni a settimana)`) + big("PAR maturati", `${fmtN(perm*t13.m/12,2)} ore`, `${perm} ore annue`);
+    }
+    out += `</div><div class="tbl"><table><thead><tr><th>Mese (anno ${al.getFullYear()})</th><th>Giorni nel periodo</th><th>Rateo</th></tr></thead><tbody>${t13.list.map(x=>`<tr><td>${x.mese.toLocaleDateString("it-IT",{month:"long",year:"numeric"})}</td><td>${x.gg}</td><td>${x.ok?"Sì":"No"}</td></tr>`).join("")}</tbody></table></div>`;
+    out += noteBox(`Una frazione di mese conta come mese intero se è di ${R.fraz(15)?"15 giorni o più":"più di 15 giorni"}. Ferie e permessi sono calcolati sull'anno solare della data finale. Non sono scalati i periodi senza retribuzione a carico del datore (aspettative, assenze non retribuite): toglili dal periodo. ${R.art.ratei}.`);
+    return out;
+  },
+  scatti(R){
+    const liv = val("a-liv"), dec = parseD(val("a-dec")), rif = parseD(val("a-rif"))||today;
+    if(!dec) return `<div class="empty">Inserisci la data di decorrenza dell'anzianità.</div>`;
+    let start = dec;
+    const app = CALC.cc==="metalmeccanica" ? (parseInt(val("a-app","0"),10)||0) : 0;
+    if(app>0) start = addMonths(dec, Math.round(app*0.35)); // apprenticeship counts at 65%: shift start by the 35% not counted
+    const P_=R.scatti.anni; const dates=[];
+    for(let k=1;k<=R.scatti.max;k++){ const anniv = addMonths(start, 12*P_*k); const compiuto = addDays(anniv,-1); dates.push(new Date(compiuto.getFullYear(), compiuto.getMonth()+1, 1)); }
+    const n = dates.filter(d=>d<=rif).length, next = dates.find(d=>d>rif);
+    const imp = R.scatti.imp[liv];
+    let out = big("Scatti maturati", `${n} su ${R.scatti.max}`, `livello ${liv} · ${fmtE(imp)} ciascuno`);
+    out += `<div class="outgrid">${big("Importo mensile scatti", fmtE(n*imp))}${big("Prossimo scatto", next?fmtD(next):"Massimo raggiunto", next?`porterà a ${fmtE((n+1)*imp)}`:"")}</div>`;
+    out += `<div class="tbl"><table><thead><tr><th>Scatto</th><th>Decorre dal</th></tr></thead><tbody>${dates.map((d,i)=>`<tr><td>${i+1}°</td><td>${fmtD(d)}${d<=rif?" ✓":""}</td></tr>`).join("")}</tbody></table></div>`;
+    out += noteBox(CALC.cc==="commercio"
+      ? `10 scatti triennali; ognuno decorre dal 1° del mese successivo al compimento del triennio. Al passaggio di livello gli scatti si ricalcolano sui nuovi importi. Per chi è stato assunto prima del CCNL 28/3/1987 valgono decorrenze particolari. ${R.art.scatti}.`
+      : `5 scatti biennali; ognuno decorre dal 1° del mese successivo al compimento del biennio. Al passaggio di livello si conservano numero e anzianità, con il valore del nuovo livello. ${app?"Il periodo di apprendistato è stato contato al 65%. ":""}Contano anche i periodi precedenti con TD o somministrazione nelle stesse mansioni, se le interruzioni non superano 12 mesi. ${R.art.scatti}.`);
+    return out;
+  },
+  straord(R){
+    const liv = val("o-liv"), ore = num(val("o-ore","1")) || 0, i = parseInt(val("o-tipo","0"),10)||0;
+    const norm_ = num(val("o-ret")) || minimoInfo(CALC.cc, liv, today).val;
+    let out="";
+    if(CALC.cc==="commercio"){
+      const fat = num(val("o-fat")) || norm_;
+      const t = STR_COM[i], qn = norm_/R.divOra, qf = fat/R.divOra;
+      const magg = (t.suFatto?qf:qn)*t.m/100;
+      const oraPiena = t.full ? qf + magg : null;
+      out += big(t.l, `${fmtE((t.full?oraPiena:magg)*ore)}`, `${fmtN(ore,ore%1?1:0)} ${ore===1?"ora":"ore"} · maggiorazione ${fmtN(t.m,t.m%1?1:0)}%`);
+      out += `<div class="outgrid">${big("Quota oraria normale", fmtE(qn), `÷ ${R.divOra}`)}${big("Quota oraria di fatto", fmtE(qf))}${big("Maggiorazione oraria", fmtE(magg), t.suFatto?"sulla quota di fatto":"sulla quota normale")}${t.full?big("Ora maggiorata", fmtE(oraPiena), "quota di fatto + maggiorazione"):""}</div>`;
+      out += noteBox(`${t.full?"L'ora si paga per intero (quota oraria di fatto) più la maggiorazione.":"Le ore sono già pagate nella retribuzione mensile: si aggiunge solo la maggiorazione."} Le maggiorazioni non si cumulano tra loro. Se non indichi la retribuzione, il calcolo usa il minimo del livello (${R.minimiNota}). ${R.art.straord}.`);
+    } else {
+      const t = STR_MET[i], turni = val("o-turni")===true, m = t.m[turni?1:0];
+      const q = norm_/R.divOra, magg = q*m/100, piena = q+magg;
+      out += big(t.l, fmtE((t.full?piena:magg)*ore), `${fmtN(ore,ore%1?1:0)} ${ore===1?"ora":"ore"} · maggiorazione ${m}%${turni?" (turni)":""}`);
+      out += `<div class="outgrid">${big("Retribuzione oraria", fmtE(q), `÷ ${R.divOra}`)}${big("Maggiorazione oraria", fmtE(magg))}${big("Ora maggiorata", fmtE(piena))}</div>`;
+      out += noteBox(`${t.full?"Calcolato come ora intera più maggiorazione.":"Calcolata la sola maggiorazione, perché le ore sono già comprese nella retribuzione o compensate con riposo."} Per i turnisti notturni valgono 20%, 60% e 35% (25%, 65% e 40% dalle 22 alle 6 nelle aziende impiantistiche con turni sulle 24 ore). Le quote esenti oltre 40 o 48 ore annue hanno un ulteriore +8%. Se non indichi la retribuzione, il calcolo usa il minimo del livello. ${R.art.straord}.`);
+    }
+    return out;
+  }
+};
+
+
+/* ================= generic calculators (rules stored in the CCNL record) ================= */
+function na(R, sec){ return `<div class="empty">Per ${esc(R.nome)} questo calcolo non è disponibile: il CCNL non fissa regole nazionali utilizzabili${sec?` (${sec})`:""}. Consulta la scheda nel prontuario.</div>`; }
+function gIdx(R, liv){ const i=(R.gruppi||[]).findIndex(g=>g.livelli.includes(liv)); return i<0?0:i; }
+function fasciaIdx(fasce, anni){ const i=fasce.findIndex(x=>x.finoAnni==null || anni<=x.finoAnni); return i<0?fasce.length-1:i; }
+function durLabel(d, lav){ if(!d) return "—"; if(d.txt) return d.txt; const p=[]; if(d.m) p.push(d.m===1?"1 mese":`${d.m} mesi`); if(d.g) p.push(`${d.g} giorni${lav?" lavorativi":""}`); return p.join(" e ") || "Nessun preavviso"; }
+function countWork(from, n, sei){ let d=new Date(from), k=0; if(n<=0) return addDays(from,-1); while(true){ const wd=d.getDay(); if(wd!==0 && (sei || wd!==6)){ k++; if(k>=n) return d; } d=addDays(d,1); } }
+function artTxt(o){ return o && o.art ? ` ${esc(o.art)}.` : ""; }
+function notaTxt(o){ return o && o.nota ? esc(o.nota) : ""; }
+const INPS_STD = d => d<=3 ? 0 : d<=20 ? 50 : d<=180 ? 66.66 : 0;
+
+const GFORMS = {
+  preavviso: R => `<h3>Preavviso</h3>${ccSelect("c-cc")}${R.preavviso?`${livSelect("p-liv")}
+    <div class="row2">${fld("p-ass","Data di assunzione","date")}${fld("p-ces","Data comunicazione","date",isoD(today))}</div>
+    <div class="field"><label for="p-tipo">Chi recede</label><select id="p-tipo"><option value="dim">Dimissioni del lavoratore</option><option value="lic">Licenziamento</option></select></div>
+    ${fld("p-ret","Retribuzione mensile lorda (facoltativa)","text","","inputmode=decimal")}`:""}`,
+  prova: R => `<h3>Periodo di prova</h3>${ccSelect("c-cc")}${R.prova?`${livSelect("r-liv")}${fld("r-ass","Data di assunzione","date",isoD(today))}
+    ${Object.values(R.prova.livelli||{}).some(p=>p.g&&p.effettivo)?`<div class="field"><label for="r-gg">Giorni lavorativi a settimana</label><select id="r-gg"><option value="6">6 (lunedì-sabato)</option><option value="5">5 (lunedì-venerdì)</option></select></div>`:""}`:""}`,
+  comporto: R => { const C=R.comporto; if(!C) return `<h3>Comporto</h3>${ccSelect("c-cc")}`;
+    return `<h3>Comporto</h3>${ccSelect("c-cc")}${(C.fasce||[]).length>1?fld("m-ass","Data di assunzione (per l'anzianità)","date"):""}
+    <div class="field"><label>Periodi di assenza</label><div class="periods" id="periods"></div><button class="btn sm" type="button" id="addPeriod" style="align-self:flex-start;margin-top:4px">+ Aggiungi periodo</button>
+    <small>${C.tipo==="anno-solare"?"Conteggio nell'anno solare dell'ultimo giorno di assenza.":((C.fasce||[]).some(x=>x.mesi) ? "Conteggio a ritroso dall'ultimo giorno di assenza, su un arco che dipende dall'anzianità." : `Conteggio negli ultimi ${C.mesi} mesi a ritroso dall'ultimo giorno di assenza.`)}${C.separaInfortunio?" Malattia e infortunio hanno limiti separati.":""}</small></div>`; },
+  malattia: R => { const M=R.malattia; if(!M) return `<h3>Trattamento di malattia</h3>${ccSelect("c-cc")}`;
+    return `<h3>Trattamento di malattia</h3>${ccSelect("c-cc")}
+    ${M.casi.length>1?`<div class="field"><label for="s-caso">Caso</label><select id="s-caso">${M.casi.map((c,i)=>`<option value="${i}">${esc(c.nome)}</option>`).join("")}</select></div>`:""}
+    ${fld("s-dur","Durata dell'evento (giorni)","number","5","min=1")}
+    ${fld("s-ret","Retribuzione mensile lorda (facoltativa)","text","","inputmode=decimal")}`; },
+  ratei: R => `<h3>Ratei</h3>${ccSelect("c-cc")}
+    <div class="row2">${fld("t-dal","Dal","date",`${today.getFullYear()}-01-01`)}${fld("t-al","Al","date",isoD(today))}</div>
+    ${fld("t-ret","Retribuzione mensile lorda (facoltativa)","text","","inputmode=decimal")}
+    ${(R.permessi||[]).length?`<div class="field"><label for="t-perm">Permessi annui (ROL / ex festività)</label><select id="t-perm">${R.permessi.map((p,i)=>`<option value="${i}">${esc(p.label)}</option>`).join("")}</select></div>`:""}`,
+  scatti: R => `<h3>Scatti di anzianità</h3>${ccSelect("c-cc")}${R.scatti?`${livSelect("a-liv")}
+    ${fld("a-dec","Decorrenza anzianità per gli scatti","date")}${fld("a-rif","Alla data","date",isoD(today))}`:""}`,
+  straord: R => { const S=R.straord; if(!S||!(S.voci||[]).length) return `<h3>Straordinario e maggiorazioni</h3>${ccSelect("c-cc")}`;
+    return `<h3>Straordinario e maggiorazioni</h3>${ccSelect("c-cc")}${livSelect("o-liv")}
+    ${fld("o-ret","Retribuzione mensile di riferimento","text","","inputmode=decimal placeholder='Vuoto = minimo del livello'")}
+    <div class="field"><label for="o-tipo">Prestazione</label><select id="o-tipo">${S.voci.map((t,i)=>`<option value="${i}">${esc(t.l)} (${fmtN(t.m,t.m%1?2:0)}%)</option>`).join("")}</select></div>
+    ${fld("o-ore","Ore","number","1","min=0 step=0.5")}`; }
+};
+
+const GCALCS = {
+  preavviso(R){
+    const PV=R.preavviso; if(!PV) return na(R,"preavviso");
+    const liv=val("p-liv"), tipo=val("p-tipo"), ass=parseD(val("p-ass")), ces=parseD(val("p-ces"))||today;
+    if(!ass) return `<div class="empty">Inserisci la data di assunzione per calcolare l'anzianità.</div>`;
+    const anni=yearsFrac(ass,ces), f=fasciaIdx(PV.fasce,anni), g=gIdx(R,liv), ret=num(val("p-ret"));
+    const d=((tipo==="lic"?PV.lic:PV.dim)||PV.lic)[f][g]||{};
+    const lav = d.lav!=null ? d.lav : PV.lavorativi, dec = (PV.decorrenzaGruppi||[])[g] || PV.decorrenza;
+    let start;
+    if(dec==="1-16"){ start = ces.getDate()===1 ? ces : ces.getDate()<=16 ? new Date(ces.getFullYear(),ces.getMonth(),16) : new Date(ces.getFullYear(),ces.getMonth()+1,1); }
+    else if(dec==="fine-mese"){ start = new Date(ces.getFullYear(),ces.getMonth()+1,1); }
+    else start = addDays(ces,1);
+    let end=null, ggCal=0;
+    if(d.m||d.g){
+      if(lav && d.g && !d.m){ end = countWork(start, d.g, true); }
+      else { end = addDays(addDur(start,{m:d.m||0,g:d.g||0}),-1); }
+      ggCal = dayDiff(start,end)+1;
+    }
+    const decTxt = dec==="1-16" ? "1° o 16° del mese" : dec==="fine-mese" ? "dal mese successivo" : "giorno dopo la comunicazione";
+    let out = big("Preavviso", durLabel(d, lav), `${tipo==="lic"?"Licenziamento":"Dimissioni"} · livello ${esc(liv)}${(R.gruppi||[]).length>1?` (${esc(R.gruppi[g].nome)})`:""} · anzianità ${esc(PV.fasce[f].label||"")} (${fmtN(anni,1)} anni)`);
+    if(end){
+      out += `<div class="outgrid">${big("Decorre dal", fmtD(start), decTxt)}${big("Ultimo giorno", fmtD(end), lav&&d.g&&!d.m?"stima: 6 giorni lavorativi a settimana, senza festività":"")}`;
+      if(ret) out += big("Indennità sostitutiva (stima)", fmtE(ret*(R.mensilita||13)/12*ggCal/30), `retribuzione con ratei di ${R.mensilita||13} mensilità, rapportata a ${ggCal} giorni`);
+      out += `</div>`;
+    }
+    out += noteBox(`${notaTxt(PV)} La stima dell'indennità usa mensile × ${R.mensilita||13}/12 ÷ 30 × giorni di calendario: verifica in procedura paghe il criterio dello studio.${artTxt(PV)}`);
+    return out;
+  },
+  prova(R){
+    const PR=R.prova; if(!PR) return na(R,"periodo di prova");
+    const liv=val("r-liv"), ass=parseD(val("r-ass")); if(!ass) return `<div class="empty">Inserisci la data di assunzione.</div>`;
+    const p=PR.livelli[liv]; if(!p) return `<div class="empty">Durata non indicata per il livello ${esc(liv)}.</div>`;
+    let end, sub;
+    if(p.m){ end = addDays(addDur(ass,{m:p.m,g:p.g||0}),-1); sub="mesi di calendario"; }
+    else if(p.effettivo){ const gg=parseInt(val("r-gg","6"),10); end = countWork(ass, p.g, gg===6); sub=`stima su ${gg} giorni lavorativi a settimana, senza festività né assenze`; }
+    else { end = addDays(ass, p.g-1); sub="giorni di calendario"; }
+    return big("Durata massima", esc(p.txt||durLabel(p)), `livello ${esc(liv)}`) + `<div class="outgrid">${big("Inizio", fmtD(ass))}${big("Fine prova (indicativa)", fmtD(end), sub)}</div>` + noteBox(`${notaTxt(PR)}${artTxt(PR)}`);
+  },
+  comporto(R){
+    const C=R.comporto; if(!C) return na(R,"comporto");
+    const ps = CALC.periods.map(p=>({dal:parseD(p.dal), al:parseD(p.al), tipo:p.tipo})).filter(p=>p.dal&&p.al&&p.al>=p.dal);
+    if(!ps.length) return `<div class="empty">Inserisci almeno un periodo di assenza (dal / al).</div>`;
+    const ref = ps.reduce((m,p)=>p.al>m?p.al:m, ps[0].al);
+    let fi=0, anni=null;
+    if((C.fasce||[]).length>1){ const ass=parseD(val("m-ass")); if(!ass) return `<div class="empty">Inserisci la data di assunzione: il comporto dipende dall'anzianità.</div>`; anni=yearsFrac(ass,ref); fi=fasciaIdx(C.fasce,anni); }
+    const lim = C.fasce[fi].giorni;
+    const mesiW = (C.fasce[fi]&&C.fasce[fi].mesi) || C.mesi || 12;
+    const from = C.tipo==="anno-solare" ? new Date(ref.getFullYear(),0,1) : addDays(addMonths(ref,-mesiW),1);
+    const daysIn = p => { const a=p.dal>from?p.dal:from, b=p.al<ref?p.al:ref; return b>=a ? dayDiff(a,b)+1 : 0; };
+    const bar = (used,l)=>`<div class="meter ${used>l?"over":""}"><span style="width:${Math.min(100,used/l*100)}%"></span></div>`;
+    const blocks = C.separaInfortunio ? [["Malattia","malattia"],["Infortunio","infortunio"]] : [["Assenze",null]];
+    let out="";
+    blocks.forEach(([lbl,t])=>{
+      const used = ps.filter(p=>!t || p.tipo===t).reduce((s,p)=>s+daysIn(p),0);
+      if(t==="infortunio" && !used) return;
+      const res = lim-used;
+      out += big(`${lbl} nel periodo`, `${used} / ${lim} giorni`, res>=0?`Restano ${res} giorni. Se l'assenza prosegue senza interruzioni, il comporto si supera dopo il ${fmtD(addDays(ref,res))}.`:`Comporto superato di ${-res} giorni.`) + bar(used,lim);
+    });
+    out += `<div class="outgrid">${big("Periodo considerato", `${fmtD(from)} – ${fmtD(ref)}`, C.tipo==="anno-solare"?"anno solare":`${mesiW} mesi a ritroso`)}${anni!=null?big("Anzianità", `${fmtN(anni,1)} anni`, `limite ${lim} giorni`):""}</div>`;
+    out += noteBox(`${notaTxt(C)} Conteggio in giorni di calendario.${artTxt(C)}`);
+    return out;
+  },
+  malattia(R){
+    const M=R.malattia; if(!M) return na(R,"malattia");
+    const caso = M.casi[parseInt(val("s-caso","0"),10)||0] || M.casi[0];
+    const dur = Math.max(1, parseInt(val("s-dur","5"),10)||1), ret=num(val("s-ret")), gior = ret ? ret/(R.divGiorno||26) : 0;
+    const maxD = Math.max(...caso.fasce.map(f=>f.al));
+    const inpsOf = d => caso.inps===true ? INPS_STD(d) : Array.isArray(caso.inps) ? ((caso.inps.find(x=>d>=x.dal&&d<=x.al)||{}).perc||0) : 0;
+    const days=[];
+    for(let d=1; d<=Math.min(dur,maxD); d++){
+      const f = caso.fasce.find(x=>d>=x.dal && d<=x.al); if(!f) continue;
+      const inps = inpsOf(d); const tot = f.tot==null ? inps : f.tot;
+      days.push({d, inps, tot});
+    }
+    if(!days.length) return `<div class="empty">Nessun trattamento previsto per questa durata.</div>`;
+    const rows=[]; days.forEach(x=>{ const last=rows[rows.length-1]; if(last && last.to===x.d-1 && last.inps===x.inps && last.tot===x.tot) last.to=x.d; else rows.push({from:x.d,to:x.d,inps:x.inps,tot:x.tot}); });
+    const az = r => Math.max(0, r.tot - r.inps);
+    const pc = v => `${fmtN(v,v%1?2:0)}%`;
+    let sumI=0,sumA=0; rows.forEach(r=>{ const n=r.to-r.from+1; sumI+=n*gior*r.inps/100; sumA+=n*gior*az(r)/100; });
+    let out = `<div class="tbl"><table><thead><tr><th>Giorni</th><th>Totale garantito</th><th>INPS</th><th>Azienda</th>${gior?"<th>INPS €</th><th>Azienda €</th>":""}</tr></thead><tbody>${rows.map(r=>{ const n=r.to-r.from+1; return `<tr><td>${r.from===r.to?r.from+"°":r.from+"°–"+r.to+"°"}</td><td>${pc(r.tot)}</td><td>${pc(r.inps)}</td><td>${pc(az(r))}</td>${gior?`<td>${fmtE(n*gior*r.inps/100)}</td><td>${fmtE(n*gior*az(r)/100)}</td>`:""}</tr>`; }).join("")}</tbody></table></div>`;
+    if(gior) out = `<div class="outgrid">${big("A carico INPS (stima)", fmtE(sumI))}${big("A carico azienda (stima)", fmtE(sumA))}</div>` + out;
+    else out = big(`Evento di ${dur} giorni`, rows.map(r=>pc(r.tot)).join(" → "), `${esc(caso.nome)} · percentuale complessiva per fascia di giorni`) + out;
+    if(dur>maxD) out += noteBox(`Il CCNL indennizza fino al ${maxD}° giorno: i giorni successivi non sono coperti da questo calcolo.`);
+    out += noteBox(`${notaTxt(M)} ${caso.inps===true?"INPS calcolata con le percentuali di legge (50% dal 4° al 20° giorno, 66,66% dal 21° al 180°). ":caso.inps===false?"Nessuna indennità INPS considerata in questo caso. ":""}Gli importi sono stime sul lordo (mensile ÷ ${R.divGiorno||26}).${artTxt(M)}`);
+    return out;
+  },
+  ratei(R){
+    const dal=parseD(val("t-dal")), al=parseD(val("t-al"));
+    if(!dal || !al || al<dal) return `<div class="empty">Inserisci un periodo valido (dal / al).</div>`;
+    const ret=num(val("t-ret")), FZ=R.fraz||{giorni:15,op:">="};
+    const quota = (gg, ms, me, a, b) => {
+      if(gg===me.getDate()) return 1;
+      if(FZ.soloMesiInteri) return 0;
+      if(FZ.op==="26esimi"){ let n=0; for(let d=new Date(a); d<=b; d=addDays(d,1)) if(d.getDay()!==0) n++; return Math.min(26,n)/26; }
+      return (FZ.op===">" ? gg>FZ.giorni : gg>=FZ.giorni) ? 1 : 0;
+    };
+    const monthsIn = (from, to) => { let m=0; const list=[]; let y=from.getFullYear(), mo=from.getMonth(); while(new Date(y,mo,1)<=to){ const ms=new Date(y,mo,1), me=new Date(y,mo+1,0); const a=from>ms?from:ms, b=to<me?to:me; const gg = b>=a ? dayDiff(a,b)+1 : 0; const q = gg ? quota(gg,ms,me,a,b) : 0; m+=q; list.push({mese:ms, gg, q}); mo++; if(mo>11){mo=0;y++;} } return {m, list}; };
+    const agg = (R.aggiuntive||[{nome:"13ª",meseInizio:1}]);
+    const qf = q => fmtN(q, q%1?2:0);
+    let out = `<div class="outgrid">`; let main=null;
+    agg.forEach(a=>{ const mi=(a.meseInizio||1)-1; const s = al.getMonth()>=mi ? new Date(al.getFullYear(),mi,1) : new Date(al.getFullYear()-1,mi,1); const t = monthsIn(dal>s?dal:s, al); if(!main) main=t;
+      out += big(`Ratei di ${esc(a.nome)}`, `${qf(t.m)}/12`, (ret?fmtE(ret*t.m/12)+" · ":"")+(mi?`periodo da ${new Date(2000,mi,1).toLocaleDateString("it-IT",{month:"long"})}`:"anno solare")); });
+    const y0=new Date(al.getFullYear(),0,1), ty=monthsIn(dal>y0?dal:y0, al);
+    if(R.ferie){ const F=R.ferie; out += big("Ferie maturate", F.ore ? `${fmtN(F.ore*ty.m/12,2)} ore` : `${fmtN(F.giorni*ty.m/12,2)} giorni`, esc(F.txt||"")); }
+    if((R.permessi||[]).length){ const p=R.permessi[parseInt(val("t-perm","0"),10)||0]||R.permessi[0]; out += big("Permessi maturati", `${fmtN(p.ore*ty.m/12,2)} ore`, esc(p.label)); }
+    out += `</div><div class="tbl"><table><thead><tr><th>Mese</th><th>Giorni nel periodo</th><th>Rateo</th></tr></thead><tbody>${main.list.map(x=>`<tr><td>${x.mese.toLocaleDateString("it-IT",{month:"long",year:"numeric"})}</td><td>${x.gg}</td><td>${x.q===1?"Sì":x.q===0?"No":qf(x.q)}</td></tr>`).join("")}</tbody></table></div>`;
+    const fr = FZ.soloMesiInteri ? "Contano solo i mesi interi." : FZ.op==="26esimi" ? "Le frazioni di mese si contano in ventiseiesimi (giorni lavorativi lunedì-sabato)." : `Una frazione di mese conta come mese intero se è di ${FZ.op===">"?"più di":"almeno"} ${FZ.giorni} giorni.`;
+    out += noteBox(`${fr} Ferie e permessi sono calcolati sull'anno solare della data finale. Togli dal periodo le assenze senza retribuzione a carico del datore. ${R.ratei?notaTxt(R.ratei):""}${artTxt(R.ratei)}`);
+    return out;
+  },
+  scatti(R){
+    const S=R.scatti; if(!S) return na(R,"scatti di anzianità");
+    const liv=val("a-liv"), dec=parseD(val("a-dec")), rif=parseD(val("a-rif"))||today;
+    if(!dec) return `<div class="empty">Inserisci la data di decorrenza dell'anzianità.</div>`;
+    const max = S.max || 0, dates=[];
+    for(let k=1;k<=max;k++){ const anniv=addMonths(dec,12*S.anni*k); if(S.decorrenza==="stesso-giorno") dates.push(anniv); else { const c=addDays(anniv,-1); dates.push(new Date(c.getFullYear(), c.getMonth()+1, 1)); } }
+    const n=dates.filter(d=>d<=rif).length, next=dates.find(d=>d>rif);
+    const imp = S.imp ? (S.imp[liv]||0) : S.perc ? minimoInfo(CALC.cc,liv,rif).val*S.perc/100 : 0;
+    let out = big("Scatti maturati", `${n} su ${max}`, `livello ${esc(liv)} · ${fmtE(imp)} ciascuno${S.perc?` (${S.perc}% del minimo)`:""}`);
+    out += `<div class="outgrid">${big("Importo mensile scatti", fmtE(n*imp))}${big("Prossimo scatto", next?fmtD(next):"Massimo raggiunto", next?`porterà a ${fmtE((n+1)*imp)}`:"")}</div>`;
+    out += `<div class="tbl"><table><thead><tr><th>Scatto</th><th>Decorre dal</th></tr></thead><tbody>${dates.map((d,i)=>`<tr><td>${i+1}°</td><td>${fmtD(d)}${d<=rif?" ✓":""}</td></tr>`).join("")}</tbody></table></div>`;
+    out += noteBox(`${max} scatti ${S.anni===1?"annuali":S.anni===2?"biennali":S.anni===3?"triennali":S.anni===4?"quadriennali":`ogni ${S.anni} anni`}. ${notaTxt(S)}${artTxt(S)}`);
+    return out;
+  },
+  straord(R){
+    const S=R.straord; if(!S||!(S.voci||[]).length) return na(R,"maggiorazioni");
+    const liv=val("o-liv"), ore=num(val("o-ore","1"))||0, t=S.voci[parseInt(val("o-tipo","0"),10)||0]||S.voci[0];
+    const base = num(val("o-ret")) || minimoInfo(CALC.cc, liv, today).val;
+    if(!base) return `<div class="empty">Inserisci la retribuzione mensile: per questo CCNL il minimo del livello non è disponibile.</div>`;
+    const q=base/(R.divOra||173), magg=q*t.m/100, piena=q+magg;
+    let out = big(esc(t.l), fmtE((t.full?piena:magg)*ore), `${fmtN(ore,ore%1?1:0)} ${ore===1?"ora":"ore"} · maggiorazione ${fmtN(t.m,t.m%1?2:0)}%`);
+    out += `<div class="outgrid">${big("Retribuzione oraria", fmtE(q), `÷ ${R.divOra||173}`)}${big("Maggiorazione oraria", fmtE(magg))}${t.full?big("Ora maggiorata", fmtE(piena)):""}</div>`;
+    out += noteBox(`${t.full?"Calcolato come ora intera più maggiorazione.":"Calcolata la sola maggiorazione, perché le ore sono già comprese nella retribuzione."} ${S.base?`Base di calcolo: ${esc(S.base)}. `:""}${notaTxt(S)} Se non indichi la retribuzione si usa il minimo del livello${R.minimiNota?` (${esc(R.minimiNota)})`:""}.${artTxt(S)}`);
+    return out;
+  }
+};
+
+function wirePeriods(){
+  const box = $("#periods"); if(!box) return;
+  const R_ = rulesOf(CALC.cc), sep = CALC.cc==="commercio" || !!(R_.generic && R_.comporto && R_.comporto.separaInfortunio);
+  const draw = ()=>{
+    if(!sep) CALC.periods.forEach(p=>p.tipo="malattia");
+    box.innerHTML = `<div class="period-h"><span>Dal</span><span>Al</span><span></span></div>` + CALC.periods.map((p,i)=>`<div class="period"><input type="date" aria-label="Dal" data-pi="${i}" data-pk="dal" value="${esc(p.dal)}"><input type="date" aria-label="Al" data-pi="${i}" data-pk="al" value="${esc(p.al)}">
+      <select aria-label="Tipo" data-pi="${i}" data-pk="tipo">${sep?`<option value="malattia" ${p.tipo==="malattia"?"selected":""}>Malattia</option><option value="infortunio" ${p.tipo==="infortunio"?"selected":""}>Infortunio</option>`:`<option value="malattia" selected>${R_.generic?"Malattia":"Malattia / inf. non sul lavoro"}</option>`}</select>
+      <button class="btn ghost sm" type="button" data-prm="${i}" aria-label="Rimuovi periodo">✕</button></div>`).join("");
+  };
+  draw();
+  box.addEventListener("change", e=>{ const t=e.target; if(t.dataset.pi!==undefined){ CALC.periods[+t.dataset.pi][t.dataset.pk]=t.value; compute(); } });
+  box.addEventListener("input", e=>{ const t=e.target; if(t.dataset.pi!==undefined){ CALC.periods[+t.dataset.pi][t.dataset.pk]=t.value; compute(); } });
+  box.addEventListener("click", e=>{ const b=e.target.closest("[data-prm]"); if(!b) return; CALC.periods.splice(+b.dataset.prm,1); if(!CALC.periods.length) CALC.periods.push({dal:"",al:"",tipo:"malattia"}); draw(); compute(); });
+  $("#addPeriod").onclick = ()=>{ CALC.periods.push({dal:"",al:"",tipo:"malattia"}); draw(); };
+}
+
+/* initial view */
+let startView = "prontuario";
+try{ const v = localStorage.getItem("prontuario.view"); if(v) startView = v; }catch(e){}
+const h = (location.hash||"").replace("#","");
+if(["prontuario","clienti","calcolatori"].includes(h)) startView = h;
+setView(startView);
+})();
+</script>
+
+
+</body></html>

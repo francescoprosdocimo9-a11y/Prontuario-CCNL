@@ -1,0 +1,482 @@
+{
+"mensilita-aggiuntive": {
+"capitolo": "6. La retribuzione",
+"ordine": 426,
+"voce": "13ª e 14ª mensilità"
+},
+"legge-104": {
+"capitolo": "10. Malattia, infortunio, maternità e congedi",
+"ordine": 523,
+"voce": "Permessi L. 104/1992"
+},
+"contrattazione-aziendale": {
+"capitolo": "Il contratto",
+"ordine": 51,
+"voce": "Contrattazione aziendale e informazione sindacale"
+},
+"notturno-domenicale": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 309,
+"voce": "Lavoro notturno ordinario e lavoro domenicale"
+},
+"aspettative": {
+"capitolo": "10. Malattia, infortunio, maternità e congedi",
+"ordine": 516,
+"voce": "Aspettative e congedi non retribuiti"
+},
+"divisori": {
+"capitolo": "6. La retribuzione",
+"ordine": 425,
+"voce": "Divisori, retribuzione normale e di fatto"
+},
+"elemento-garanzia": {
+"capitolo": "6. La retribuzione",
+"ordine": 428,
+"voce": "Elemento economico di garanzia"
+},
+"congedo-parentale": {
+"capitolo": "10. Malattia, infortunio, maternità e congedi",
+"ordine": 522,
+"voce": "Congedo parentale, riposi per allattamento e malattia del figlio"
+},
+"riepilogo-costi": {
+"capitolo": "Enti bilaterali e welfare",
+"ordine": 1069,
+"voce": "Riepilogo dei contributi contrattuali a carico dell'azienda"
+},
+"malattia-obblighi": {
+"capitolo": "10. Malattia, infortunio, maternità e congedi",
+"ordine": 519,
+"voce": "Malattia: comunicazione, reperibilità e controlli"
+},
+"discontinui": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 356,
+"voce": "Lavoratori discontinui"
+},
+"studio": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 315,
+"voce": "Diritto allo studio e permessi per esami"
+},
+"previdenza": {
+"capitolo": "Enti bilaterali e welfare",
+"ordine": 832,
+"voce": "Previdenza complementare (Fon.Te.)"
+},
+"codici": {
+"capitolo": "Il contratto",
+"ordine": 50,
+"voce": "Codici del CCNL (CNEL e UniEmens)"
+},
+"permessi-rol": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 312,
+"voce": "Permessi retribuiti (ROL ed ex festività)"
+},
+"malattia-comporto": {
+"capitolo": "10. Malattia, infortunio, maternità e congedi",
+"ordine": 518,
+"voce": "Malattia: comporto e aspettativa"
+},
+"inquadramento": {
+"capitolo": "3. L'assunzione",
+"ordine": 153,
+"voce": "Livelli di inquadramento e declaratorie"
+},
+"contributi-sindacali": {
+"capitolo": "Rapporti sindacali, sicurezza e tutele",
+"ordine": 864,
+"voce": "Trattenuta contributi sindacali e assistenza contrattuale"
+},
+"indennita-varie": {
+"capitolo": "6. La retribuzione",
+"ordine": 430,
+"voce": "Indennità di cassa, provvigioni e indennità di funzione Quadri"
+},
+"sicurezza": {
+"capitolo": "Rapporti sindacali, sicurezza e tutele",
+"ordine": 865,
+"voce": "Salute e sicurezza"
+},
+"divise": {
+"capitolo": "6. La retribuzione",
+"ordine": 461,
+"voce": "Divise, attrezzi, vitto e alloggio"
+},
+"molestie": {
+"capitolo": "Rapporti sindacali, sicurezza e tutele",
+"ordine": 866,
+"voce": "Molestie, mobbing e violenza di genere"
+},
+"tempo-determinato": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 204,
+"voce": "Contratto a tempo determinato: limiti e causali"
+},
+"reperibilita": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 337,
+"voce": "Reperibilità del portiere"
+},
+"preavviso": {
+"capitolo": "13. La cessazione del rapporto",
+"ordine": 735,
+"voce": "Preavviso di licenziamento e di dimissioni"
+},
+"welfare": {
+"capitolo": "Enti bilaterali e welfare",
+"ordine": 1038,
+"voce": "Welfare contrattuale"
+},
+"cambio-appalto-adempimenti": {
+"capitolo": "Appalti e vicende d'azienda",
+"ordine": 980,
+"voce": "Cambio appalto: adempimenti di paghe per uscente e subentrante"
+},
+"flessibilita": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 307,
+"voce": "Flessibilità dell'orario e banca delle ore"
+},
+"infortunio": {
+"capitolo": "10. Malattia, infortunio, maternità e congedi",
+"ordine": 520,
+"voce": "Infortunio sul lavoro: trattamento e comporto"
+},
+"congedo-matrimoniale": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 314,
+"voce": "Congedo matrimoniale"
+},
+"lettera-assunzione": {
+"capitolo": "3. L'assunzione",
+"ordine": 152,
+"voce": "Lettera di assunzione e documenti"
+},
+"part-time": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 205,
+"voce": "Part-time: minimi di orario, supplementare, clausole elastiche"
+},
+"straordinario": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 308,
+"voce": "Lavoro straordinario: limite e maggiorazioni"
+},
+"malattia-trattamento": {
+"capitolo": "10. Malattia, infortunio, maternità e congedi",
+"ordine": 517,
+"voce": "Malattia: trattamento economico (carenza e integrazione)"
+},
+"pagamento": {
+"capitolo": "6. La retribuzione",
+"ordine": 460,
+"voce": "Prospetto paga e trattenute"
+},
+"permessi-lutto": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 313,
+"voce": "Permessi per lutto e grave infermità"
+},
+"trasferta": {
+"capitolo": "6. La retribuzione",
+"ordine": 429,
+"voce": "Trasferta (missione) e trasferimento"
+},
+"scatti": {
+"capitolo": "6. La retribuzione",
+"ordine": 427,
+"voce": "Scatti di anzianità"
+},
+"ente-bilaterale": {
+"capitolo": "Enti bilaterali e welfare",
+"ordine": 833,
+"voce": "Ente Bilaterale e formazione continua"
+},
+"una-tantum": {
+"capitolo": "6. La retribuzione",
+"ordine": 480,
+"voce": "Una tantum per vacanza contrattuale"
+},
+"conciliazione": {
+"capitolo": "13. La cessazione del rapporto",
+"ordine": 767,
+"voce": "Conciliazione, arbitrato e certificazione"
+},
+"vigenza": {
+"capitolo": "Il contratto",
+"ordine": 0,
+"voce": "Vigenza, scadenza e firmatari"
+},
+"quadri": {
+"capitolo": "3. L'assunzione",
+"ordine": 155,
+"voce": "Quadri: tutele specifiche"
+},
+"prova": {
+"capitolo": "3. L'assunzione",
+"ordine": 101,
+"voce": "Periodo di prova"
+},
+"tfr": {
+"capitolo": "13. La cessazione del rapporto",
+"ordine": 736,
+"voce": "TFR: voci escluse e pagamento"
+},
+"appalti": {
+"capitolo": "Appalti e vicende d'azienda",
+"ordine": 968,
+"voce": "Appalti, esternalizzazioni e cambio appalto"
+},
+"mansioni": {
+"capitolo": "3. L'assunzione",
+"ordine": 154,
+"voce": "Mansioni superiori, promiscue e passaggi di livello"
+},
+"salario-ingresso": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 282,
+"voce": "Contratti di sostegno all'occupazione (salario d'ingresso)"
+},
+"disciplinare": {
+"capitolo": "12. Il potere disciplinare",
+"ordine": 634,
+"voce": "Sanzioni disciplinari e termini"
+},
+"minimi": {
+"capitolo": "6. La retribuzione",
+"ordine": 424,
+"voce": "Minimi tabellari (paga base, contingenza)"
+},
+"indennita-rifiuti": {
+"capitolo": "6. La retribuzione",
+"ordine": 482,
+"voce": "Indennità rifiuti"
+},
+"orario": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 306,
+"voce": "Orario normale e articolazioni"
+},
+"sospensioni": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 357,
+"voce": "Sospensione del lavoro e recuperi"
+},
+"maternita": {
+"capitolo": "10. Malattia, infortunio, maternità e congedi",
+"ordine": 521,
+"voce": "Maternità e paternità: integrazione"
+},
+"danni": {
+"capitolo": "12. Il potere disciplinare",
+"ordine": 662,
+"voce": "Cauzioni, inventari, danni e procedimenti penali"
+},
+"festivita": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 310,
+"voce": "Festività"
+},
+"ratei": {
+"capitolo": "6. La retribuzione",
+"ordine": 459,
+"voce": "Ratei e frazioni di mese: come si contano"
+},
+"corrispondenza-chiavi": {
+"capitolo": "6. La retribuzione",
+"ordine": 483,
+"voce": "Posta straordinaria, pacchi e chiavi: indennità"
+},
+"somministrazione": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 282,
+"voce": "Somministrazione a tempo determinato"
+},
+"sanita": {
+"capitolo": "Enti bilaterali e welfare",
+"ordine": 831,
+"voce": "Assistenza sanitaria integrativa (Fondo EST e Quas)"
+},
+"ferie": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 311,
+"voce": "Ferie"
+},
+"cessazione-portiere": {
+"capitolo": "13. La cessazione del rapporto",
+"ordine": 780,
+"voce": "Portiere: soppressione del servizio, decesso e rilascio dell'alloggio"
+},
+"apprendistato": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 202,
+"voce": "Apprendistato professionalizzante"
+},
+"lavoro-agile": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 358,
+"voce": "Lavoro agile e telelavoro"
+},
+"diritti-sindacali": {
+"capitolo": "Rapporti sindacali, sicurezza e tutele",
+"ordine": 863,
+"voce": "Assemblea, RSU/RSA e permessi sindacali"
+},
+"formazione-aggiornamento": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 380,
+"voce": "Aggiornamento professionale e congedi per formazione"
+},
+"lavoro-intermittente": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 281,
+"voce": "Lavoro intermittente"
+},
+"apprendistato-1-3": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 203,
+"voce": "Apprendistato di I e III livello (duale, alta formazione)"
+},
+"cassa-portieri": {
+"capitolo": "Enti bilaterali e welfare",
+"ordine": 1080,
+"voce": "Cassa Portieri e Fondo Coasco"
+},
+"congedo-violenza": {
+"capitolo": "10. Malattia, infortunio, maternità e congedi",
+"ordine": 580,
+"voce": "Congedo per donne vittime di violenza di genere"
+},
+"sostituto-portiere": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 280,
+"voce": "Sostituto del portiere"
+},
+"stagionali": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 280,
+"voce": "Stagionali e riposi compensativi"
+},
+"anzianita-forfettaria": {
+"capitolo": "6. La retribuzione",
+"ordine": 480,
+"voce": "Anzianità forfettaria di settore (operai)"
+},
+"alloggio-portiere": {
+"capitolo": "6. La retribuzione",
+"ordine": 481,
+"voce": "Alloggio di servizio, energia e riscaldamento"
+},
+"intermittente": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 281,
+"voce": "Lavoro intermittente (a chiamata)"
+},
+"agenzie-minori": {
+"capitolo": "6. La retribuzione",
+"ordine": 480,
+"voce": "Paga base agenzie minori (riduzione)"
+},
+"lavoro-turni": {
+"capitolo": "5. Orario di lavoro, riposi, ferie e permessi",
+"ordine": 380,
+"voce": "Lavoro a turni nei CED a orario lungo o h24"
+},
+"sciopero-servizi-essenziali": {
+"capitolo": "Rapporti sindacali, sicurezza e tutele",
+"ordine": 880,
+"voce": "Sciopero nei servizi pubblici essenziali"
+},
+"fsba": {
+"capitolo": "Enti bilaterali e welfare",
+"ordine": 1080,
+"voce": "Sostegno al reddito: FSBA"
+},
+"collaborazioni-sportive": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 282,
+"voce": "Collaborazioni coordinate e continuative nello sport"
+},
+"contratto-reinserimento": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 280,
+"voce": "Contratto a tempo indeterminato per il reinserimento"
+},
+"gravi-patologie": {
+"capitolo": "10. Malattia, infortunio, maternità e congedi",
+"ordine": 580,
+"voce": "Malattie gravi, oncologiche, TBC e dipendenze"
+},
+"fondo-solidarieta": {
+"capitolo": "Enti bilaterali e welfare",
+"ordine": 1080,
+"voce": "Fondo di solidarietà per le attività professionali (FSAP)"
+},
+"cessione-azienda": {
+"capitolo": "Appalti e vicende d'azienda",
+"ordine": 981,
+"voce": "Cessione, trasformazione, fallimento e cessazione dell'azienda"
+},
+"superminimo-ex-14": {
+"capitolo": "6. La retribuzione",
+"ordine": 480,
+"voce": "Superminimo ex 14ª per gli assunti prima del 22/12/2015"
+},
+"armonizzazione-ippodromi": {
+"capitolo": "Il contratto",
+"ordine": 80,
+"voce": "Ippodromi: passaggio dall'Accordo 11/1/2013 (Ipotesi 19/9/2024)"
+},
+"apprendistato-praticantato": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 280,
+"voce": "Apprendistato per il praticantato nelle professioni ordinistiche"
+},
+"minimi-alberghi-minori": {
+"capitolo": "6. La retribuzione",
+"ordine": 480,
+"voce": "Paga base aziende alberghiere minori (1 e 2 stelle)"
+},
+"portiere-piu-stabili": {
+"capitolo": "3. L'assunzione",
+"ordine": 180,
+"voce": "Portiere su più stabili o con più ingressi"
+},
+"lavoro-extra": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 281,
+"voce": "Lavoro extra e di surroga"
+},
+"preavviso-formazione": {
+"capitolo": "13. La cessazione del rapporto",
+"ordine": 780,
+"voce": "Preavviso aggiuntivo per i lavoratori formati"
+},
+"imprese-pmi": {
+"capitolo": "Il contratto",
+"ordine": 80,
+"voce": "Imprese artigiane e PMI: cosa cambia"
+},
+"formazione-profilo": {
+"capitolo": "Enti bilaterali e welfare",
+"ordine": 1080,
+"voce": "Formazione di profilo obbligatoria e rimborso certificazioni"
+},
+"contratto-reimpiego": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 282,
+"voce": "Contratto di reimpiego (salario d'ingresso)"
+},
+"lavoro-domicilio": {
+"capitolo": "4. Le tipologie contrattuali",
+"ordine": 281,
+"voce": "Lavoro a domicilio (settore Legno)"
+},
+"percentuale-servizio": {
+"capitolo": "6. La retribuzione",
+"ordine": 480,
+"voce": "Percentuale di servizio (personale tavoleggiante)"
+}
+}
