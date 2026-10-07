@@ -178,6 +178,19 @@ table.cl td.sc-date{white-space:nowrap;font-weight:600}
 .sc-sub{display:block;font-size:12px;color:var(--muted);margin-top:3px}
 .sc-name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:440px}
 .sc-legend{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+/* Contratti a termine */
+.ct-bar{display:grid;grid-template-columns:minmax(220px,2fr) minmax(160px,1fr) minmax(200px,2fr) auto;gap:10px;align-items:end;margin-bottom:12px}
+@media (max-width:820px){.ct-bar{grid-template-columns:1fr}}
+.ct-bar label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px}
+.ct-bar select,.ct-bar input{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line-strong);background:var(--surface);font-size:15px}
+.ct-bar .az select{border-color:var(--accent);font-weight:600}
+.ct-head{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline}
+.ct-head h3{margin:0;font-size:17px;width:100%}
+.ct-head span{font-size:13.5px;color:var(--muted)}.ct-head b{color:var(--ink)}
+.ct-tag{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:1px 7px;margin:2px 4px 0 0;border:1px solid var(--line-strong);color:var(--muted);white-space:nowrap}
+.ct-tag.st{border-color:var(--ok);color:var(--ok)}.ct-tag.warn{border-color:var(--warn);color:var(--warn);background:var(--warn-bg)}
+.ct-dates{display:block;font-size:12px;color:var(--muted);margin-top:2px;white-space:normal}
+.fg .dates{display:flex;flex-direction:column;gap:6px}
 /* Calculators */
 .calc-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .calc-panel{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:22px;align-items:start}
@@ -219,7 +232,8 @@ table.cl td.sc-date{white-space:nowrap;font-weight:600}
     <button class="tab" role="tab" type="button" data-view="prontuario" aria-selected="true">Prontuario</button>
     <button class="tab" role="tab" type="button" data-view="clienti" aria-selected="false">Clienti</button>
     <button class="tab" role="tab" type="button" data-view="calcolatori" aria-selected="false">Calcolatori</button>
-    <button class="tab" role="tab" type="button" data-view="scadenziario" aria-selected="false">Scadenziario</button>
+    <button class="tab" role="tab" type="button" data-view="termine" aria-selected="false">Contratti a termine</button>
+    <button class="tab" role="tab" type="button" data-view="scadenziario" aria-selected="false">Scadenziario CCNL</button>
   </nav>
 
   <div id="clientBanner"></div>
@@ -253,6 +267,7 @@ table.cl td.sc-date{white-space:nowrap;font-weight:600}
   <div id="viewClienti" hidden></div>
   <div id="viewCalcolatori" hidden></div>
   <div id="viewScadenziario" hidden></div>
+  <div id="viewTermine" hidden></div>
 </div>
 
 <div id="modalRoot"></div>
@@ -675,10 +690,12 @@ function setView(v){
   $("#viewClienti").hidden = v!=="clienti";
   $("#viewCalcolatori").hidden = v!=="calcolatori";
   $("#viewScadenziario").hidden = v!=="scadenziario";
+  $("#viewTermine").hidden = v!=="termine";
   const ta = $("#topActions"); if(ta) ta.hidden = !state.canWrite || v!=="prontuario";
   if(v==="clienti") renderClienti();
   if(v==="calcolatori") renderCalc();
   if(v==="scadenziario") renderScad();
+  if(v==="termine") renderCT();
   try{ localStorage.setItem("prontuario.view", v); }catch(e){}
   window.scrollTo({top:0});
 }
@@ -705,10 +722,11 @@ function subscribeClients(){
     CL.loaded = true;
     if(view==="clienti") renderClienti();
     if(view==="scadenziario") renderScad();
+    if(view==="termine") renderCT();
     if(activeClient){ const u = CL.list.find(x=>x._id===activeClient._id); if(u){ activeClient=u; renderBanner(); } }
   }, ()=>{ CL.loaded=true; if(view==="clienti") renderClienti(); });
 }
-(window.__hooks = window.__hooks||[]).push(ev=>{ if(ev==="db") subscribeClients(); if(ev==="user"||ev==="ccnl"){ if(view==="clienti") renderClienti(); if(view==="calcolatori") renderCalc(); if(view==="scadenziario") renderScad(); } });
+(window.__hooks = window.__hooks||[]).push(ev=>{ if(ev==="db") subscribeClients(); if(ev==="user"||ev==="ccnl"){ if(view==="clienti") renderClienti(); if(view==="calcolatori") renderCalc(); if(view==="scadenziario") renderScad(); if(view==="termine") renderCT(); } if(ev==="db") subscribeCT(); });
 if(state.db) subscribeClients();
 
 function clientMatches(c){
@@ -733,7 +751,8 @@ function renderClienti(){
     $("#clq").addEventListener("input", e=>{ CL.q=e.target.value.trim(); renderClienti(); });
     $("#clNew").addEventListener("click", ()=>openClientEditor(null));
     root.addEventListener("click", e=>{
-      const t = e.target.closest("[data-clf],[data-open],[data-calc],[data-cledit]"); if(!t) return;
+      const t = e.target.closest("[data-clf],[data-open],[data-calc],[data-cledit],[data-clct]"); if(!t) return;
+      if(t.dataset.clct){ CT.az = t.dataset.clct; setView("termine"); return; }
       if(t.dataset.clf){ CL.f=t.dataset.clf; renderClienti(); }
       else if(t.dataset.open){ const c=CL.list.find(x=>x._id===t.dataset.open); if(!c) return; activeClient=c; renderBanner(); if(c.ccnl) P.setFilter(c.ccnl); setView("prontuario"); }
       else if(t.dataset.calc){ const c=CL.list.find(x=>x._id===t.dataset.calc); if(!c) return; activeClient=c; renderBanner(); if(c.ccnl) CALC.cc=c.ccnl; setView("calcolatori"); }
@@ -764,7 +783,7 @@ function renderClienti(){
         <td>${pill}<span class="ccraw">${esc(c.ccnl_testo||"—")}</span></td><td>${esc(c.settore||"")}</td>
         <td class="num">${c.ti||""}</td><td class="num">${c.td||""}${c.td_note?`<span class="ccraw">${esc(c.td_note)}</span>`:""}</td>
         <td>${esc(c.ente_bilaterale||"")}</td><td>${esc(c.sanita||"")}</td><td>${altro}</td>
-        <td><div class="rowact">${c.ccnl&&state.ccnl[c.ccnl]?`<button class="btn sm" type="button" data-open="${esc(c._id)}">Prontuario</button>${rulesOf(c.ccnl)?`<button class="btn sm" type="button" data-calc="${esc(c._id)}">Calcola</button>`:""}`:""}${state.canWrite?`<button class="btn ghost sm" type="button" data-cledit="${esc(c._id)}">Modifica</button>`:""}</div></td></tr>`;
+        <td><div class="rowact">${c.ccnl&&state.ccnl[c.ccnl]?`<button class="btn sm" type="button" data-open="${esc(c._id)}">Prontuario</button>${rulesOf(c.ccnl)?`<button class="btn sm" type="button" data-calc="${esc(c._id)}">Calcola</button>`:""}`:""}${CT.list.some(x=>x.cliente===c._id)?`<button class="btn sm" type="button" data-clct="${esc(c._id)}">Contratti a termine</button>`:""}${state.canWrite?`<button class="btn ghost sm" type="button" data-cledit="${esc(c._id)}">Modifica</button>`:""}</div></td></tr>`;
     }).join("")}</tbody></table></div>`;
 }
 function openClientEditor(c){
@@ -903,6 +922,205 @@ function openScadEditor(id){
     if(sc && !(auto && isoD(auto)===sc)) doc.scadenza = sc;
     try{ await state.db.collection("ccnl").doc(id).set(doc); P.closeModal(); P.toast("Scadenza aggiornata"); }
     catch(e){ $("#s-err").textContent = P.errMsg(e); }
+  };
+}
+
+/* ================= CONTRATTI A TERMINE ================= */
+const CT = { list:[], loaded:false, az:"tutte", f:"attivi", tipo:"tutti", q:"", unsub:null };
+try{ const a = localStorage.getItem("prontuario.ctaz"); if(a) CT.az = a; }catch(e){}
+const CT_TIPI = { td:"Tempo determinato", intermittente:"Intermittente a termine", cococo:"Co.co.co.", tirocinio:"Tirocinio", distacco:"Distacco" };
+function subscribeCT(){
+  if(CT.unsub || !state.db) return;
+  CT.unsub = state.db.collection("contratti").onSnapshot(snap=>{
+    CT.list = snap.docs.map(d=>({...d.data(), _id:d.id})); CT.loaded = true;
+    if(view==="termine") renderCT(); if(view==="clienti") renderClienti();
+  }, ()=>{ CT.loaded = true; if(view==="termine") renderCT(); });
+}
+if(state.db) subscribeCT();
+const ctAzKey = c => (c.cliente && CL.list.some(x=>x._id===c.cliente)) ? c.cliente : "x:" + (c.azienda||"").toUpperCase();
+const ctAzName = k => { if(k.startsWith("x:")) return k.slice(2); const cl = CL.list.find(x=>x._id===k); return cl ? cl.azienda : k; };
+function ctInfo(c){
+  const sc = (c.scadenze||[]).filter(Boolean), ass = parseD(c.assunzione);
+  const last = sc.length ? parseD(sc.reduce((a,b)=>a>b?a:b)) : null;
+  const gg = last ? dayDiff(today, last) : null, nPr = Math.max(0, sc.length-1);
+  const mesi = ass && last ? (dayDiff(ass, last)+1)/30.4375 : null;
+  const chiuso = c.stato && c.stato!=="attivo";
+  const st = chiuso ? "chiuso" : !last ? "nodata" : gg < 0 ? "scaduto" : gg <= 7 ? "7" : gg <= 30 ? "30" : "ok";
+  const avv = [];
+  if(!chiuso){
+    if(sc.length && ([...sc].sort().join()!==sc.join() || (c.assunzione && sc[0] < c.assunzione))) avv.push("Date da verificare");
+    if(c.tipo==="td" && !c.stagionale){
+      if(nPr > 4) avv.push(`${nPr} proroghe (massimo 4)`);
+      if(mesi > 24.02) avv.push("Oltre 24 mesi");
+      else if(mesi > 12.02 && !c.causale) avv.push("Oltre 12 mesi: serve la causale");
+    }
+    if(st==="scaduto") avv.push("Scaduto: registra proroga, trasformazione o cessazione");
+  }
+  return { last, gg, nPr, mesi, st, avv, ass };
+}
+const CT_ST = { scaduto:["bad","Scaduto"], "7":["bad","Entro 7 giorni"], "30":["warn","Entro 30 giorni"], ok:["ok","In corso"], nodata:["none","Senza scadenza"], chiuso:["none","Chiuso"] };
+function ctPass(c, I, ignoreF){
+  if(CT.az!=="tutte" && ctAzKey(c)!==CT.az) return false;
+  if(CT.tipo!=="tutti"){ if(CT.tipo==="stagionali"){ if(!c.stagionale) return false; } else if(CT.tipo==="td"){ if(c.tipo!=="td" || c.stagionale) return false; } else if(c.tipo!==CT.tipo) return false; }
+  if(CT.q){ const h = norm([c.dipendente,c.sede,c.note,c.azienda].join(" ")); if(!norm(CT.q).split(/\s+/).filter(Boolean).every(t=>h.includes(t))) return false; }
+  if(ignoreF) return true;
+  const f = CT.f;
+  if(f==="attivi") return I.st!=="chiuso";
+  if(f==="scaduti") return I.st==="scaduto";
+  if(f==="7") return I.st==="7";
+  if(f==="30") return I.st==="7" || I.st==="30";
+  if(f==="avvisi") return I.avv.length>0;
+  if(f==="chiusi") return I.st==="chiuso";
+  return true;
+}
+function renderCT(){
+  const root = $("#viewTermine");
+  if(!root.dataset.built){
+    root.dataset.built = "1";
+    root.innerHTML = `
+      <div class="toolbar"><div style="flex:1"><h2 style="margin:0 0 2px;font-size:20px">Scadenziario contratti a termine</h2>
+        <p class="sc-sub" style="margin:0">Scadenze, proroghe e limiti dei contratti a termine dei clienti. Scegli un'azienda per vedere solo i suoi contratti.</p></div>
+        <button class="btn primary" type="button" id="ctNew" hidden>+ Nuovo contratto</button></div>
+      <div class="ct-bar">
+        <div class="az"><label for="ctAz">Azienda</label><select id="ctAz"></select></div>
+        <div><label for="ctTipo">Tipo di contratto</label><select id="ctTipo"><option value="tutti">Tutti</option><option value="td">Tempo determinato (non stagionale)</option><option value="stagionali">Stagionali</option><option value="intermittente">Intermittenti a termine</option><option value="cococo">Co.co.co.</option><option value="tirocinio">Tirocini</option><option value="distacco">Distacchi</option></select></div>
+        <div><label for="ctQ">Cerca dipendente o sede</label><input id="ctQ" type="search" autocomplete="off" placeholder="Es. Rossi, Scala…"></div>
+        <button class="btn ghost" type="button" id="ctReset">Azzera filtri</button>
+      </div>
+      <div id="ctHead"></div>
+      <div class="chips" id="ctChips" role="group" aria-label="Filtra per scadenza"></div>
+      <div class="kpis" id="ctKpi"></div>
+      <div id="ctBody"></div>
+      <p class="sc-legend">Limiti controllati per il tempo determinato (D.Lgs. 81/2015): 12 mesi senza causale, 24 con causale, massimo 4 proroghe. I contratti stagionali, intermittenti, le collaborazioni e i tirocini non hanno questi limiti. La durata è calcolata dall'assunzione all'ultima scadenza e non tiene conto di contratti precedenti con lo stesso lavoratore.</p>`;
+    $("#ctAz").addEventListener("change", e=>{ CT.az = e.target.value; try{ localStorage.setItem("prontuario.ctaz", CT.az); }catch(x){} renderCT(); });
+    $("#ctTipo").addEventListener("change", e=>{ CT.tipo = e.target.value; renderCT(); });
+    $("#ctQ").addEventListener("input", e=>{ CT.q = e.target.value.trim(); renderCT(); });
+    $("#ctReset").addEventListener("click", ()=>{ CT.az="tutte"; CT.tipo="tutti"; CT.q=""; CT.f="attivi"; $("#ctQ").value=""; try{ localStorage.removeItem("prontuario.ctaz"); }catch(x){} renderCT(); });
+    $("#ctNew").addEventListener("click", ()=>openCTEditor(null));
+    root.addEventListener("click", e=>{
+      const t = e.target.closest("[data-ctf],[data-ctpr],[data-ctedit],[data-ctaz],[data-ctcl]"); if(!t) return;
+      if(t.dataset.ctf){ CT.f = t.dataset.ctf; renderCT(); }
+      else if(t.dataset.ctaz){ CT.az = t.dataset.ctaz; renderCT(); }
+      else if(t.dataset.ctpr){ openCTProroga(CT.list.find(x=>x._id===t.dataset.ctpr)); }
+      else if(t.dataset.ctedit){ openCTEditor(CT.list.find(x=>x._id===t.dataset.ctedit)); }
+      else if(t.dataset.ctcl){ CL.q=""; CL.f="tutti"; setView("clienti"); }
+    });
+  }
+  $("#ctNew").hidden = !state.canWrite;
+  const all = CT.list.map(c=>({c, I:ctInfo(c)}));
+  // azienda select
+  const byAz = {}; all.forEach(({c,I})=>{ const k = ctAzKey(c); (byAz[k] = byAz[k] || {n:0, att:0}); byAz[k].n++; if(I.st!=="chiuso") byAz[k].att++; });
+  if(CT.az!=="tutte" && !byAz[CT.az] && CT.loaded){ const cl = CL.list.find(x=>x._id===CT.az); if(!cl) CT.az = "tutte"; }
+  const azKeys = Object.keys(byAz).sort((a,b)=>ctAzName(a).localeCompare(ctAzName(b)));
+  if(CT.az!=="tutte" && !byAz[CT.az]) azKeys.unshift(CT.az);
+  $("#ctAz").innerHTML = `<option value="tutte">Tutte le aziende (${all.filter(x=>x.I.st!=="chiuso").length} contratti attivi)</option>` + azKeys.map(k=>`<option value="${esc(k)}" ${CT.az===k?"selected":""}>${esc(ctAzName(k))} (${byAz[k]?byAz[k].att:0})</option>`).join("");
+  $("#ctAz").value = CT.az; $("#ctTipo").value = CT.tipo;
+  // azienda header
+  const head = $("#ctHead");
+  if(CT.az!=="tutte"){
+    const cl = CL.list.find(x=>x._id===CT.az), mine = all.filter(x=>ctAzKey(x.c)===CT.az && x.I.st!=="chiuso");
+    const nxt = mine.filter(x=>x.I.last && x.I.gg>=0).sort((a,b)=>a.I.last-b.I.last)[0];
+    head.innerHTML = `<div class="ct-head"><h3>${esc(ctAzName(CT.az))}</h3>
+      <span><b>${mine.length}</b> contratti attivi</span><span><b>${mine.filter(x=>x.I.st==="scaduto").length}</b> scaduti da aggiornare</span><span><b>${mine.filter(x=>x.I.st==="7"||x.I.st==="30").length}</b> in scadenza entro 30 giorni</span>
+      ${nxt?`<span>Prossima scadenza: <b>${fmtD(nxt.I.last)}</b> (${esc(nxt.c.dipendente)})</span>`:""}
+      ${cl?`<span>CCNL: <b>${cl.ccnl?esc(P.ccName(cl.ccnl)):esc(cl.ccnl_testo||"—")}</b></span><span>In anagrafica: <b>${cl.ti||0}</b> T.I. · <b>${cl.td||0}</b> T.D.</span>`:`<span>Azienda non presente in anagrafica clienti</span>`}</div>`;
+  } else head.innerHTML = "";
+  // chips
+  const base = all.filter(x=>ctPass(x.c, x.I, true));
+  const cnt = f => base.filter(x=>{ const o=CT.f; CT.f=f; const r=ctPass(x.c,x.I); CT.f=o; return r; }).length;
+  const chip = (k,l,col) => `<button class="chip" type="button" data-ctf="${k}" aria-pressed="${CT.f===k}"><span class="dot" style="--cc:${col}"></span>${l} <span class="n">${cnt(k)}</span></button>`;
+  $("#ctChips").innerHTML = chip("attivi","Attivi","var(--ink)") + chip("scaduti","Scaduti da aggiornare","var(--danger)") + chip("7","Entro 7 giorni","var(--danger)") + chip("30","Entro 30 giorni","var(--warn)") + chip("avvisi","Con avvisi","var(--warn)") + chip("chiusi","Chiusi","var(--muted)") + chip("tutti","Tutti","var(--muted)");
+  const rows = base.filter(x=>ctPass(x.c, x.I)).sort((a,b)=> (a.I.last?0:1)-(b.I.last?0:1) || (a.I.last-b.I.last) || (a.c.dipendente||"").localeCompare(b.c.dipendente||""));
+  $("#ctKpi").innerHTML = CT.loaded ? `<span><b>${rows.length}</b> contratti mostrati</span>${CT.az==="tutte"?(n=>`<span><b>${n}</b> ${n===1?"azienda":"aziende"}</span>`)(new Set(rows.map(x=>ctAzKey(x.c))).size):""}<span><b>${rows.filter(x=>x.c.stagionale).length}</b> stagionali</span><span><b>${rows.filter(x=>x.I.avv.length).length}</b> con avvisi</span>` : "";
+  const body = $("#ctBody");
+  if(!CT.loaded){ body.innerHTML = `<div class="empty"><h3>Caricamento dei contratti…</h3></div>`; return; }
+  if(!CT.list.length){ body.innerHTML = `<div class="empty"><h3>Nessun contratto a termine</h3><p>${state.canWrite?"Aggiungi il primo con «Nuovo contratto».":"Qui compariranno i contratti a termine dei clienti."}</p></div>`; return; }
+  if(!rows.length){ body.innerHTML = `<div class="empty"><h3>Nessun contratto con questi filtri</h3><p>Cambia azienda, tipo o stato, oppure usa «Azzera filtri».</p></div>`; return; }
+  const one = CT.az!=="tutte";
+  body.innerHTML = `<div class="tblwrap"><table class="cl"><thead><tr><th>Scadenza</th><th>Stato</th><th>Dipendente</th>${one?"<th>Sede</th>":"<th>Azienda</th>"}<th>Assunzione</th><th class="num">Proroghe</th><th class="num">Durata</th><th>Avvisi e note</th><th></th></tr></thead><tbody>
+    ${rows.map(({c,I})=>{
+      const [cls,lbl] = CT_ST[I.st];
+      const isTd = c.tipo==="td" && !c.stagionale;
+      const pr = (c.scadenze||[]).slice(0,-1);
+      const tags = `<span class="ct-tag">${esc(CT_TIPI[c.tipo]||c.tipo)}</span>${c.stagionale?`<span class="ct-tag st">Stagionale</span>`:""}${c.causale?`<span class="ct-tag">Con causale</span>`:""}`;
+      return `<tr>
+        <td class="sc-date">${I.last?fmtD(I.last):"—"}<span class="sc-sub">${I.st==="chiuso"?esc(c.stato==="trasformato"?"trasformato a tempo indeterminato":"cessato"):esc(ggTxt(I.gg))}</span></td>
+        <td><span class="sc-st ${cls}">${lbl}</span></td>
+        <td class="az">${esc(c.dipendente||"")}<br>${tags}</td>
+        <td>${one?esc(c.sede||"—"):`<button class="btn ghost sm" type="button" data-ctaz="${esc(ctAzKey(c))}" title="Mostra solo questa azienda">${esc(ctAzName(ctAzKey(c)))}</button>${c.sede?`<span class="ccraw">${esc(c.sede)}</span>`:""}`}</td>
+        <td>${c.assunzione?fmtD(parseD(c.assunzione)):"—"}</td>
+        <td class="num">${isTd?`${I.nPr}/4`:I.nPr}${pr.length?`<span class="ct-dates">${pr.map(d=>fmtD(parseD(d))).join(" → ")} → ${I.last?fmtD(I.last):""}</span>`:""}</td>
+        <td class="num">${I.mesi!=null?`${fmtN(I.mesi,1)} mesi`:"—"}${isTd&&I.mesi!=null&&I.st!=="chiuso"?`<span class="ct-dates">${c.causale?`residuo ${fmtN(Math.max(0,24-I.mesi),1)} su 24`:`residuo ${fmtN(Math.max(0,12-I.mesi),1)} su 12`}</span>`:""}</td>
+        <td>${I.avv.map(a=>`<span class="ct-tag warn">${esc(a)}</span>`).join("")}${c.note?`<span class="ccraw">${esc(c.note)}</span>`:""}</td>
+        <td><div class="rowact">${state.canWrite&&I.st!=="chiuso"?`<button class="btn sm" type="button" data-ctpr="${esc(c._id)}">Proroga</button>`:""}${state.canWrite?`<button class="btn ghost sm" type="button" data-ctedit="${esc(c._id)}">Modifica</button>`:""}</div></td></tr>`;
+    }).join("")}</tbody></table></div>`;
+}
+async function ctSave(id, doc, msg){
+  doc.aggiornatoIl = new Date().toISOString(); doc.aggiornatoDa = state.myId || "";
+  await state.db.collection("contratti").doc(id).set(doc); P.closeModal(); P.toast(msg);
+}
+function ctClean(c){ return Object.fromEntries(Object.entries(c).filter(([k])=>k!=="_id")); }
+function openCTProroga(c){
+  if(!c) return; const I = ctInfo(c), isTd = c.tipo==="td" && !c.stagionale;
+  P.modal(`<h2>Proroga · ${esc(c.dipendente)}</h2>
+    <p class="sc-sub">${esc(ctAzName(ctAzKey(c)))}${c.sede?" · "+esc(c.sede):""} — scadenza attuale ${I.last?fmtD(I.last):"non indicata"}${isTd?` · proroghe usate ${I.nPr}/4`:""}</p>
+    <form class="fg" novalidate><div class="field"><label for="p-new">Nuova scadenza</label><input id="p-new" type="date" value="${I.last?isoD(addMonths(I.last,1)):""}"></div>
+    ${isTd?`<label class="check field"><input type="checkbox" id="p-caus" ${c.causale?"checked":""}> Con causale (oltre 12 mesi)</label>`:""}
+    <div class="field full"><label for="p-note">Nota (facoltativa)</label><input id="p-note" value=""></div>
+    <div class="err full" id="p-err" style="grid-column:1/-1"></div></form>
+    <div class="modal-actions"><div class="r"><button class="btn" type="button" id="p-cancel">Annulla</button><button class="btn primary" type="button" id="p-save">Registra proroga</button></div></div>`);
+  $("#p-cancel").onclick = P.closeModal;
+  $("#p-save").onclick = async ()=>{
+    const v = $("#p-new").value; if(!v){ $("#p-err").textContent = "Inserisci la nuova scadenza."; return; }
+    if(I.last && v <= isoD(I.last)){ $("#p-err").textContent = "La nuova scadenza deve essere successiva a quella attuale."; return; }
+    const doc = ctClean(c); doc.scadenze = [...(c.scadenze||[]), v];
+    if($("#p-caus")) doc.causale = $("#p-caus").checked;
+    const nt = $("#p-note").value.trim(); if(nt) doc.note = [c.note, nt].filter(Boolean).join(" · ");
+    const J = ctInfo(doc);
+    if(isTd && (J.nPr > 4 || J.mesi > 24.02 || (J.mesi > 12.02 && !doc.causale)) && !$("#p-save").dataset.ok){ $("#p-err").textContent = `Attenzione: ${J.avv.filter(a=>!a.startsWith("Scaduto")).join(", ")}. Premi di nuovo per registrare comunque.`; $("#p-save").dataset.ok = "1"; return; }
+    try{ await ctSave(c._id, doc, "Proroga registrata"); }catch(e){ $("#p-err").textContent = P.errMsg(e); }
+  };
+}
+function openCTEditor(c){
+  const isNew = !c; c = c || { cliente: CT.az!=="tutte" && !CT.az.startsWith("x:") ? CT.az : "", azienda:"", sede:"", dipendente:"", tipo:"td", stagionale:false, causale:false, assunzione:"", scadenze:[""], note:"", stato:"attivo" };
+  const sc = (c.scadenze && c.scadenze.length ? c.scadenze : [""]);
+  const clOpts = `<option value="">— Azienda non in anagrafica —</option>` + [...CL.list].sort((a,b)=>a.azienda.localeCompare(b.azienda)).map(x=>`<option value="${esc(x._id)}" ${c.cliente===x._id?"selected":""}>${esc(x.azienda)}${x.n!=null?` (n. ${x.n})`:""}</option>`).join("");
+  const dateRow = (v,i) => `<div class="row2"><input type="date" data-sd="${i}" value="${esc(v||"")}" aria-label="${i?`Proroga ${i}`:"Fine iniziale"}"><span class="sc-sub" style="align-self:center">${i?`${i}ª proroga`:"Fine iniziale"}</span></div>`;
+  P.modal(`<h2>${isNew?"Nuovo contratto a termine":"Modifica contratto"}</h2>
+   <form class="fg" novalidate>
+    <div class="field"><label for="e-cl">Azienda (anagrafica)</label><select id="e-cl">${clOpts}</select></div>
+    <div class="field"><label for="e-az">Nome azienda (se non in anagrafica)</label><input id="e-az" value="${esc(c.azienda||"")}"></div>
+    <div class="field"><label for="e-dip">Dipendente</label><input id="e-dip" value="${esc(c.dipendente||"")}"></div>
+    <div class="field"><label for="e-sede">Sede / filiale</label><input id="e-sede" value="${esc(c.sede||"")}"></div>
+    <div class="field"><label for="e-tipo">Tipo</label><select id="e-tipo">${Object.entries(CT_TIPI).map(([k,l])=>`<option value="${k}" ${c.tipo===k?"selected":""}>${l}</option>`).join("")}</select></div>
+    <div class="field"><label for="e-ass">Assunzione</label><input id="e-ass" type="date" value="${esc(c.assunzione||"")}"></div>
+    <label class="check field"><input type="checkbox" id="e-sta" ${c.stagionale?"checked":""}> Stagionale</label>
+    <label class="check field"><input type="checkbox" id="e-cau" ${c.causale?"checked":""}> Con causale</label>
+    <div class="field full"><label>Scadenze (fine iniziale e proroghe, in ordine)</label><div class="dates" id="e-dates">${sc.map(dateRow).join("")}</div>
+      <button class="btn sm" type="button" id="e-add" style="align-self:flex-start;margin-top:6px">+ Aggiungi proroga</button></div>
+    <div class="field"><label for="e-stato">Stato</label><select id="e-stato"><option value="attivo">Attivo</option><option value="cessato" ${c.stato==="cessato"?"selected":""}>Cessato</option><option value="trasformato" ${c.stato==="trasformato"?"selected":""}>Trasformato a tempo indeterminato</option></select></div>
+    <div class="field full"><label for="e-note">Note</label><textarea id="e-note" rows="2">${esc(c.note||"")}</textarea></div>
+    <div class="err full" id="e-err" style="grid-column:1/-1"></div>
+   </form>
+   <div class="modal-actions">${isNew?"":`<button class="btn danger" type="button" id="e-del">Elimina</button>`}
+    <div class="r"><button class="btn" type="button" id="e-cancel">Annulla</button><button class="btn primary" type="button" id="e-save">Salva</button></div></div>`);
+  $("#e-cancel").onclick = P.closeModal;
+  $("#e-add").onclick = ()=>{ const box = $("#e-dates"), n = box.querySelectorAll("[data-sd]").length; box.insertAdjacentHTML("beforeend", dateRow("", n)); };
+  if(!isNew){ let armed=false; $("#e-del").onclick = async ()=>{ if(!armed){ armed=true; $("#e-del").textContent="Conferma eliminazione"; return; }
+    try{ await state.db.collection("contratti").doc(c._id).delete(); P.closeModal(); P.toast("Contratto eliminato"); }catch(e){ $("#e-err").textContent=P.errMsg(e); } }; }
+  $("#e-save").onclick = async ()=>{
+    const cliente = $("#e-cl").value, clRec = CL.list.find(x=>x._id===cliente);
+    const azienda = $("#e-az").value.trim() || (clRec ? clRec.azienda : "");
+    const dip = $("#e-dip").value.trim();
+    if(!azienda){ $("#e-err").textContent = "Scegli l'azienda o scrivine il nome."; return; }
+    if(!dip){ $("#e-err").textContent = "Inserisci il dipendente."; return; }
+    const scad = [...document.querySelectorAll("#e-dates [data-sd]")].map(x=>x.value).filter(Boolean);
+    if(!scad.length){ $("#e-err").textContent = "Inserisci almeno la data di fine."; return; }
+    const doc = { ...(isNew?{}:ctClean(c)), cliente, azienda, sede:$("#e-sede").value.trim(), dipendente:dip, tipo:$("#e-tipo").value,
+      stagionale:$("#e-sta").checked, causale:$("#e-cau").checked, assunzione:$("#e-ass").value, scadenze:scad, note:$("#e-note").value.trim(), stato:$("#e-stato").value };
+    if(isNew) doc.fonte = "Inserito dalla pagina";
+    const id = isNew ? "t-" + Date.now().toString(36) + Math.random().toString(36).slice(2,6) : c._id;
+    try{ await ctSave(id, doc, isNew?"Contratto aggiunto":"Contratto salvato"); }catch(e){ $("#e-err").textContent = P.errMsg(e); }
   };
 }
 
@@ -1531,7 +1749,7 @@ function wirePeriods(){
 let startView = "prontuario";
 try{ const v = localStorage.getItem("prontuario.view"); if(v) startView = v; }catch(e){}
 const h = (location.hash||"").replace("#","");
-if(["prontuario","clienti","calcolatori","scadenziario"].includes(h)) startView = h;
+if(["prontuario","clienti","calcolatori","scadenziario","termine"].includes(h)) startView = h;
 setView(startView);
 })();
 </script>

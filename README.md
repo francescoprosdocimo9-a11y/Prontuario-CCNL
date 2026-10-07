@@ -10,3 +10,4 @@ Materiale di lavoro dell'artefatto «Prontuario CCNL» (database condiviso con l
 - `gen/infortunio.py` – regole del calcolatore infortunio per ogni CCNL (campo `infortunio` di `regoleJson`; Commercio e Metalmeccanica sono incorporati nella pagina). Uso: `python3 -I gen/infortunio.py <cartella con ccnl/<id>.json> <uscita>` per preparare gli aggiornamenti.
 
 Tutte le schede generate sono marcate «Da verificare»: vanno controllate sul testo del CCNL prima dell'uso.
+- `gen/contratti_termine.py` – importa lo scadenziario Excel dei contratti a termine nella collezione `contratti` (un documento per contratto: cliente, sede, dipendente, tipo, assunzione, scadenze e proroghe, note, stato). I dati dei dipendenti non sono salvati nel repository.
