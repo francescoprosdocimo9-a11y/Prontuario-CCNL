@@ -111,6 +111,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .tbl th,.tbl td{padding:6px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
 .tbl th{background:var(--accent-soft);font-weight:600;font-size:12px;white-space:nowrap}
 .tbl tr:last-child td{border-bottom:0}
+.tbl .num{text-align:right;white-space:nowrap}
 .att{background:var(--warn-bg);color:var(--ink);border-radius:8px;padding:9px 12px;font-size:13.5px}
 .att b{color:var(--warn)}
 .foot{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
@@ -619,6 +620,7 @@ const num = v => { const x = parseFloat(String(v??"").replace(/\./g,"").replace(
 const today = new Date();
 
 /* ================= CCNL rules used by the calculators ================= */
+const INF_HARD = {"commercio":{"casi":[{"nome":"Lavoratori","fasce":[{"dal":1,"al":3,"tot":60},{"dal":4,"al":19,"tot":90},{"dal":20,"al":null,"tot":100}]},{"nome":"Apprendisti","fasce":[{"dal":1,"al":3,"tot":60},{"dal":4,"al":19,"tot":80},{"dal":20,"al":null,"tot":90}]}],"base":"netto","comporto":{"tipo":"separato","txt":"Comporto di 180 giorni distinto da quello per malattia; poi aspettativa non retribuita per la durata dell'inabilità (art. 198)."},"nota":"Il testo conta come 1° giorno quello dell'evento: 90% dal 5° al 20° giorno, 100% dal 21°. Se l'INAIL non paga, il datore non integra.","art":"Artt. 192-193, 198","giorno":100},"metalmeccanica":{"casi":[{"nome":"Anzianità fino a 3 anni","fasce":[{"dal":1,"al":183,"tot":100}]},{"nome":"Anzianità da 3 a 6 anni","fasce":[{"dal":1,"al":274,"tot":100}]},{"nome":"Anzianità oltre 6 anni","fasce":[{"dal":1,"al":365,"tot":100}]}],"base":"netto","comporto":{"tipo":"escluso","txt":"Posto conservato fino alla guarigione clinica; l'infortunio non conta nel comporto di malattia."},"nota":"Integrazione fino al normale trattamento netto per la durata del comporto breve; oltre resta la sola indennità INAIL.","art":"Sez. IV, Tit. VI, art. 1","giorno":100}};
 const RULES = {
   commercio: {
     nome: "Commercio (Confcommercio)",
@@ -635,6 +637,7 @@ const RULES = {
     minimiNota: "paga base + contingenza (Quadri compresa l'indennità di funzione)",
     fraz: d => d>=15, frazTxt: "15 giorni o più",
     divOra: 168, divGiorno: 26, mensilita: 14,
+    infortunio: INF_HARD.commercio,
     art: { preavviso:"Artt. 251, 252, 256", prova:"Art. 124", scatti:"Art. 209", malattia:"Artt. 190-191", comporto:"Artt. 190, 196", ratei:"Art. 208", straord:"Artt. 152, 154, 156, 96" }
   },
   metalmeccanica: {
@@ -653,6 +656,7 @@ const RULES = {
     minimiNota: "minimo tabellare (2027 e 2028: valori minimi garantiti, soggetti a verifica IPCA)",
     fraz: d => d>15, frazTxt: "più di 15 giorni",
     divOra: 173, divGiorno: 26, mensilita: 13,
+    infortunio: INF_HARD.metalmeccanica,
     art: { preavviso:"Sez. IV, Tit. VIII, art. 1", prova:"Sez. IV, Tit. I, art. 2", scatti:"Sez. IV, Tit. IV, art. 6", malattia:"Sez. IV, Tit. VI, art. 2", comporto:"Sez. IV, Tit. VI, art. 2", ratei:"Tit. III, art. 10; Tit. IV, art. 7", straord:"Sez. IV, Tit. III, art. 7; Tit. I, art. 4" }
   }
 };
@@ -905,7 +909,7 @@ function openScadEditor(id){
 /* ================= CALCOLATORI ================= */
 const CALC = { cc:"commercio", tool:"preavviso", periods:[{dal:"",al:"",tipo:"malattia"}] };
 try{ const t=localStorage.getItem("prontuario.calc"); if(t) CALC.tool=t; }catch(e){}
-const TOOLS = [["preavviso","Preavviso"],["prova","Periodo di prova"],["comporto","Comporto"],["malattia","Malattia"],["ratei","Ratei"],["scatti","Scatti di anzianità"],["straord","Straordinario e maggiorazioni"]];
+const TOOLS = [["preavviso","Preavviso e indennità"],["infortunio","Infortunio"],["tfr","TFR"],["prova","Periodo di prova"],["comporto","Comporto"],["malattia","Malattia"],["ratei","Ratei"],["scatti","Scatti di anzianità"],["straord","Straordinario e maggiorazioni"]];
 
 function ccSelect(id){ return `<div class="field"><label for="${id}">CCNL</label><select id="${id}">${calcIds().map(k=>`<option value="${k}" ${CALC.cc===k?"selected":""}>${esc(RULES[k]?RULES[k].nome:(P.ccName(k)))}</option>`).join("")}</select></div>`; }
 function livSelect(id, sel){ const R=rulesOf(CALC.cc); if(R.generic) sel = R.livelloDefault || R.livelli[Math.floor(R.livelli.length/2)]; return `<div class="field"><label for="${id}">Livello</label><select id="${id}">${R.livelli.map(l=>`<option ${sel===l?"selected":""}>${l}</option>`).join("")}</select></div>`; }
@@ -932,6 +936,7 @@ function renderCalc(){
   const form = $("#calcForm");
   form.addEventListener("input", compute); form.addEventListener("change", compute);
   if(CALC.tool==="comporto") wirePeriods();
+  const met = $("#f-met"); if(met) met.addEventListener("change", ()=>renderCalc());
   compute();
 }
 function compute(){ const out = $("#calcOut"); try{ const R = rulesOf(CALC.cc); out.innerHTML = (R.generic ? GCALCS : CALCS)[CALC.tool](R); }catch(e){ console.error(e); out.innerHTML = `<div class="empty">Controlla i dati inseriti.</div>`; } }
@@ -943,7 +948,9 @@ const FORMS = {
   preavviso: R => `<h3>Preavviso</h3>${ccSelect("c-cc")}${livSelect("p-liv", CALC.cc==="commercio"?"IV":"C2")}
     <div class="row2">${fld("p-ass","Data di assunzione","date")}${fld("p-ces","Data comunicazione","date",isoD(today))}</div>
     <div class="field"><label for="p-tipo">Chi recede</label><select id="p-tipo"><option value="dim">Dimissioni del lavoratore</option><option value="lic">Licenziamento</option></select></div>
-    ${fld("p-ret","Retribuzione mensile lorda (facoltativa)","text","","inputmode=decimal placeholder='Es. 1.781,68'")}`,
+    ${fld("p-ret","Retribuzione mensile lorda (vuoto = minimo del livello)","text","","inputmode=decimal placeholder='Es. 1.781,68'")}
+    ${fld("p-alt","Altri elementi fissi e continuativi mensili (superminimi, indennità…)","text","","inputmode=decimal placeholder='0'")}
+    ${fld("p-lav","Giorni di preavviso già lavorati","number","0","min=0")}`,
   prova: R => `<h3>Periodo di prova</h3>${ccSelect("c-cc")}${livSelect("r-liv", CALC.cc==="commercio"?"IV":"C2")}
     ${fld("r-ass","Data di assunzione","date",isoD(today))}
     ${CALC.cc==="commercio" ? `<div class="field"><label for="r-gg">Giorni lavorativi a settimana</label><select id="r-gg"><option value="6">6 (lunedì-sabato)</option><option value="5">5 (lunedì-venerdì)</option></select></div>` :
@@ -1026,15 +1033,15 @@ const CALCS = {
       const c = new Date(ces); const start = c.getDate()===1 ? c : c.getDate()<=16 ? new Date(c.getFullYear(),c.getMonth(),16) : new Date(c.getFullYear(),c.getMonth()+1,1);
       const end = addDays(start, gg-1);
       out += big("Preavviso", `${gg} giorni di calendario`, `${tipo==="lic"?"Licenziamento":"Dimissioni"} · livello ${liv} (${R.gruppiNomi[g]}) · anzianità ${fasciaTxt} (${fmtN(anni,1)} anni)`);
-      out += `<div class="outgrid">${big("Decorre dal", fmtD(start), "1° o 16° del mese")}${big("Ultimo giorno", fmtD(end))}`;
-      if(ret) out += big("Indennità sostitutiva (stima)", fmtE(ret*14/12*gg/30), "retribuzione di fatto con ratei di 13ª e 14ª, rapportata ai giorni");
-      out += `</div>`;
-      out += noteBox(`Il termine decorre dal 1° o dal 16° giorno del mese successivo alla comunicazione. La stima dell'indennità usa mensile × 14/12 ÷ 30 × giorni: verifica in procedura paghe il criterio usato dallo studio. ${R.art.preavviso}.`);
+      out += `<div class="outgrid">${big("Decorre dal", fmtD(start), "1° o 16° del mese")}${big("Ultimo giorno", fmtD(end))}</div>`;
+      out += indennitaPreav(R, liv, {g:gg}, gg, ces, tipo);
+      out += noteBox(`Il termine decorre dal 1° o dal 16° giorno del mese successivo alla comunicazione. ${R.art.preavviso}.`);
     } else {
       const d = R.preavvDur[f][g], mens = R.preavvMens[f][g];
       const start = addDays(ces,1), end = addDays(addDur(ces, d),0);
       out += big("Preavviso", R.preavvTxt[f][g], `${tipo==="lic"?"Licenziamento":"Dimissioni"} · livello ${liv} (${R.gruppiNomi[g]}) · anzianità ${fasciaTxt} (${fmtN(anni,1)} anni)`);
-      out += `<div class="outgrid">${big("Decorre dal", fmtD(start), "giorno dopo il ricevimento")}${big("Termina il", fmtD(end))}${big("Indennità sostitutiva", `${fmtN(mens,2)} mensilità`, ret?`${fmtE(ret*mens)} sulla retribuzione indicata`:"")}</div>`;
+      out += `<div class="outgrid">${big("Decorre dal", fmtD(start), "giorno dopo il ricevimento")}${big("Termina il", fmtD(end))}</div>`;
+      out += indennitaPreav(R, liv, d, dayDiff(start,end)+1, ces, tipo);
       out += noteBox(`I termini decorrono dal ricevimento della comunicazione; il periodo si calcola dal giorno successivo. Durante il preavviso di licenziamento spettano permessi per cercare lavoro. ${R.art.preavviso}.`);
     }
     return out;
@@ -1207,7 +1214,9 @@ const GFORMS = {
   preavviso: R => `<h3>Preavviso</h3>${ccSelect("c-cc")}${R.preavviso?`${livSelect("p-liv")}
     <div class="row2">${fld("p-ass","Data di assunzione","date")}${fld("p-ces","Data comunicazione","date",isoD(today))}</div>
     <div class="field"><label for="p-tipo">Chi recede</label><select id="p-tipo"><option value="dim">Dimissioni del lavoratore</option><option value="lic">Licenziamento</option></select></div>
-    ${fld("p-ret","Retribuzione mensile lorda (facoltativa)","text","","inputmode=decimal")}`:""}`,
+    ${fld("p-ret","Retribuzione mensile lorda (vuoto = minimo del livello)","text","","inputmode=decimal ")}
+    ${fld("p-alt","Altri elementi fissi e continuativi mensili (superminimi, indennità…)","text","","inputmode=decimal placeholder='0'")}
+    ${fld("p-lav","Giorni di preavviso già lavorati","number","0","min=0")}`:""}`,
   prova: R => `<h3>Periodo di prova</h3>${ccSelect("c-cc")}${R.prova?`${livSelect("r-liv")}${fld("r-ass","Data di assunzione","date",isoD(today))}
     ${Object.values(R.prova.livelli||{}).some(p=>p.g&&p.effettivo)?`<div class="field"><label for="r-gg">Giorni lavorativi a settimana</label><select id="r-gg"><option value="6">6 (lunedì-sabato)</option><option value="5">5 (lunedì-venerdì)</option></select></div>`:""}`:""}`,
   comporto: R => { const C=R.comporto; if(!C) return `<h3>Comporto</h3>${ccSelect("c-cc")}`;
@@ -1253,11 +1262,10 @@ const GCALCS = {
     const decTxt = dec==="1-16" ? "1° o 16° del mese" : dec==="fine-mese" ? "dal mese successivo" : "giorno dopo la comunicazione";
     let out = big("Preavviso", durLabel(d, lav), `${tipo==="lic"?"Licenziamento":"Dimissioni"} · livello ${esc(liv)}${(R.gruppi||[]).length>1?` (${esc(R.gruppi[g].nome)})`:""} · anzianità ${esc(PV.fasce[f].label||"")} (${fmtN(anni,1)} anni)`);
     if(end){
-      out += `<div class="outgrid">${big("Decorre dal", fmtD(start), decTxt)}${big("Ultimo giorno", fmtD(end), lav&&d.g&&!d.m?"stima: 6 giorni lavorativi a settimana, senza festività":"")}`;
-      if(ret) out += big("Indennità sostitutiva (stima)", fmtE(ret*(R.mensilita||13)/12*ggCal/30), `retribuzione con ratei di ${R.mensilita||13} mensilità, rapportata a ${ggCal} giorni`);
-      out += `</div>`;
+      out += `<div class="outgrid">${big("Decorre dal", fmtD(start), decTxt)}${big("Ultimo giorno", fmtD(end), lav&&d.g&&!d.m?"stima: 6 giorni lavorativi a settimana, senza festività":"")}</div>`;
+      out += indennitaPreav(R, liv, lav&&d.g&&!d.m ? {g:ggCal} : d, ggCal, ces, tipo);
     }
-    out += noteBox(`${notaTxt(PV)} La stima dell'indennità usa mensile × ${R.mensilita||13}/12 ÷ 30 × giorni di calendario: verifica in procedura paghe il criterio dello studio.${artTxt(PV)}`);
+    out += noteBox(`${notaTxt(PV)}${artTxt(PV)}`);
     return out;
   },
   prova(R){
@@ -1368,6 +1376,140 @@ const GCALCS = {
     return out;
   }
 };
+
+/* ================= INDENNITÀ DI PREAVVISO, INFORTUNIO, TFR ================= */
+function indennitaPreav(R, liv, d, ggCal, rif, tipo){
+  const ret = num(val("p-ret")), alt = num(val("p-alt")), lav = Math.max(0, parseInt(val("p-lav","0"),10)||0);
+  const minimo = minimoInfo(CALC.cc, liv, rif).val, mens = ret || minimo;
+  if(!mens) return noteBox("Inserisci la retribuzione mensile per calcolare l'indennità sostitutiva: per questo CCNL il minimo del livello non è disponibile.");
+  const mensil = R.mensilita || 13, fisso = mens + alt, ratei = fisso*(mensil-12)/12, base = fisso + ratei, gior = base/30;
+  let imp, how;
+  if(lav >= ggCal) return big("Indennità sostitutiva", fmtE(0), "il preavviso è stato lavorato per intero");
+  if(!lav && d.m){ imp = base*d.m + gior*(d.g||0); how = `${fmtE(base)} × ${d.m} ${d.m===1?"mese":"mesi"}${d.g?` + ${d.g} giorni × ${fmtE(gior)}`:""}`; }
+  else { const rest = ggCal - lav; imp = gior*rest; how = `${rest} giorni di calendario × ${fmtE(gior)}${lav?` (preavviso di ${ggCal} giorni, ${lav} già lavorati)`:""}`; }
+  const rows = [["Retribuzione mensile", fmtE(mens) + (ret ? "" : " (minimo del livello)")]];
+  if(alt) rows.push(["Altri elementi fissi e continuativi", fmtE(alt)]);
+  rows.push([`Ratei di ${mensil-12} mensilità aggiuntive (÷ 12)`, fmtE(ratei)], ["Base mensile dell'indennità", fmtE(base)], ["Quota giornaliera (÷ 30)", fmtE(gior)]);
+  return big(tipo==="dim" ? "Indennità di mancato preavviso (trattenuta al lavoratore)" : "Indennità sostitutiva del preavviso", fmtE(imp), how) +
+    `<div class="tbl"><table><tbody>${rows.map(r=>`<tr><td>${r[0]}</td><td class="num">${r[1]}</td></tr>`).join("")}</tbody></table></div>` +
+    noteBox(`L'indennità è pari alla retribuzione che sarebbe spettata nel periodo di preavviso non lavorato, compresi i ratei delle mensilità aggiuntive e gli elementi fissi e continuativi (art. 2121 c.c.). Rientra nella base del TFR, è soggetta a contributi e a tassazione separata. ${tipo==="dim"?"Se il lavoratore si dimette senza dare il preavviso, il datore trattiene lo stesso importo dalle competenze finali.":"Se il datore licenzia senza preavviso la paga al lavoratore."} I mesi interi valgono una mensilità ciascuno, i giorni si contano in trentesimi: verifica il criterio della procedura paghe.`);
+}
+
+function formInfortunio(R){
+  const I = R.infortunio, h = `<h3>Infortunio sul lavoro</h3>${ccSelect("c-cc")}`;
+  if(!I) return h;
+  return h + `${I.casi.length>1?`<div class="field"><label for="i-caso">Caso</label><select id="i-caso">${I.casi.map((c,i)=>`<option value="${i}">${esc(c.nome)}</option>`).join("")}</select></div>`:""}
+    ${livSelect("i-liv", CALC.cc==="commercio"?"IV":"C2")}
+    <div class="row2">${fld("i-dal","Data dell'infortunio","date",isoD(today))}${fld("i-al","Ultimo giorno di inabilità (guarigione o rientro presunto)","date",isoD(addDays(today,30)))}</div>
+    ${fld("i-ret","Retribuzione mensile lorda (vuoto = minimo del livello)","text","","inputmode=decimal")}
+    ${I.casi.some(c=>c.coeff)?fld("i-ore","Orario settimanale (operai edili)","number","40","min=1"):""}
+    <label class="check"><input type="checkbox" id="i-ratei" checked> Base INAIL comprensiva dei ratei delle mensilità aggiuntive</label>`;
+}
+function calcInfortunio(R){
+  const I = R.infortunio; if(!I) return na(R, "infortunio");
+  const caso = I.casi[parseInt(val("i-caso","0"),10)||0] || I.casi[0];
+  const liv = val("i-liv"), dal = parseD(val("i-dal")), al = parseD(val("i-al"));
+  if(!dal) return `<div class="empty">Inserisci la data dell'infortunio.</div>`;
+  if(!al || al < dal) return `<div class="empty">Inserisci l'ultimo giorno di inabilità (uguale o successivo alla data dell'infortunio).</div>`;
+  const ret = num(val("i-ret")), mens = ret || minimoInfo(CALC.cc, liv, dal).val;
+  if(!mens) return `<div class="empty">Inserisci la retribuzione mensile: per questo CCNL il minimo del livello non è disponibile.</div>`;
+  const conRatei = val("i-ratei", true) !== false, mensil = R.mensilita || 13;
+  const gior = mens/30, baseI = mens*(conRatei ? mensil/12 : 1)/30;
+  const oraria = mens/(R.divOra||173), ore = num(val("i-ore","40")) || 40;
+  const N = dayDiff(dal, al);
+  const inBand = (x, n) => n >= x.dal && (x.al == null || n <= x.al);
+  const days = [];
+  for(let n=1; n<=N; n++){
+    const ip = n<=3 ? 0 : n<=90 ? 60 : 75, inail = baseI*ip/100, legal = n<=3 ? gior*0.6 : 0;
+    let az = legal, key;
+    if(caso.coeff){ const k = caso.coeff.find(x=>inBand(x,n)); az = legal + (k ? k.k*oraria*ore/7 : 0); key = `${ip}|k${k?k.k:0}`; }
+    else { const f = (caso.fasce||[]).find(x=>inBand(x,n)); if(f && f.tot != null) az = Math.max(legal, gior*f.tot/100 - inail); key = `${ip}|${f?f.dal:"-"}`; }
+    days.push({n, ip, inail, az, key});
+  }
+  const rows = [];
+  days.forEach(x=>{ const r = rows[rows.length-1]; if(r && r.key===x.key){ r.to=x.n; r.inail+=x.inail; r.az+=x.az; } else rows.push({from:x.n, to:x.n, key:x.key, ip:x.ip, inail:x.inail, az:x.az}); });
+  const g0 = gior*(I.giorno ?? 100)/100;
+  const sumI = rows.reduce((a,r)=>a+r.inail,0), sumA = g0 + rows.reduce((a,r)=>a+r.az,0), full = gior*(N+1);
+  const pc = v => { v = Math.round(v*10)/10; return `${fmtN(v, v%1 ? 1 : 0)}%`; };
+  const dRange = r => r.from===r.to ? fmtD(addDays(dal,r.from)) : `${fmtD(addDays(dal,r.from))} – ${fmtD(addDays(dal,r.to))}`;
+  const nRange = r => r.from===r.to ? `${r.from}°` : `${r.from}°–${r.to}°`;
+  let out = big("Totale dell'evento (stima)", fmtE(sumI+sumA), `${N+1} giorni di calendario compreso il giorno dell'infortunio · ${pc((sumI+sumA)/full*100)} della retribuzione piena`);
+  out += `<div class="outgrid">${big("A carico INAIL", fmtE(sumI), N>3?"dal 4° giorno: 60% fino al 90°, 75% dal 91°":"nessuna indennità nei primi 3 giorni")}${big("A carico azienda", fmtE(sumA), "giorno dell'evento, carenza e integrazione")}${big("Retribuzione giornaliera", fmtE(gior), `mensile ÷ 30 · base INAIL ${fmtE(baseI)}`)}</div>`;
+  out += `<div class="tbl"><table><thead><tr><th>Giorni</th><th>Date</th><th class="num">INAIL</th><th class="num">Totale garantito</th><th class="num">INAIL €</th><th class="num">Azienda €</th></tr></thead><tbody>
+    <tr><td>Giorno dell'infortunio</td><td>${fmtD(dal)}</td><td class="num">0%</td><td class="num">${pc(I.giorno ?? 100)}</td><td class="num">${fmtE(0)}</td><td class="num">${fmtE(g0)}</td></tr>
+    ${rows.map(r=>{ const n = r.to-r.from+1; const tot = (r.inail+r.az)/(gior*n)*100; return `<tr><td>${nRange(r)}${r.from<=3&&r.to<=3?" (carenza)":""}</td><td>${dRange(r)}</td><td class="num">${pc(r.ip)}</td><td class="num">${pc(tot)}</td><td class="num">${fmtE(r.inail)}</td><td class="num">${fmtE(r.az)}</td></tr>`; }).join("")}
+    </tbody></table></div>`;
+  if(I.comporto) out += big(I.comporto.tipo==="escluso" ? "Comporto: l'infortunio non si somma alla malattia" : I.comporto.tipo==="unico" ? "Comporto: unico con la malattia" : I.comporto.tipo==="separato" ? "Comporto: separato dalla malattia" : "Comporto", "", esc(I.comporto.txt||""));
+  out += noteBox(`${esc(caso.nome)}. ${notaTxt(I)} Stima su giorni di calendario: retribuzione giornaliera = mensile ÷ 30. L'INAIL paga dal 4° giorno successivo all'infortunio il 60% della retribuzione media giornaliera fino al 90° giorno e il 75% dal 91°, domeniche e festivi compresi; nei 3 giorni di carenza il datore paga per legge almeno il 60%. ${I.base==="netto"?"Il CCNL garantisce la percentuale sulla retribuzione netta: il calcolatore la applica al lordo, quindi l'integrazione reale è in genere più bassa. ":""}${caso.coeff?"Operai edili: integrazione = paga oraria × coefficiente × orario settimanale ÷ 7 per ogni giorno indennizzato, oltre al 60% di legge nella carenza. ":""}Le integrazioni spettano solo se l'INAIL riconosce l'infortunio.${artTxt(I)}`);
+  return out;
+}
+
+/* TFR: annual December coefficients and 2026 monthly coefficients (ISTAT, % on the fund at 31/12 of the previous year) */
+const TFR_DEC = {2015:1.5, 2016:1.795304, 2017:2.098205, 2018:2.24184, 2019:1.79383, 2020:1.5, 2021:4.359238, 2022:9.974576, 2023:1.944162, 2024:2.320017, 2025:2.311148};
+const TFR_MON = {2026:[0.363025,0.862716,1.437346,2.311729,2.661543,2.786543,3.136358,3.710988]};
+function tfrCoeff(y, ces){
+  // coefficient of month m applies to terminations from the 15th of m to the 14th of m+1
+  let m = ces.getDate()>=15 ? ces.getMonth() : ces.getMonth()-1;
+  if(m < 0) return {c:0, txt:"cessazione entro il 14 gennaio: nessuna rivalutazione nell'anno"};
+  const L = TFR_MON[y], mese = new Date(y,m,1).toLocaleDateString("it-IT",{month:"long",year:"numeric"});
+  if(m===11 && TFR_DEC[y]!=null) return {c:TFR_DEC[y], txt:`coefficiente di ${mese}`};
+  if(L && L[m]!=null) return {c:L[m], txt:`coefficiente di ${mese}`};
+  if(L && L.length){ const last=L.length-1, varp=L[last]-1.5*(last+1)/12; return {c:1.5*(m+1)/12+varp, txt:`stima: coefficiente di ${mese} non ancora pubblicato, usata l'inflazione di ${new Date(y,last,1).toLocaleDateString("it-IT",{month:"long"})}`, stima:true}; }
+  if(TFR_DEC[y]!=null) return {c:TFR_DEC[y]*(m+1)/12, txt:`stima proporzionale sul coefficiente annuo ${y}`, stima:true};
+  return {c:1.5*(m+1)/12, txt:"stima: solo la quota fissa dell'1,5% annuo", stima:true};
+}
+function mesiUtili(a, b){
+  let n = 0; for(let d = new Date(a.getFullYear(), a.getMonth(), 1); d <= b; d = new Date(d.getFullYear(), d.getMonth()+1, 1)){
+    const me = new Date(d.getFullYear(), d.getMonth()+1, 0), x = a > d ? a : d, y = b < me ? b : me;
+    const gg = y >= x ? dayDiff(x,y)+1 : 0; if(gg >= 15 || gg === me.getDate()) n++;
+  } return n;
+}
+function formTfr(R){
+  const met = val("f-met","fondo");
+  return `<h3>Trattamento di fine rapporto</h3>${ccSelect("c-cc")}
+    <div class="field"><label for="f-met">Metodo</label><select id="f-met"><option value="fondo" ${met==="fondo"?"selected":""}>Dal fondo TFR al 31/12 dell'anno scorso (da cedolino)</option><option value="assunzione" ${met==="assunzione"?"selected":""}>Ricostruzione dall'assunzione (stima)</option></select></div>
+    ${livSelect("f-liv", CALC.cc==="commercio"?"IV":"C2")}
+    <div class="row2">${fld("f-ass","Data di assunzione","date")}${fld("f-ces","Data di cessazione (o di calcolo)","date",isoD(today))}</div>
+    ${fld("f-ret","Retribuzione mensile lorda utile (vuoto = minimo del livello)","text","","inputmode=decimal")}
+    ${fld("f-alt","Altri compensi utili dell'anno in corso (premi, straordinari non occasionali…)","text","","inputmode=decimal placeholder='0'")}
+    ${met==="fondo" ? fld("f-fondo",`Fondo TFR al 31/12/${parseD(val("f-ces"))?.getFullYear()-1 || today.getFullYear()-1} (al netto delle anticipazioni)`,"text","","inputmode=decimal") :
+      fld("f-aum","Aumento medio annuo della retribuzione negli anni passati (%)","text","0","inputmode=decimal") + fld("f-ant","Anticipazioni già erogate","text","","inputmode=decimal placeholder='0'")}`;
+}
+function calcTfr(R){
+  const met = val("f-met","fondo"), liv = val("f-liv"), ass = parseD(val("f-ass")), ces = parseD(val("f-ces")) || today;
+  if(!ass) return `<div class="empty">Inserisci la data di assunzione.</div>`;
+  if(ces < ass) return `<div class="empty">La data di cessazione è precedente all'assunzione.</div>`;
+  const ret = num(val("f-ret")), mens = ret || minimoInfo(CALC.cc, liv, ces).val;
+  if(!mens) return `<div class="empty">Inserisci la retribuzione mensile: per questo CCNL il minimo del livello non è disponibile.</div>`;
+  const mensil = R.mensilita || 13, alt = num(val("f-alt")), Y = ces.getFullYear();
+  const yr = []; let F = 0, y0;
+  if(met==="fondo"){ y0 = Math.max(Y, ass.getFullYear()); F = ass.getFullYear() < Y ? num(val("f-fondo")) : 0; }
+  else {
+    y0 = ass.getFullYear();
+    if(y0 < 2015) return `<div class="empty">Per assunzioni precedenti al 2015 usa il metodo «Dal fondo TFR al 31/12»: il calcolatore ha i coefficienti di rivalutazione dal 2015.</div>`;
+  }
+  const aum = met==="assunzione" ? num(val("f-aum"))/100 : 0;
+  let cy = null;
+  for(let y = y0; y <= Y; y++){
+    const a = new Date(Math.max(ass, new Date(y,0,1))), b = new Date(Math.min(ces, new Date(y,11,31)));
+    const mesi = mesiUtili(a, b), my = mens/Math.pow(1+aum, Y-y);
+    const rau = my*mensil*mesi/12 + (y===Y ? alt : 0);
+    const co = y < Y ? {c:TFR_DEC[y] ?? 1.5, txt:`dicembre ${y}`} : tfrCoeff(y, ces); if(y===Y) cy = co;
+    const F0 = F, riv = F0*co.c/100, imp = riv*0.17, quota = rau/13.5, contr = rau*0.005;
+    F = F0 + riv - imp + quota - contr;
+    yr.push({y, mesi, rau, F0, c:co.c, riv, imp, quota, contr, F});
+  }
+  const ant = met==="assunzione" ? num(val("f-ant")) : 0, tot = F - ant, last = yr[yr.length-1];
+  let out = big("TFR maturato", fmtE(tot), `alla data del ${fmtD(ces)} · al netto dell'imposta sul rivalutato e del contributo 0,50%, prima della tassazione separata`);
+  out += `<div class="outgrid">${big(`Quota ${Y}`, fmtE(last.quota - last.contr), `${last.mesi} mesi · retribuzione utile ${fmtE(last.rau)} ÷ 13,5 meno 0,50%`)}${big(`Rivalutazione ${Y}`, fmtE(last.riv - last.imp), `${fmtN(last.c,6)}% (${esc(cy.txt)}) meno imposta 17%`)}${met==="fondo"?big(`Fondo al 31/12/${Y-1}`, fmtE(last.F0)):big("Anni ricostruiti", `${yr.length}`, ant?`meno anticipazioni ${fmtE(ant)}`:"")}</div>`;
+  out += `<div class="tbl"><table><thead><tr><th>Anno</th><th class="num">Mesi</th><th class="num">Retribuzione utile</th><th class="num">Quota (÷ 13,5)</th><th class="num">Contributo 0,50%</th><th class="num">Coeff.</th><th class="num">Rivalutazione</th><th class="num">Imposta 17%</th><th class="num">Fondo a fine periodo</th></tr></thead><tbody>
+    ${yr.map(r=>`<tr><td>${r.y}</td><td class="num">${r.mesi}</td><td class="num">${fmtE(r.rau)}</td><td class="num">${fmtE(r.quota)}</td><td class="num">−${fmtE(r.contr)}</td><td class="num">${fmtN(r.c,4)}%</td><td class="num">${fmtE(r.riv)}</td><td class="num">−${fmtE(r.imp)}</td><td class="num">${fmtE(r.F)}</td></tr>`).join("")}
+    </tbody></table></div>`;
+  out += noteBox(`Quota annua = retribuzione utile ÷ 13,5 (art. 2120 c.c.), con un mese contato se lavorato per almeno 15 giorni; il contributo dello 0,50% (L. 297/1982) è calcolato sulla retribuzione utile come stima dell'imponibile previdenziale. Il fondo al 31/12 dell'anno precedente si rivaluta dell'1,5% annuo più il 75% dell'inflazione ISTAT (coefficienti ufficiali di dicembre 2015-2025 e mensili 2026 fino ad agosto), con imposta sostitutiva del 17%. ${cy&&cy.stima?"Il coefficiente dell'anno di cessazione è stimato. ":""}${met==="assunzione"?"La ricostruzione usa la stessa retribuzione per tutti gli anni (ridotta dell'aumento medio indicato): per un importo esatto usa il fondo al 31/12 del cedolino. ":""}Nei periodi di malattia, infortunio e maternità conta la retribuzione che sarebbe spettata. Se il TFR va a un fondo pensione o al Fondo di Tesoreria INPS, il calcolo indica il maturato ma l'azienda paga solo la parte rimasta in azienda. Non è calcolata la tassazione separata del TFR liquidato.`);
+  return out;
+}
+FORMS.infortunio = GFORMS.infortunio = formInfortunio; CALCS.infortunio = GCALCS.infortunio = calcInfortunio;
+FORMS.tfr = GFORMS.tfr = formTfr; CALCS.tfr = GCALCS.tfr = calcTfr;
 
 function wirePeriods(){
   const box = $("#periods"); if(!box) return;
