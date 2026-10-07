@@ -8,7 +8,7 @@
    each topic shown as a block with one column per CCNL so contracts compare side by side. */
 :root{
   --paper:#f4f6f7; --surface:#ffffff; --ink:#152029; --muted:#5a6672; --line:#dbe1e6; --line-strong:#c3ccd4;
-  --accent:#0d5d72; --accent-ink:#ffffff; --accent-soft:#e2eff2; --mark:#fff0b8; --mark-ink:#3a2c00;
+  --accent:#8b1a14; --accent-ink:#ffffff; --accent-soft:#f6e9e7; --mark:#fff0b8; --mark-ink:#3a2c00;
   --warn:#8f5300; --warn-bg:#fbf1df; --ok:#2b7346; --ok-bg:#e5f3ea; --danger:#a12a2a;
   --c1:#0d5d72; --c2:#6b3fa0; --c3:#a14f12; --c4:#2b7346; --c5:#8c2c48; --c6:#3a5a9b; --c7:#7a6a0e; --c8:#0f6b62; --c9:#9a3b8a; --c10:#5b5f68;
   --shadow:0 1px 2px rgba(15,35,50,.06),0 4px 14px rgba(15,35,50,.05);
@@ -18,13 +18,13 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --paper:#0e1317; --surface:#151c21; --ink:#e4e9ed; --muted:#94a1ac; --line:#26313a; --line-strong:#34424d;
-  --accent:#62b5c9; --accent-ink:#0b1a1f; --accent-soft:#16313a; --mark:#5c4a0c; --mark-ink:#fff3c4;
+  --accent:#e27a70; --accent-ink:#1f0b09; --accent-soft:#3a1d1a; --mark:#5c4a0c; --mark-ink:#fff3c4;
   --warn:#e6aa52; --warn-bg:#30250f; --ok:#71c493; --ok-bg:#12291b; --danger:#ef8a8a;
   --c1:#62b5c9; --c2:#b493e0; --c3:#e59a5f; --c4:#71c493; --c5:#e48aa5; --c6:#8eaaf0; --c7:#d6c35a; --c8:#5ccdbf; --c9:#df8fd2; --c10:#aab0ba;
   --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#0e1317; --surface:#151c21; --ink:#e4e9ed; --muted:#94a1ac; --line:#26313a; --line-strong:#34424d;
-  --accent:#62b5c9; --accent-ink:#0b1a1f; --accent-soft:#16313a; --mark:#5c4a0c; --mark-ink:#fff3c4;
+  --accent:#e27a70; --accent-ink:#1f0b09; --accent-soft:#3a1d1a; --mark:#5c4a0c; --mark-ink:#fff3c4;
   --warn:#e6aa52; --warn-bg:#30250f; --ok:#71c493; --ok-bg:#12291b; --danger:#ef8a8a;
   --c1:#62b5c9; --c2:#b493e0; --c3:#e59a5f; --c4:#71c493; --c5:#e48aa5; --c6:#8eaaf0; --c7:#d6c35a; --c8:#5ccdbf; --c9:#df8fd2; --c10:#aab0ba;
   --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
@@ -37,6 +37,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 /* Header */
 .top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.brand .logo{height:60px;width:auto;display:block}
+.brand .logo-dark{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .brand .logo-light{display:none}:root:not([data-theme="light"]) .brand .logo-dark{display:block}}
+:root[data-theme="dark"] .brand .logo-light{display:none}:root[data-theme="dark"] .brand .logo-dark{display:block}
+.brand-sep{width:1px;align-self:stretch;min-height:48px;background:var(--line-strong)}
+@media (max-width:600px){.brand .logo{height:44px}.brand-sep{display:none}.brand{gap:10px}}
 .brand h1{font-family:var(--f-display);font-weight:650;font-size:30px;letter-spacing:-.01em;margin:0;line-height:1.1}
 .brand p{margin:4px 0 0;color:var(--muted);font-size:13.5px}
 .top-actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -241,8 +248,13 @@ table.cl td.sc-date{white-space:nowrap;font-weight:600}
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <h1>Prontuario CCNL</h1>
-      <p>Le regole dei contratti collettivi usati dallo studio, voce per voce, con l'articolo di riferimento.</p>
+      <img class="logo logo-light" src="logo-studio-prosdocimo.png" alt="Studio Prosdocimo" width="325" height="60">
+      <img class="logo logo-dark" src="logo-studio-prosdocimo-dark.png" alt="Studio Prosdocimo" width="325" height="60">
+      <span class="brand-sep" aria-hidden="true"></span>
+      <div>
+        <h1>Prontuario CCNL</h1>
+        <p>Le regole dei contratti collettivi usati dallo studio, voce per voce, con l'articolo di riferimento.</p>
+      </div>
     </div>
     <div class="top-actions" id="topActions" hidden>
       <button class="btn" id="btnNewCcnl" type="button">+ Aggiungi CCNL</button>
