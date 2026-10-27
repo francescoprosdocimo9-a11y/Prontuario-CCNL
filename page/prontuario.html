@@ -1006,6 +1006,57 @@ table.cl tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offs
 .bkd.warn{border-left-color:var(--warn)}.bkd.bad{border-left-color:var(--danger)}
 .bkd b{flex-basis:100%}.bkd span{flex:1 1 320px;color:var(--muted)}
 
+/* Classifiche */
+.rk-bar{grid-template-columns:minmax(200px,1fr) minmax(170px,230px) auto}
+.rk-nav{display:flex;flex-direction:column;gap:6px;margin:6px 0 14px}
+.rk-nav-g{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.rk-nav-g>span{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;min-width:160px}
+.rk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.rk-card{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.rk-card.wide{grid-column:1/-1}
+.rk-card h3,.rk-head h3{margin:0;font-size:15.5px}
+.rk-card>p,.rk-head>p{margin:0;font-size:12.5px;color:var(--muted)}
+.rk-card.wide .rk-top{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px 18px}
+.rk-top{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-direction:column;gap:7px}
+.rk-top li{display:grid;grid-template-columns:26px minmax(0,1fr) auto;align-items:center;gap:8px}
+.rk-az{all:unset;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13.5px;color:var(--ink)}
+.rk-az:hover,.rk-az:focus-visible{text-decoration:underline}
+.rk-top b{font-variant-numeric:tabular-nums;font-size:13.5px;white-space:nowrap}
+.rk-med{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;font-size:12px;font-weight:700;color:#fff;background:var(--muted);flex:none}
+.rk-med.p1{background:#8C6A00}.rk-med.p2{background:#5F6B76}.rk-med.p3{background:#8A4B1F}
+.rk-more{align-self:flex-start;margin-top:auto}
+.rk-head{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:14px 16px}
+.rk-pod{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;margin:12px 0}
+.rk-p{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:14px 12px;text-align:center;display:flex;flex-direction:column;gap:5px;align-items:center;min-width:0}
+.rk-p.p1{order:2;padding-top:26px;padding-bottom:20px;border-color:color-mix(in srgb,#8C6A00 50%,var(--line))}
+.rk-p.p2{order:1;padding-top:18px}.rk-p.p3{order:3}
+.rk-p.tie{order:0}
+.rk-p .rk-med{width:36px;height:36px;font-size:16px}
+.rk-p button{all:unset;cursor:pointer;font-weight:600;font-size:14px;overflow-wrap:anywhere;color:var(--ink)}
+.rk-p button:hover,.rk-p button:focus-visible{text-decoration:underline}
+.rk-p .v{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.rk-p small{color:var(--muted);font-size:12px}
+.rk-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 8px}
+.rk-ord{display:flex;gap:6px}
+.rk-tbl td.rk-pos{width:56px;font-weight:700;font-variant-numeric:tabular-nums}
+.rk-vb{display:flex;align-items:center;gap:8px;min-width:190px}
+.rk-vb .tr{flex:1;height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.rk-vb .tr span{display:block;height:100%;background:var(--accent);border-radius:4px}
+.rk-vb b{min-width:86px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rk-tbl tr.rk-hl td{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.rk-comp{display:flex;flex-wrap:wrap;gap:4px}
+.rk-comp span{font-size:11.5px;padding:2px 6px;border-radius:6px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.rk-comp span.lo{color:var(--danger)}.rk-comp span.hi{color:var(--ok)}
+.rk-find{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;background:var(--surface);padding:12px 14px;margin:0 0 12px}
+.rk-find h3{margin:0 0 8px;font-size:15px}.rk-find h3 button{all:unset;cursor:pointer}.rk-find h3 button:hover{text-decoration:underline}
+.rk-find ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px 14px}
+.rk-find li button{all:unset;cursor:pointer;display:grid;grid-template-columns:26px minmax(0,1fr) auto auto;align-items:center;gap:8px;width:100%;font-size:13px}
+.rk-find li button:hover span,.rk-find li button:focus-visible span{text-decoration:underline}
+.rk-find li small{color:var(--muted)}
+.rk-pn{display:inline-grid;place-items:center;width:24px;font-weight:700;font-size:12px;color:var(--muted)}
+@media (max-width:820px){.ct-bar.rk-bar,.ct-bar.cp-bar{grid-template-columns:1fr}}
+@media (max-width:640px){.rk-nav-g>span{min-width:0;flex-basis:100%}.rk-pod{grid-template-columns:1fr}.rk-p.p1,.rk-p.p2,.rk-p.p3{order:0;padding:12px}.rk-vb{min-width:130px}.rk-vb b{min-width:0}}
+
 /* Costo del personale e scadenziario minimi */
 .cp-bar{grid-template-columns:minmax(240px,2fr) minmax(120px,160px) 1fr auto}
 .cp-tbl td{vertical-align:middle}
@@ -1130,6 +1181,7 @@ table.cl tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offs
   <div id="viewStorico" hidden></div>
   <div id="viewPersonale" hidden></div>
   <div id="viewMinimi" hidden></div>
+  <div id="viewClassifiche" hidden></div>
 </div>
 </div><!-- /app -->
 
@@ -1639,6 +1691,7 @@ function setView(v){
   $("#viewStorico").hidden = v!=="storico";
   $("#viewPersonale").hidden = v!=="personale";
   $("#viewMinimi").hidden = v!=="minimi";
+  $("#viewClassifiche").hidden = v!=="classifiche";
   const ta = $("#topActions"); if(ta) ta.hidden = !state.canWrite || v!=="prontuario";
   if(v==="clienti") renderClienti();
   if(v==="calcolatori") renderCalc();
@@ -1664,6 +1717,7 @@ function setView(v){
   if(v==="storico") renderHS();
   if(v==="personale") renderCP();
   if(v==="minimi") renderMN();
+  if(v==="classifiche") renderRK();
   try{ opBar(); }catch(e){}
   try{ localStorage.setItem("prontuario.view", v); }catch(e){}
   try{ uxOnView(v); }catch(e){}
@@ -1692,7 +1746,7 @@ function opMap(){ if(_opmSrc!==CL.list){ _opmSrc = CL.list; _opm = new Map(CL.li
 function opOk(clId){ return !OPF.op || (!!clId && opMap().get(clId)===OPF.op); }
 function opL(list, k){ k = k || "cliente"; return OPF.op ? list.filter(x=>opOk(x[k])) : list; }
 function opNames(){ return [...new Set(CL.list.map(c=>(c.operatore||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); }
-const OP_VIEWS = ["oggi","clienti","personale","sicurezza","storico","dipendenti","contatori","assunzioni","ratei","dati","agevolazioni","lettere","controlli","disciplinari","mesepaghe","termine","tirocini","apprendisti","durc"];
+const OP_VIEWS = ["oggi","clienti","personale","classifiche","sicurezza","storico","dipendenti","contatori","assunzioni","ratei","dati","agevolazioni","lettere","controlli","disciplinari","mesepaghe","termine","tirocini","apprendisti","durc"];
 function opBar(){
   const el = document.getElementById("opBar"); if(!el) return;
   if(!OPF.op || !OP_VIEWS.includes(view)){ el.innerHTML = ""; return; }
@@ -5662,7 +5716,7 @@ function ogGo(g){
 
 /* ================= NAVIGAZIONE, RICERCA GLOBALE, SCHEDA CLIENTE ================= */
 const cnelOf = c => P.cnelOf(c);
-const UX_LABEL = { oggi:"Oggi", prontuario:"Prontuario CCNL", clienti:"Clienti", calcolatori:"Calcolatori", costo:"Costo del lavoro", termine:"Contratti a termine", apprendisti:"Apprendistato", durc:"DURC", agevolazioni:"Agevolazioni", scadenziario:"Scadenziario CCNL", lettere:"Lettere", controlli:"Controlli", mesepaghe:"Mese paghe", disciplinari:"Disciplinari", assunzioni:"Assunzioni", tirocini:"Tirocini", ratei:"Ratei dipendenti", dati:"Aggiorna dati e backup", dipendenti:"Dipendenti", contatori:"Contatori", sicurezza:"Sicurezza", simulatore:"Simula assunzione", storico:"Storico modifiche", personale:"Costo del personale", minimi:"Scadenziario minimi" };
+const UX_LABEL = { oggi:"Oggi", prontuario:"Prontuario CCNL", clienti:"Clienti", calcolatori:"Calcolatori", costo:"Costo del lavoro", termine:"Contratti a termine", apprendisti:"Apprendistato", durc:"DURC", agevolazioni:"Agevolazioni", scadenziario:"Scadenziario CCNL", lettere:"Lettere", controlli:"Controlli", mesepaghe:"Mese paghe", disciplinari:"Disciplinari", assunzioni:"Assunzioni", tirocini:"Tirocini", ratei:"Ratei dipendenti", dati:"Aggiorna dati e backup", dipendenti:"Dipendenti", contatori:"Contatori", sicurezza:"Sicurezza", simulatore:"Simula assunzione", storico:"Storico modifiche", personale:"Costo del personale", classifiche:"Classifiche", minimi:"Scadenziario minimi" };
 function uxDrawer(open){
   const side = document.getElementById("side"), scrim = document.getElementById("sideScrim"), btn = document.getElementById("menuBtn");
   if(!side) return;
@@ -5827,6 +5881,7 @@ function kshAct(k, arg){
   else if(k==="cn"){ CN.az = c._id; setView("contatori"); }
   else if(k==="sic"){ setView("sicurezza"); sicOpen(c._id); }
   else if(k==="cp"){ CP.cl = c._id; cpSaveLocal(); setView("personale"); }
+  else if(k==="rk"){ RK.cat = "pagella"; RK.hl = c._id; RK.q = ""; const q = document.getElementById("rkQ"); if(q) q.value = ""; setView("classifiche"); }
   else if(k==="sim"){ SIM.v["sim-cl"] = c._id; simFromClient(); simSave(); setView("simulatore"); }
   else if(k==="hist"){ HS.cl = c._id; HS.per = "tutto"; setView("storico"); }
   else if(k==="sg"){ sgOpen(c._id); }
@@ -5874,6 +5929,9 @@ function kshRender(){
   const asRow = asMine.length ? row("as", "Assunzioni", asMiss?"warn":"none", `${asY.length} nel ${today.getFullYear()} · ${asMine.length} in totale`, [asLast?`ultima: ${esc(asLast.dip||"")} il ${fmtD(parseD(asD(asLast)))}`:"", asMiss?`${asMiss} da inserire negli scadenziari`:""].filter(Boolean).join("; ")) : "";
   // dipendenti da TeamSystem
   const dpRow = (typeof DP!=="undefined" && DP.loaded && DP.docs[c._id]) ? (()=>{ const o = dpOrg(c._id), oL = dpOrgLeg(c._id), diff = (c.ti||0)!==oL.ti || (c.td||0)!==oL.td; return row("dp", "Dipendenti", diff?"warn":"ok", `${o.tot} in forza: ${o.ti} T.I., ${o.td} a termine${o.app?`, ${o.app} apprendisti`:""}${o.pt?` · ${o.pt} part-time`:""}`, [diff?`in anagrafica ${c.ti||0} T.I. e ${c.td||0} T.D., in TeamSystem ${oL.ti} T.I. al 1° gennaio: da allineare`:"", o.ver?`${o.ver} rapporti da verificare`:""].filter(Boolean).join("; ")); })() : "";
+  // classifiche
+  const rkI = typeof rkOf==="function" ? (()=>{ try{ return rkOf(c._id); }catch(e){ return null; } })() : null;
+  const rkRow = rkI ? row("rk", "Classifiche", "none", esc(rkI.main), esc(rkI.sub)) : "";
   // soglie e collocamento obbligatorio
   const sgRow = (typeof DP!=="undefined" && DP.loaded && DP.docs[c._id]) ? (()=>{ const S = sgCalc(c._id), T = sgTd(c._id), tdo = !T.agri && T.td > T.lim; if(!S.q && !S.q18 && !tdo && S.l68 < 13) return "";
     return row("sg", "Soglie e L. 68", S.scop||S.scop18||tdo ? "warn" : "ok", S.q||S.q18 ? `Base L. 68: ${sgNum(S.l68)} · quota ${S.q}${S.q18?` + ${S.q18}`:""}` : `Base L. 68: ${sgNum(S.l68)}, vicino ai 15`, [S.scop||S.scop18 ? `${S.scop+S.scop18} da assumere secondo l'anagrafica` : S.q ? "quota coperta" : "", tdo ? `${T.td} contratti a termine su ${T.lim} consentiti` : ""].filter(Boolean).join("; ")); })() : "";
@@ -5917,7 +5975,7 @@ function kshRender(){
       <button class="btn ghost sm ksh-x" type="button" id="kshClose" data-ksh="close" aria-label="Chiudi la scheda">Chiudi</button>
     </div>
     <div class="ksh-body">
-      <section><h3>Situazione</h3><div class="ksh-rows">${pmRow}${ckRow}${mpRow}${dpRow}${sgRow}${duRow}${dpaRow}${sicRow}${ctRow}${trRow}${apRow}${agRow}${asRow}${rtRow}${dsRow}${ltRow}</div></section>
+      <section><h3>Situazione</h3><div class="ksh-rows">${pmRow}${ckRow}${mpRow}${dpRow}${rkRow}${sgRow}${duRow}${dpaRow}${sicRow}${ctRow}${trRow}${apRow}${agRow}${asRow}${rtRow}${dsRow}${ltRow}</div></section>
       ${nxv.length?`<section><h3>Prossime scadenze</h3><ul class="ksh-next">${nxv.map(x=>{ const g = dayDiff(today,x.d); return `<li class="${g<0?"bad":g<=15?"warn":""}"><span>${fmtD(x.d)}</span><span>${esc(x.l)}</span></li>`; }).join("")}</ul></section>`:""}
       <section><h3>Sicurezza e adempimenti</h3>${CL_AD.some(d=>c[d.k])?`<dl class="ksh-dl ksh-ad">${CL_AD.filter(d=>c[d.k] || d.neg).map(d=>{ const t = clAdTone(d.k, c[d.k]); return `<dt>${esc(d.l)}</dt><dd><span class="sc-st ${t}">${esc(c[d.k]||"Non indicato")}</span></dd>`; }).join("")}</dl>`:`<p class="sc-sub" style="margin:0">Nessun dato su sicurezza e adempimenti.${state.canWrite?" Aggiungili con «Modifica dati».":""}</p>`}<button class="btn sm" type="button" data-ksh="sic" style="margin-top:8px">Apri nella sezione Sicurezza</button></section>
       <section><h3>Dati del cliente</h3><dl class="ksh-dl">${dati.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(String(v))}</dd>`).join("")}</dl></section>
@@ -9435,14 +9493,14 @@ async function sicExcel(btn){
 /* ================= NAVIGAZIONE A GRUPPI ================= */
 const NAV_G = [
   {id:"oggi", l:"Oggi", v:["oggi"]},
-  {id:"clienti", l:"Clienti", v:["clienti","dipendenti","contatori","personale"]},
+  {id:"clienti", l:"Clienti", v:["clienti","dipendenti","contatori","personale","classifiche"]},
   {id:"rapporti", l:"Rapporti di lavoro", v:["assunzioni","termine","apprendisti","tirocini","ratei"]},
   {id:"adempimenti", l:"Adempimenti", v:["durc","mesepaghe","controlli","sicurezza","disciplinari"]},
   {id:"strumenti", l:"Strumenti", v:["prontuario","calcolatori","costo","lettere","scadenziario","minimi"]},
   {id:"agevolazioni", l:"Agevolazioni", v:["agevolazioni","simulatore"]},
   {id:"studio", l:"Studio", v:["storico","dati"]}
 ];
-const NAV_SHORT = { clienti:"Anagrafica", dipendenti:"Dipendenti", contatori:"Contatori", personale:"Costo del personale", minimi:"Scadenze minimi", assunzioni:"Assunzioni", termine:"Contratti a termine", apprendisti:"Apprendistato", tirocini:"Tirocini", ratei:"Ferie e permessi", durc:"DURC", mesepaghe:"Mese paghe", controlli:"Controlli", sicurezza:"Sicurezza", disciplinari:"Disciplinari", prontuario:"Prontuario CCNL", calcolatori:"Calcolatori", costo:"Costo del lavoro", lettere:"Lettere", scadenziario:"Scadenze CCNL", agevolazioni:"Verifica e pratiche", simulatore:"Simula assunzione", storico:"Storico modifiche", dati:"Aggiorna dati e backup" };
+const NAV_SHORT = { clienti:"Anagrafica", dipendenti:"Dipendenti", contatori:"Contatori", personale:"Costo del personale", classifiche:"Classifiche", minimi:"Scadenze minimi", assunzioni:"Assunzioni", termine:"Contratti a termine", apprendisti:"Apprendistato", tirocini:"Tirocini", ratei:"Ferie e permessi", durc:"DURC", mesepaghe:"Mese paghe", controlli:"Controlli", sicurezza:"Sicurezza", disciplinari:"Disciplinari", prontuario:"Prontuario CCNL", calcolatori:"Calcolatori", costo:"Costo del lavoro", lettere:"Lettere", scadenziario:"Scadenze CCNL", agevolazioni:"Verifica e pratiche", simulatore:"Simula assunzione", storico:"Storico modifiche", dati:"Aggiorna dati e backup" };
 const NBV = {};
 let NAV_LAST = {};
 try{ NAV_LAST = JSON.parse(localStorage.getItem("bussola.navLast")||"{}") || {}; }catch(e){}
@@ -10101,10 +10159,194 @@ async function cpExcel(btn){
   }catch(e){ if(!(e && e.code==="declined")) P.toast("Salvataggio non riuscito"); } finally{ btn.disabled = false; btn.textContent = lbl; }
 }
 
+/* ================= CLASSIFICHE TRA LE AZIENDE ================= */
+var RK = { cat:"panoramica", dir:1, min:"3", q:"", hl:"", cost:null, data:null, key:null, t:0 };
+try{ const x = JSON.parse(localStorage.getItem("bussola.rk")||"{}"); if(x.cat) RK.cat = x.cat; if(x.min) RK.min = x.min; }catch(e){}
+const rkSaveLocal = () => { try{ localStorage.setItem("bussola.rk", JSON.stringify({cat:RK.cat, min:RK.min})); }catch(e){} };
+const rkClamp = x => Math.max(0, Math.min(100, x));
+const rkPctT = v => `${fmtN(v, v > 0 && v < 10 && v % 1 ? 1 : 0)}%`;
+const RK_MIN = [["1","Tutte le aziende"],["3","Da 3 dipendenti"],["10","Da 10 dipendenti"],["16","Oltre 15 dipendenti"],["51","Oltre 50 dipendenti"]];
+const RK_G = [["pagella","Pagella"],["dim","Dimensione e crescita"],["lav","Qualità del lavoro"],["per","Persone"],["cos","Costo del personale"],["reg","Regolarità"]];
+/* voci della pagella: punteggio 0-100 di ogni azienda */
+const RK_PAG = [["stab","Stabilità"],["turn","Turnover"],["par","Parità"],["sic","Sicurezza"],["ck","Adempimenti"],["durc","DURC"],["fer","Ferie"],["pres","Presenze"]];
+const RK_C = [
+  { id:"pagella", g:"pagella", l:"Pagella complessiva", d:"Media dei punteggi da 0 a 100 su stabilità dei contratti, turnover, parità di genere, sicurezza, controlli aperti, DURC, ferie residue e puntualità delle presenze. Servono almeno 4 voci.", hi:true, f:x=>x.pag, fmt:v=>`${fmtN(v,0)}/100`, sub:x=>`${x.pagN} voci su ${RK_PAG.length}` },
+  { id:"organico", g:"dim", l:"Più dipendenti", d:"Dipendenti in forza secondo TeamSystem, esclusi tirocinanti e collaboratori.", hi:true, f:x=>x.n || null, fmt:v=>fmtN(v), sub:x=>x.S ? `${x.S.ti} T.I., ${x.S.td} a termine, ${x.S.app} apprendisti` : "dall'anagrafica clienti" },
+  { id:"crescita", g:"dim", l:"Crescita dell'organico", d:"Assunzioni meno cessazioni negli ultimi 12 mesi (i trasferimenti tra filiali non contano).", hi:true, f:x=>x.S ? x.S.entr - x.S.usc : null, fmt:v=>`${v>0?"+":""}${fmtN(v)}`, sub:x=>`${x.S.entr} assunzioni, ${x.S.usc} cessazioni` },
+  { id:"assunzioni", g:"dim", l:"Più assunzioni", d:"Rapporti iniziati negli ultimi 12 mesi secondo TeamSystem.", hi:true, f:x=>x.S && x.S.entr ? x.S.entr : null, fmt:v=>fmtN(v), sub:x=>`${x.n} in forza oggi` },
+  { id:"stabilita", g:"lav", l:"Stabilità dei contratti", d:"Quota di dipendenti a tempo indeterminato, apprendisti compresi.", hi:true, f:x=>x.stab, fmt:rkPctT, sub:x=>`${x.S.ti + x.S.app} su ${x.n}` },
+  { id:"turnover", g:"lav", l:"Turnover più basso", d:"Cessazioni degli ultimi 12 mesi in rapporto all'organico medio dell'anno: più è basso, più l'azienda trattiene il personale.", hi:false, f:x=>x.turn, fmt:rkPctT, sub:x=>`${x.S.usc} ${x.S.usc===1?"cessazione":"cessazioni"} in 12 mesi` },
+  { id:"anzianita", g:"lav", l:"Anzianità media più alta", d:"Anni medi dall'inizio del rapporto in corso.", hi:true, f:x=>x.S && x.S.anzMed!=null ? x.S.anzMed : null, fmt:v=>`${fmtN(v,1)} anni`, sub:x=>`${x.n} dipendenti` },
+  { id:"fulltime", g:"lav", l:"Più tempo pieno", d:"Quota di dipendenti a tempo pieno.", hi:true, f:x=>x.S && x.n ? x.S.ft / x.n * 100 : null, fmt:rkPctT, sub:x=>`${x.S.pt} part-time` },
+  { id:"parita", g:"per", l:"Parità di genere", d:"Quanto la composizione si avvicina a metà donne e metà uomini: 100 è l'equilibrio perfetto, 0 un solo genere.", hi:true, f:x=>x.par, fmt:v=>`${fmtN(v,0)}/100`, sub:x=>`${x.S.F} donne, ${x.S.M} uomini` },
+  { id:"donne", g:"per", l:"Più donne", d:"Quota di donne tra i dipendenti in forza.", hi:true, f:x=>x.S && x.n && x.S.F + x.S.M ? x.S.F / (x.S.F + x.S.M) * 100 : null, fmt:rkPctT, sub:x=>`${x.S.F} su ${x.S.F + x.S.M}` },
+  { id:"giovani", g:"per", l:"Più giovani under 30", d:"Quota di dipendenti con meno di 30 anni.", hi:true, f:x=>x.S && x.S.etaMed!=null && x.n ? x.S.u30 / x.n * 100 : null, fmt:rkPctT, sub:x=>`${x.S.u30} under 30` },
+  { id:"eta", g:"per", l:"Età media più bassa", d:"Età media dei dipendenti in forza.", hi:false, f:x=>x.S && x.S.etaMed!=null ? x.S.etaMed : null, fmt:v=>`${fmtN(v,1)} anni`, sub:x=>`${x.S.o50} over 50` },
+  { id:"costo", g:"cos", l:"Costo del personale più alto", d:"Stima del costo annuo dell'anno in corso con i minimi del CCNL, come nella sezione Costo del personale (superminimi e scatti solo se inseriti lì).", hi:true, cost:true, f:x=>x.cost ? x.cost.tot : null, fmt:v=>fmtE(v), sub:x=>`${x.cost.n} ${x.cost.n===1?"dipendente calcolato":"dipendenti calcolati"}${x.cost.skip?`, ${x.cost.skip} ${x.cost.skip===1?"escluso":"esclusi"}`:""}` },
+  { id:"costoMedio", g:"cos", l:"Costo medio per dipendente", d:"Costo annuo stimato diviso per i dipendenti calcolati (chi è entrato o uscito nell'anno pesa per i mesi lavorati).", hi:true, cost:true, f:x=>x.cost && x.cost.n ? x.cost.tot / x.cost.n : null, fmt:v=>fmtE(v), sub:x=>`${x.cost.n} dipendenti` },
+  { id:"sicurezza", g:"reg", l:"Sicurezza sul lavoro", d:"Indice di conformità della sezione Sicurezza: DVR, sorveglianza sanitaria, RLS e videosorveglianza.", hi:true, f:x=>x.sic, fmt:v=>`${fmtN(v,0)}%`, sub:x=>x.sicTxt },
+  { id:"adempimenti", g:"reg", l:"Meno controlli aperti", d:"Parte da 100 e toglie 25 punti per ogni controllo «da sistemare», 10 per ogni «da verificare» e 3 per ogni dato da completare (sezione Controlli).", hi:true, f:x=>x.ck, fmt:v=>`${fmtN(v,0)}/100`, sub:x=>x.ckTxt },
+  { id:"durc", g:"reg", l:"Regolarità contributiva", d:"DURC valido 100, in verifica 60, scaduto 30, irregolare o con contributi non pagati 0.", hi:true, f:x=>x.durc, fmt:v=>`${fmtN(v,0)}/100`, sub:x=>x.durcTxt },
+  { id:"ferie", g:"reg", l:"Ferie e permessi sotto controllo", d:"Quota di dipendenti senza ferie, permessi o ROL residui oltre le soglie della sezione Ferie e permessi.", hi:true, f:x=>x.fer, fmt:rkPctT, sub:x=>x.ferTxt },
+  { id:"presenze", g:"reg", l:"Presenze più puntuali", d:"Giorno medio del mese in cui lo studio riceve le presenze, negli ultimi 6 mesi della sezione Mese paghe (servono almeno 2 mesi).", hi:false, f:x=>x.presG, fmt:v=>`giorno ${fmtN(v,1)}`, sub:x=>`media di ${x.presN} mesi` }
+];
+function rkData(){
+  const key = [CL.list, DP.loaded && DP.docs, CK.ok, CT.list, AP.list, AG.pr, DU.list, typeof RT!=="undefined" && RT.docs, MP.list, OPF.op, RK.cost && RK.cost.done, CP.docs];
+  if(RK.data && RK.key && RK.key.every((x,i)=>x===key[i])) return RK.data;
+  const ck = {}, ckOn = CL.loaded && CK.okLoaded;
+  if(ckOn){ try{ ckCollect().forEach(o=>{ if(o.okDoc) return; const x = ck[o.cl] = ck[o.cl] || {bad:0, warn:0, info:0}; x[o.sev] = (x[o.sev]||0) + 1; }); }catch(e){ console.error(e); } }
+  const rt = {}; if(typeof RT!=="undefined" && RT.loaded) rtAll().forEach(o=>{ const id = o.doc.cliente, x = rt[id] = rt[id] || {n:0, bad:0, warn:0}; x.n++; if(o.sev==="bad") x.bad++; else if(o.sev==="warn") x.warn++; });
+  const m0 = new Date(today.getFullYear(), today.getMonth(), 1), yms = Array.from({length:6}, (_,i)=>ymOf(addMonths(m0, -1-i))), pres = {};
+  if(MP.loaded) MP.list.forEach(d=>{ if(!d.cliente || !yms.includes(d.ym) || d.escluso || !d.s || !d.s.pres) return; const g = Math.max(1, dayDiff(ymDate(ymNext(d.ym), 1), new Date(d.s.pres)) + 1); if(g > 45) return; (pres[d.cliente] = pres[d.cliente] || []).push(g); });
+  const rows = CL.list.filter(c=>opOk(c._id)).map(c=>{
+    const hasDp = typeof DP!=="undefined" && DP.loaded && !!DP.docs[c._id], S = hasDp ? cnStats([c._id]) : null, n = S ? S.n : (c.ti||0) + (c.td||0);
+    const x = { c, S, n, hasDp, P:{} };
+    if(S && n){
+      x.stab = (S.ti + S.app) / n * 100;
+      const avg = (n + Math.max(0, n - S.entr + S.usc)) / 2; x.turn = avg ? S.usc / avg * 100 : null;
+      if(S.F + S.M) x.par = rkClamp(100 - Math.abs(S.F / (S.F + S.M) * 100 - 50) * 2);
+      x.P.stab = x.stab; if(x.turn!=null) x.P.turn = rkClamp(100 - x.turn * 2); if(x.par!=null) x.P.par = x.par;
+    }
+    if(n > 0){ const si = sicInfo(c); if(si.score!=null){ x.sic = si.score; x.sicTxt = SIC_SEV[si.sev][1]; x.P.sic = si.score; } }
+    if(ckOn && n > 0){ const k = ck[c._id] || {bad:0, warn:0, info:0}; x.ck = rkClamp(100 - k.bad*25 - k.warn*10 - k.info*3); x.ckTxt = k.bad || k.warn || k.info ? [k.bad?`${k.bad} da sistemare`:"", k.warn?`${k.warn} da verificare`:"", k.info?`${k.info} dati da completare`:""].filter(Boolean).join(", ") : "nessun controllo aperto"; x.P.ck = x.ck; }
+    const du = DU.loaded ? durcOfCl(c._id) : null;
+    if(du){ const st = du.I.st; x.durc = du.I.ins || st==="irr" ? 0 : st==="scaduto" ? 30 : st==="ver" ? 60 : st==="nodata" ? null : 100; if(x.durc!=null){ x.durcTxt = du.I.ins ? "contributi non pagati" : DU_ST[st][1]; x.P.durc = x.durc; } }
+    const r = rt[c._id]; if(r && r.n){ x.fer = (r.n - r.bad - r.warn) / r.n * 100; x.ferTxt = r.bad || r.warn ? `${r.bad + r.warn} su ${r.n} con residui alti` : `nessuno su ${r.n} con residui alti`; x.P.fer = x.fer; }
+    const pg = pres[c._id]; if(pg && pg.length >= 2){ x.presG = pg.reduce((a,b)=>a+b,0) / pg.length; x.presN = pg.length; x.P.pres = rkClamp(100 - (x.presG - 3) * 100 / 12); }
+    const ks = Object.keys(x.P); x.pagN = ks.length; x.pag = ks.length >= 4 ? ks.reduce((a,k)=>a + x.P[k], 0) / ks.length : null;
+    if(RK.cost && RK.cost.done) x.cost = RK.cost.map[c._id] || null;
+    return x;
+  });
+  RK.data = rows; RK.key = key; return rows;
+}
+/* classifica di una voce: posizioni a pari merito (1, 2, 2, 4…) */
+function rkRank(cat, rows, min){
+  const L = rows.filter(x=>x.n >= min).map(x=>({x, v:cat.f(x)})).filter(o=>o.v!=null && isFinite(o.v));
+  L.sort((a,b)=>(cat.hi ? b.v - a.v : a.v - b.v) || b.x.n - a.x.n || a.x.c.azienda.localeCompare(b.x.c.azienda));
+  L.forEach((o,i)=>{ o.pos = i && Math.abs(o.v - L[i-1].v) < 1e-9 ? L[i-1].pos : i + 1; });
+  return L;
+}
+function rkCostStart(){
+  if(typeof DP==="undefined" || !DP.loaded || !state.loadedC || !CL.loaded) return;
+  if(!CP.loaded){ subscribeCP(); clearTimeout(RK.ct); RK.ct = setTimeout(()=>{ if(view==="classifiche") rkCostStart(); }, 700); return; }
+  const src = [DP.docs, CP.docs, CL.list];
+  if(RK.cost && RK.cost.src.every((x,i)=>x===src[i])) return;
+  const ids = CL.list.filter(c=>DP.docs[c._id] && c.ccnl).map(c=>c._id), anno = today.getFullYear();
+  const job = RK.cost = { src, map:{}, ids, i:0, done:false };
+  const step = () => { if(RK.cost!==job) return; const t0 = performance.now();
+    while(job.i < ids.length && performance.now() - t0 < 25){ const id = ids[job.i++]; try{ const X = cpCalc(id, anno); if(X && !X.err && X.tot.n) job.map[id] = { tot:X.tot.costo, n:X.tot.n, skip:X.rows.filter(r=>r.skip).length }; }catch(e){} }
+    if(job.i >= ids.length){ job.done = true; if(view==="classifiche") renderRK(); return; }
+    const el = document.getElementById("rkCostP"); if(el) el.textContent = `${job.i} di ${ids.length} aziende`;
+    setTimeout(step, 0); };
+  setTimeout(step, 30);
+}
+const rkMed = p => `<span class="rk-med ${p<=3?"p"+p:""}" aria-label="${p}° posto">${p}</span>`;
+function renderRK(){
+  const root = $("#viewClassifiche");
+  if(!root.dataset.built){
+    root.dataset.built = "1";
+    root.innerHTML = `<div class="toolbar"><div style="flex:1;min-width:240px"><h2 style="margin:0 0 2px;font-size:20px">Classifiche</h2>
+        <p class="sc-sub" style="margin:0">Le aziende clienti a confronto su dimensione, qualità del lavoro, persone, costo e regolarità, con i dati di TeamSystem e della Bussola.</p></div>
+        <button class="btn" type="button" id="rkXls" hidden>Scarica Excel</button></div>
+      <div class="ct-bar rk-bar"><div><label for="rkQ">Trova un'azienda</label><input id="rkQ" type="search" autocomplete="off" placeholder="Nome o numero del cliente"></div>
+        <div><label for="rkMin">Aziende in classifica</label><select id="rkMin">${RK_MIN.map(([k,l])=>`<option value="${k}">${esc(l)}</option>`).join("")}</select></div><span></span></div>
+      <nav class="rk-nav" id="rkNav" aria-label="Categorie"></nav>
+      <div id="rkBody"></div>
+      <p class="sc-legend">Le classifiche usano solo i dati presenti nella Bussola: anagrafica dipendenti TeamSystem, Controlli, DURC, Sicurezza, Ferie e permessi e Mese paghe. Un'azienda compare in una classifica solo se ha i dati di quella voce; a pari valore le aziende hanno la stessa posizione. Servono a orientarsi, non sono un giudizio sulle aziende.</p>`;
+    $("#rkQ").addEventListener("input", e=>{ RK.q = e.target.value.trim(); RK.hl = ""; rkBody(); });
+    $("#rkMin").addEventListener("change", e=>{ RK.min = e.target.value; rkSaveLocal(); renderRK(); });
+    $("#rkXls").addEventListener("click", e=>rkExcel(e.currentTarget));
+    root.addEventListener("click", e=>{ const t = e.target.closest("[data-rkc],[data-rkcl],[data-rkdir]"); if(!t) return;
+      if(t.dataset.rkc){ RK.cat = t.dataset.rkc; RK.dir = 1; rkSaveLocal(); renderRK(); window.scrollTo({top:0}); }
+      else if(t.dataset.rkdir){ RK.dir = +t.dataset.rkdir; rkBody(); }
+      else if(t.dataset.rkcl) kshOpen(t.dataset.rkcl); });
+    (async()=>{ try{ const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null; $("#rkXls").hidden = !dl; }catch(e){} })();
+  }
+  if(typeof DP!=="undefined" && !DP.unsub) subscribeDP();
+  if(typeof RT!=="undefined" && !RT.unsub) subscribeRT();
+  $("#rkMin").value = RK.min;
+  if(!RK_C.some(c=>c.id===RK.cat)) RK.cat = "panoramica";
+  $("#rkNav").innerHTML = `<div class="rk-nav-g"><button class="chip" type="button" data-rkc="panoramica" aria-pressed="${RK.cat==="panoramica"}">Tutte le classifiche</button></div>` + RK_G.map(([g,l])=>`<div class="rk-nav-g"><span>${esc(l)}</span>${RK_C.filter(c=>c.g===g).map(c=>`<button class="chip" type="button" data-rkc="${c.id}" aria-pressed="${RK.cat===c.id}">${esc(c.l)}</button>`).join("")}</div>`).join("");
+  if(!CL.loaded || typeof DP==="undefined" || !DP.loaded){ $("#rkBody").innerHTML = `<div class="empty"><h3>Caricamento di clienti e dipendenti…</h3></div>`; clearTimeout(RK.t); RK.t = setTimeout(()=>{ if(view==="classifiche") renderRK(); }, 800); return; }
+  rkCostStart();
+  if(!(CK.okLoaded && DU.loaded && MP.loaded && (typeof RT==="undefined" || RT.loaded))){ clearTimeout(RK.t); RK.t = setTimeout(()=>{ if(view==="classifiche") renderRK(); }, 1200); }
+  rkBody();
+}
+function rkQOk(x){ if(!RK.q) return false; const q = norm(RK.q); return norm(x.c.azienda).includes(q) || String(x.c.n)===RK.q; }
+function rkBody(){
+  const body = $("#rkBody"); if(!body) return;
+  const rows = rkData(), min = +RK.min || 1, costWait = !(RK.cost && RK.cost.done);
+  const costMsg = `<p class="sc-sub">Calcolo del costo in corso: <span id="rkCostP">${RK.cost ? `${RK.cost.i} di ${RK.cost.ids.length} aziende` : "avvio"}</span>…</p>`;
+  if(RK.cat==="panoramica"){
+    const found = RK.q ? rows.filter(rkQOk) : [];
+    body.innerHTML = (found.length ? rkFind(found, rows, min) : RK.q ? `<p class="sc-sub">Nessuna azienda trovata per «${esc(RK.q)}».</p>` : "") + `<div class="rk-grid">${RK_C.map(cat=>{
+      const L = cat.cost && costWait ? null : rkRank(cat, rows, min);
+      return `<section class="rk-card ${cat.id==="pagella"?"wide":""}"><h3>${esc(cat.l)}</h3><p>${esc(cat.d)}</p>
+        ${!L ? costMsg : !L.length ? `<p class="sc-sub">Nessuna azienda con questi dati.</p>` : `<ol class="rk-top">${L.slice(0, cat.id==="pagella" ? 5 : 3).map(o=>`<li>${rkMed(o.pos)}<button class="rk-az" type="button" data-rkcl="${esc(o.x.c._id)}" title="${esc(o.x.c.azienda)}">${esc(o.x.c.azienda)}</button><b>${esc(cat.fmt(o.v))}</b></li>`).join("")}</ol>`}
+        <button class="btn ghost sm rk-more" type="button" data-rkc="${cat.id}">${L && L.length ? `Classifica completa (${L.length})` : "Apri"}</button></section>`; }).join("")}</div>`;
+    return;
+  }
+  const cat = RK_C.find(c=>c.id===RK.cat);
+  if(cat.cost && costWait){ body.innerHTML = `<section class="rk-head"><h3>${esc(cat.l)}</h3><p>${esc(cat.d)}</p></section>${costMsg}`; return; }
+  const L = rkRank(cat, rows, min);
+  if(!L.length){ body.innerHTML = `<section class="rk-head"><h3>${esc(cat.l)}</h3><p>${esc(cat.d)}</p></section><div class="empty"><h3>Nessuna azienda in classifica</h3><p>Mancano i dati di questa voce o il filtro sulle dimensioni esclude tutte le aziende.</p></div>`; return; }
+  const vals = L.map(o=>o.v), mx = Math.max(...vals.map(Math.abs)) || 1, avg = vals.reduce((a,b)=>a+b,0) / vals.length;
+  const pod = L.filter(o=>o.pos<=3).slice(0, 3);
+  const ord = RK.dir > 0 ? L : [...L].reverse();
+  const shown = RK.q ? ord.filter(o=>rkQOk(o.x)) : ord;
+  const bar = o => { const w = cat.id==="crescita" ? Math.abs(o.v) / mx * 100 : Math.max(0, o.v) / mx * 100; return `<div class="rk-vb"><span class="tr"><span style="width:${w.toFixed(1)}%${cat.id==="crescita" && o.v<0?";background:var(--danger)":""}"></span></span><b>${esc(cat.fmt(o.v))}</b></div>`; };
+  const comp = x => `<div class="rk-comp">${RK_PAG.filter(([k])=>x.P[k]!=null).map(([k,l])=>`<span class="${x.P[k]<50?"lo":x.P[k]>=85?"hi":""}" title="${esc(l)}: ${fmtN(x.P[k],0)}/100">${esc(l)} ${fmtN(x.P[k],0)}</span>`).join("")}</div>`;
+  body.innerHTML = `<section class="rk-head"><h3>${esc(cat.l)}</h3><p>${esc(cat.d)}</p>
+      <p class="kpis" style="margin:8px 0 0"><span><b>${L.length}</b> aziende in classifica</span><span>Media <b>${esc(cat.fmt(avg))}</b></span>${L.length>1?`<span>Ultima: <b>${esc(L[L.length-1].x.c.azienda)}</b> (${esc(cat.fmt(L[L.length-1].v))})</span>`:""}</p></section>
+    <div class="rk-pod">${pod.map(o=>`<div class="rk-p p${o.pos} ${pod.filter(z=>z.pos===o.pos).length>1?"tie":""}">${rkMed(o.pos)}<button type="button" data-rkcl="${esc(o.x.c._id)}">${esc(o.x.c.azienda)}</button><span class="v">${esc(cat.fmt(o.v))}</span><small>${esc(cat.sub(o.x))}</small></div>`).join("")}</div>
+    <div class="rk-tools"><div class="rk-ord" role="group" aria-label="Ordine"><button class="chip" type="button" data-rkdir="1" aria-pressed="${RK.dir>0}">Dai primi</button><button class="chip" type="button" data-rkdir="-1" aria-pressed="${RK.dir<0}">Dagli ultimi</button></div>${RK.q?`<span class="sc-sub">${shown.length ? `Mostrate le aziende che corrispondono a «${esc(RK.q)}»` : `Nessuna azienda in classifica per «${esc(RK.q)}»`}</span>`:""}</div>
+    <div class="tblwrap"><table class="cl rk-tbl"><thead><tr><th class="num">Pos.</th><th>Azienda</th><th class="num">Dip.</th><th>${esc(cat.id==="pagella"?"Punteggio":"Valore")}</th><th>${cat.id==="pagella"?"Voci":"Dettaglio"}</th></tr></thead><tbody>
+    ${shown.map(o=>`<tr class="${o.x.c._id===RK.hl?"rk-hl":""}" data-rkrow="${esc(o.x.c._id)}"><td class="rk-pos num">${o.pos<=3?rkMed(o.pos):`${o.pos}°`}</td>
+      <td class="az"><button class="btn ghost sm ck-clb" type="button" data-rkcl="${esc(o.x.c._id)}">${esc(o.x.c.azienda)}</button><span class="sc-sub">${o.x.c.n!=null?`n. ${esc(String(o.x.c.n))}`:""}${o.x.c.ccnl?` · ${esc(P.ccName(o.x.c.ccnl))}`:""}${o.x.c.operatore?` · ${esc(o.x.c.operatore)}`:""}</span></td>
+      <td class="num">${fmtN(o.x.n)}</td><td>${bar(o)}</td><td>${cat.id==="pagella" ? comp(o.x) : `<span class="sc-sub">${esc(cat.sub(o.x))}</span>`}</td></tr>`).join("")}</tbody></table></div>`;
+  if(RK.hl){ const tr = body.querySelector(`tr[data-rkrow="${CSS.escape(RK.hl)}"]`); if(tr){ tr.classList.remove("pg-off"); setTimeout(()=>tr.scrollIntoView({block:"center"}), 60); } }
+}
+/* dove si piazza un'azienda in tutte le classifiche */
+function rkFind(found, rows, min){
+  return found.slice(0, 3).map(x=>{ const P = RK_C.map(cat=>{ if(cat.cost && !(RK.cost && RK.cost.done)) return null; const L = rkRank(cat, rows, min), o = L.find(z=>z.x===x); return o ? {cat, o, n:L.length} : null; }).filter(Boolean);
+    return `<section class="rk-find"><h3><button type="button" data-rkcl="${esc(x.c._id)}">${esc(x.c.azienda)}</button> <span class="sc-sub">${fmtN(x.n)} dipendenti</span></h3>
+      ${P.length ? `<ul>${P.map(({cat,o,n})=>`<li><button type="button" data-rkc="${cat.id}">${o.pos<=3?rkMed(o.pos):`<span class="rk-pn">${o.pos}°</span>`}<span>${esc(cat.l)}</span><b>${esc(cat.fmt(o.v))}</b><small>su ${n}</small></button></li>`).join("")}</ul>` : `<p class="sc-sub">Nessuna classifica: ${x.n < min ? "l'azienda è sotto la dimensione minima scelta" : "mancano i dati"}.</p>`}</section>`; }).join("");
+}
+/* riga per la scheda cliente */
+function rkOf(clId){
+  if(typeof DP==="undefined" || !DP.loaded || !CL.loaded) return null;
+  const rows = rkData(), x = rows.find(r=>r.c._id===clId); if(!x || x.n < 3) return null;
+  const P = RK_C.filter(c=>!c.cost).map(cat=>{ const L = rkRank(cat, rows, 3), o = L.find(z=>z.x===x); return o ? {cat, pos:o.pos, n:L.length, v:o.v} : null; }).filter(Boolean);
+  if(!P.length) return null;
+  const pg = P.find(p=>p.cat.id==="pagella"), best = P.filter(p=>p.cat.id!=="pagella" && p.pos <= Math.max(3, Math.ceil(p.n * 0.1))).sort((a,b)=>a.pos/a.n - b.pos/b.n).slice(0, 3);
+  return { main: pg ? `Pagella: ${pg.pos}° su ${pg.n} (${fmtN(pg.v,0)}/100)` : `In ${P.length} classifiche`, sub: best.length ? best.map(p=>`${p.pos}° per ${p.cat.l.charAt(0).toLowerCase()+p.cat.l.slice(1)}`).join("; ") : "Nessun piazzamento nelle prime posizioni" };
+}
+async function rkExcel(btn){
+  const rows = rkData(), min = +RK.min || 1; if(!rows.length){ P.toast("Nessun dato da esportare"); return; }
+  const downloads = window.claude && window.claude.use ? await window.claude.use("downloads") : null; if(!downloads){ P.toast("Il download non è disponibile in questa vista"); return; }
+  const lbl = btn.textContent; btn.disabled = true; btn.textContent = "Preparo il file…";
+  try{
+    const cats = RK_C.filter(c=>!c.cost || (RK.cost && RK.cost.done)), R = new Map(cats.map(c=>[c.id, new Map(rkRank(c, rows, min).map(o=>[o.x, o]))]));
+    const list = rows.filter(x=>x.n >= min && cats.some(c=>R.get(c.id).has(x))).sort((a,b)=>{ const pa = R.get("pagella").get(a), pb = R.get("pagella").get(b); return (pa?pa.pos:1e9) - (pb?pb.pos:1e9) || a.c.azienda.localeCompare(b.c.azienda); });
+    const ExcelJS = await xlLoad(), wb = new ExcelJS.Workbook(); wb.creator = "Bussola Lavoro";
+    const ws = wb.addWorksheet("Classifiche", {views:[{state:"frozen", ySplit:4, xSplit:3}], pageSetup:{paperSize:9, orientation:"landscape", fitToPage:true, fitToWidth:1, fitToHeight:0}});
+    const head = ["N.","Azienda","Dipendenti", ...cats.flatMap(c=>[c.l, "Pos."])];
+    ws.columns = head.map((h,i)=>({width: i===1 ? 34 : i<3 ? 10 : h==="Pos." ? 6 : 14}));
+    ws.mergeCells(1,1,1,Math.min(head.length, 12)); const t = ws.getCell(1,1); t.value = `Classifiche delle aziende clienti · ${fmtD(today)}`; t.font = {bold:true, size:15, color:{argb:"FFFFFFFF"}}; t.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FF8B1A14"}}; ws.getRow(1).height = 24;
+    ws.getCell(2,1).value = `${(RK_MIN.find(m=>m[0]===RK.min)||RK_MIN[0])[1]}${OPF.op?` · clienti di ${OPF.op}`:""}`; ws.getCell(2,1).font = {italic:true, color:{argb:"FF555555"}};
+    const hr = ws.getRow(4); head.forEach((h,i)=>{ const c = hr.getCell(i+1); c.value = h; c.font = {bold:true}; c.alignment = {wrapText:true, vertical:"middle"}; c.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FFE9EDF1"}}; }); hr.height = 44;
+    ws.autoFilter = {from:{row:4,column:1}, to:{row:4,column:head.length}};
+    list.forEach((x,i)=>{ const r = ws.getRow(5+i); r.values = [x.c.n??"", x.c.azienda, x.n, ...cats.flatMap(c=>{ const o = R.get(c.id).get(x); return o ? [Math.round(o.v*100)/100, o.pos] : [null, null]; })];
+      cats.forEach((c,j)=>{ const o = R.get(c.id).get(x); if(o && o.pos<=3) r.getCell(4+j*2+1).font = {bold:true, color:{argb:"FF8C6A00"}}; }); });
+    const buf = await wb.xlsx.writeBuffer();
+    await downloads.save({filename:`Classifiche clienti ${fmtD(today).replace(/\//g,".")}.xlsx`, data:new Blob([buf])}); P.toast("File Excel salvato");
+  }catch(e){ if(!(e && e.code==="declined")) P.toast("Salvataggio non riuscito"); } finally{ btn.disabled = false; btn.textContent = lbl; }
+}
+
 let startView = "oggi";
 try{ const v = localStorage.getItem("prontuario.view"); if(v && localStorage.getItem("bussola.oggiVisto")) startView = v; localStorage.setItem("bussola.oggiVisto","1"); }catch(e){}
 const h = (location.hash||"").replace("#","");
-if(["oggi","prontuario","clienti","calcolatori","costo","scadenziario","termine","apprendisti","durc","agevolazioni","lettere","controlli","mesepaghe","disciplinari","assunzioni","tirocini","ratei","dati","dipendenti","contatori","sicurezza","simulatore","storico","personale","minimi"].includes(h)) startView = h;
+if(["oggi","prontuario","clienti","calcolatori","costo","scadenziario","termine","apprendisti","durc","agevolazioni","lettere","controlli","mesepaghe","disciplinari","assunzioni","tirocini","ratei","dati","dipendenti","contatori","sicurezza","simulatore","storico","personale","minimi","classifiche"].includes(h)) startView = h;
 setView(startView);
 })();
 </script>
