@@ -1001,6 +1001,39 @@ table.cl tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offs
 .hs-ch ins{text-decoration:none;color:var(--ink)}
 .hs-more summary{cursor:pointer;font-size:12.5px;color:var(--accent);margin-top:2px}
 @media (max-width:600px){.hs-it{grid-template-columns:minmax(0,1fr)}.hs-t{font-size:12.5px;color:var(--muted)}}
+
+.bkd{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;border:1px solid var(--line);border-left:4px solid var(--ok);border-radius:10px;padding:10px 14px;margin:8px 0 12px;background:var(--surface);font-size:13.5px}
+.bkd.warn{border-left-color:var(--warn)}.bkd.bad{border-left-color:var(--danger)}
+.bkd b{flex-basis:100%}.bkd span{flex:1 1 320px;color:var(--muted)}
+
+/* Costo del personale e scadenziario minimi */
+.cp-bar{grid-template-columns:minmax(240px,2fr) minmax(120px,160px) 1fr auto}
+.cp-tbl td{vertical-align:middle}
+.cp-tbl .cp-sel{min-width:120px;padding:5px 6px;border-radius:7px;border:1px solid var(--line-strong);background:var(--surface-2);font-size:13px}
+.cp-tbl .cp-sel.ver{border-color:var(--warn);background:var(--warn-bg)}
+.cp-in{width:84px;text-align:right;border:1px solid var(--line-strong);background:var(--surface-2);border-radius:6px;padding:4px 6px;font-size:13px;font-variant-numeric:tabular-nums}
+.cp-in.sm{width:48px}
+.cp-chk{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--muted);white-space:nowrap}
+.cp-tbl tr.cp-skip td{color:var(--muted)}
+.cp-tbl tr.cp-tot td{font-weight:700;border-top:2px solid var(--line-strong);background:var(--surface-2)}
+.cp-mesi{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px;align-items:end;height:150px}
+.cp-m{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px;min-width:0}
+.cp-b{display:block;width:100%;max-width:36px;background:var(--c1);border-radius:5px 5px 0 0;min-height:2px}
+.cp-v{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cp-l{font-size:11px;color:var(--muted)}
+@media (max-width:640px){.cp-v{display:none}}
+.mn-tl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.mn-tl h3{margin:0 0 8px;font-size:15px}
+.mn-tl ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.mn-tl li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;padding:8px 0 8px 10px;border-top:1px dashed var(--line);border-left:3px solid transparent;font-size:14px}
+.mn-tl li:first-child{border-top:0}
+.mn-tl li.bad{border-left-color:var(--danger)}.mn-tl li.warn{border-left-color:var(--warn)}
+.mn-tl li small{display:block;color:var(--muted);font-size:12px}
+.mn-d{font-weight:700;font-variant-numeric:tabular-nums}
+.mn-tbl tr.mn-det td,.mn-tbl tr.mn-det:hover td{background:var(--surface-2)}
+.mn-det .tbl{max-width:100%}
+.mn-det th.mn-cur{color:var(--accent)}
+.mn-det tr.mn-ref td{font-weight:700}
 </style>
 
 <div class="app">
@@ -1095,6 +1128,8 @@ table.cl tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offs
   <div id="viewSicurezza" hidden></div>
   <div id="viewSimulatore" hidden></div>
   <div id="viewStorico" hidden></div>
+  <div id="viewPersonale" hidden></div>
+  <div id="viewMinimi" hidden></div>
 </div>
 </div><!-- /app -->
 
@@ -1602,6 +1637,8 @@ function setView(v){
   $("#viewSicurezza").hidden = v!=="sicurezza";
   $("#viewSimulatore").hidden = v!=="simulatore";
   $("#viewStorico").hidden = v!=="storico";
+  $("#viewPersonale").hidden = v!=="personale";
+  $("#viewMinimi").hidden = v!=="minimi";
   const ta = $("#topActions"); if(ta) ta.hidden = !state.canWrite || v!=="prontuario";
   if(v==="clienti") renderClienti();
   if(v==="calcolatori") renderCalc();
@@ -1625,6 +1662,8 @@ function setView(v){
   if(v==="sicurezza") renderSIC();
   if(v==="simulatore") renderSIM();
   if(v==="storico") renderHS();
+  if(v==="personale") renderCP();
+  if(v==="minimi") renderMN();
   try{ opBar(); }catch(e){}
   try{ localStorage.setItem("prontuario.view", v); }catch(e){}
   try{ uxOnView(v); }catch(e){}
@@ -1653,7 +1692,7 @@ function opMap(){ if(_opmSrc!==CL.list){ _opmSrc = CL.list; _opm = new Map(CL.li
 function opOk(clId){ return !OPF.op || (!!clId && opMap().get(clId)===OPF.op); }
 function opL(list, k){ k = k || "cliente"; return OPF.op ? list.filter(x=>opOk(x[k])) : list; }
 function opNames(){ return [...new Set(CL.list.map(c=>(c.operatore||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); }
-const OP_VIEWS = ["oggi","clienti","sicurezza","storico","dipendenti","contatori","assunzioni","ratei","dati","agevolazioni","lettere","controlli","disciplinari","mesepaghe","termine","tirocini","apprendisti","durc"];
+const OP_VIEWS = ["oggi","clienti","personale","sicurezza","storico","dipendenti","contatori","assunzioni","ratei","dati","agevolazioni","lettere","controlli","disciplinari","mesepaghe","termine","tirocini","apprendisti","durc"];
 function opBar(){
   const el = document.getElementById("opBar"); if(!el) return;
   if(!OPF.op || !OP_VIEWS.includes(view)){ el.innerHTML = ""; return; }
@@ -5533,6 +5572,7 @@ function ogCollect(){
     if(gg<0 && gg>=-365) add({d, t:"ccnl", az:c.sigla||c.id, txt:`CCNL scaduto: verificare rinnovo e nuove tabelle${n?` (${n} clienti)`:""}`, sev:"warn", go, ccnl:true});
     else if(gg>=0 && gg<=60) add({d, t:"ccnl", az:c.sigla||c.id, txt:`CCNL in scadenza${n?`: ${n} clienti interessati`:""}`, sev:"warn", go, ccnl:true});
   });
+  try{ mnOggi(add); }catch(e){}
   return out;
 }
 function ogGroup(it){
@@ -5622,7 +5662,7 @@ function ogGo(g){
 
 /* ================= NAVIGAZIONE, RICERCA GLOBALE, SCHEDA CLIENTE ================= */
 const cnelOf = c => P.cnelOf(c);
-const UX_LABEL = { oggi:"Oggi", prontuario:"Prontuario CCNL", clienti:"Clienti", calcolatori:"Calcolatori", costo:"Costo del lavoro", termine:"Contratti a termine", apprendisti:"Apprendistato", durc:"DURC", agevolazioni:"Agevolazioni", scadenziario:"Scadenziario CCNL", lettere:"Lettere", controlli:"Controlli", mesepaghe:"Mese paghe", disciplinari:"Disciplinari", assunzioni:"Assunzioni", tirocini:"Tirocini", ratei:"Ratei dipendenti", dati:"Aggiorna dati e backup", dipendenti:"Dipendenti", contatori:"Contatori", sicurezza:"Sicurezza", simulatore:"Simula assunzione", storico:"Storico modifiche" };
+const UX_LABEL = { oggi:"Oggi", prontuario:"Prontuario CCNL", clienti:"Clienti", calcolatori:"Calcolatori", costo:"Costo del lavoro", termine:"Contratti a termine", apprendisti:"Apprendistato", durc:"DURC", agevolazioni:"Agevolazioni", scadenziario:"Scadenziario CCNL", lettere:"Lettere", controlli:"Controlli", mesepaghe:"Mese paghe", disciplinari:"Disciplinari", assunzioni:"Assunzioni", tirocini:"Tirocini", ratei:"Ratei dipendenti", dati:"Aggiorna dati e backup", dipendenti:"Dipendenti", contatori:"Contatori", sicurezza:"Sicurezza", simulatore:"Simula assunzione", storico:"Storico modifiche", personale:"Costo del personale", minimi:"Scadenziario minimi" };
 function uxDrawer(open){
   const side = document.getElementById("side"), scrim = document.getElementById("sideScrim"), btn = document.getElementById("menuBtn");
   if(!side) return;
@@ -5786,6 +5826,7 @@ function kshAct(k, arg){
   else if(k==="va"){ vaOpen({ cliente:c._id }); }
   else if(k==="cn"){ CN.az = c._id; setView("contatori"); }
   else if(k==="sic"){ setView("sicurezza"); sicOpen(c._id); }
+  else if(k==="cp"){ CP.cl = c._id; cpSaveLocal(); setView("personale"); }
   else if(k==="sim"){ SIM.v["sim-cl"] = c._id; simFromClient(); simSave(); setView("simulatore"); }
   else if(k==="hist"){ HS.cl = c._id; HS.per = "tutto"; setView("storico"); }
   else if(k==="sg"){ sgOpen(c._id); }
@@ -5886,7 +5927,7 @@ function kshRender(){
       ${state.canWrite?`<button class="btn sm" type="button" data-ksh="newpm">+ Promemoria</button><button class="btn sm" type="button" data-ksh="edit">Modifica dati</button>`:""}
       <details class="ksh-more"><summary class="btn sm">Altro</summary><div class="ksh-menu" role="menu">
         ${cc?`<button type="button" role="menuitem" data-ksh="prontuario">Regole del CCNL</button>`:""}
-        ${c.ccnl && rulesOf(c.ccnl)?`<button type="button" role="menuitem" data-ksh="calc">Calcolatori</button><button type="button" role="menuitem" data-ksh="costo">Costo del lavoro</button><button type="button" role="menuitem" data-ksh="sim">Simula un'assunzione</button>`:""}
+        ${c.ccnl && rulesOf(c.ccnl)?`<button type="button" role="menuitem" data-ksh="calc">Calcolatori</button><button type="button" role="menuitem" data-ksh="costo">Costo del lavoro</button><button type="button" role="menuitem" data-ksh="sim">Simula un'assunzione</button>`:""}${typeof DP!=="undefined" && DP.docs[c._id] ? `<button type="button" role="menuitem" data-ksh="cp">Costo del personale</button>` : ""}
         ${DP.loaded && DP.docs[c._id]?`<button type="button" role="menuitem" data-ksh="va">Verifica prima di assumere</button><button type="button" role="menuitem" data-ksh="cn">Contatori</button>`:""}
         ${state.canWrite?`<button type="button" role="menuitem" data-ksh="newdsc">+ Procedimento disciplinare</button>`:""}
         <button type="button" role="menuitem" data-ksh="hist">Storico modifiche</button>
@@ -7957,8 +7998,8 @@ function rtCessHTML(){
 
 /* ================= AGGIORNA I DATI DEL MESE + BACKUP ================= */
 var AGG = { ym:"", docs:{}, loaded:false, unsub:null, bk:null, unsubB:null, busy:false };
-const BK_COLL = ["clienti","dipendenti","dipendenti_meta","ccnl","schede","contratti","apprendisti","tirocini","assunzioni","agevolazioni","pratiche_agevolazioni","durc","dpa","mesepaghe","promemoria","controlli_ok","lettere","disciplinari","ratei","ratei_meta","impostazioni","aggiornamenti"];
-const BK_LABEL = { dipendenti:"Dipendenti (TeamSystem)", dipendenti_meta:"Dipendenti (import)", clienti:"Anagrafica clienti", ccnl:"CCNL", schede:"Schede CCNL", contratti:"Contratti a termine", apprendisti:"Apprendisti", tirocini:"Tirocini", assunzioni:"Assunzioni", agevolazioni:"Agevolazioni (catalogo)", pratiche_agevolazioni:"Pratiche agevolazioni", durc:"DURC", dpa:"DPA", mesepaghe:"Mese paghe", promemoria:"Promemoria", controlli_ok:"Controlli verificati", lettere:"Registro lettere", disciplinari:"Disciplinari", ratei:"Ratei dipendenti", ratei_meta:"Ratei (import)", impostazioni:"Impostazioni", aggiornamenti:"Aggiornamenti mensili" };
+const BK_COLL = ["clienti","dipendenti","dipendenti_meta","ccnl","schede","contratti","apprendisti","tirocini","assunzioni","agevolazioni","pratiche_agevolazioni","durc","dpa","mesepaghe","promemoria","controlli_ok","lettere","disciplinari","ratei","ratei_meta","impostazioni","aggiornamenti","costo_personale","storico"];
+const BK_LABEL = { dipendenti:"Dipendenti (TeamSystem)", dipendenti_meta:"Dipendenti (import)", clienti:"Anagrafica clienti", ccnl:"CCNL", schede:"Schede CCNL", contratti:"Contratti a termine", apprendisti:"Apprendisti", tirocini:"Tirocini", assunzioni:"Assunzioni", agevolazioni:"Agevolazioni (catalogo)", pratiche_agevolazioni:"Pratiche agevolazioni", durc:"DURC", dpa:"DPA", mesepaghe:"Mese paghe", promemoria:"Promemoria", controlli_ok:"Controlli verificati", lettere:"Registro lettere", disciplinari:"Disciplinari", ratei:"Ratei dipendenti", ratei_meta:"Ratei (import)", impostazioni:"Impostazioni", aggiornamenti:"Aggiornamenti mensili", costo_personale:"Costo del personale (livelli e superminimi)", storico:"Storico modifiche" };
 function subscribeAGG(){
   if(!state.db) return;
   if(!AGG.unsub) AGG.unsub = state.db.collection("aggiornamenti").onSnapshot(snap=>{ const m = {}; snap.docs.forEach(d=>{ m[d.id] = d.data(); }); AGG.docs = m; AGG.loaded = true; if(view==="dati") renderAGG(); navBadgesSoon(); }, ()=>{ AGG.loaded = true; });
@@ -8021,7 +8062,7 @@ function aggVoci(ym){
     add({ k:"clienti", t:"Anagrafica clienti", src:"Nuovi clienti, cessati, operatori", last: aggLast(CL.list), st: noOp ? "warn" : "ok", txt: noOp ? `${noOp} clienti senza operatore assegnato` : `${CL.list.length} clienti, tutti con operatore`,
       btns:[["Apri l'anagrafica", ()=>setView("clienti")]] }); }
   // backup
-  { const b = AGG.bk, d = b && b.ultimo ? parseD(b.ultimo.slice(0,10)) : null, gg = d ? dayDiff(d, today) : null;
+  { const b = AGG.bk, dl = [b && b.ultimo, b && b.drive && b.drive.il].filter(Boolean).sort().pop(), d = dl ? parseD(dl.slice(0,10)) : null, gg = d ? dayDiff(d, today) : null;
     add({ k:"backup", t:"Backup completo", src:"Copia di tutti i dati da conservare in studio", last:d, st: gg==null || gg > 31 ? "bad" : gg > 7 ? "warn" : "ok", txt: d ? `Ultimo backup ${gg===0?"oggi":gg===1?"ieri":`${gg} giorni fa`}${b.documenti?` (${fmtN(b.documenti)} documenti)`:""}` : "Nessun backup scaricato finora",
       btns:[["Scarica il backup", ()=>bkDownload("json")]] }); }
   const fatti = (AGG.docs[ym] && AGG.docs[ym].voci) || {};
@@ -8044,7 +8085,7 @@ function renderAGG(){
     root.addEventListener("click", e=>{
       const b = e.target.closest("[data-agb]"); if(b){ const [k, i] = b.dataset.agb.split("|"); const v = (AGG.voci||[]).find(x=>x.k===k); if(v && v.btns[+i]) v.btns[+i][1](); return; }
       const t = e.target.closest("[data-bk]"); if(!t) return;
-      if(t.dataset.bk==="json") bkDownload("json", t); else if(t.dataset.bk==="xlsx") bkDownload("xlsx", t); else if(t.dataset.bk==="restore") openBKRestore();
+      if(t.dataset.bk==="drive") bkDrive(true, t); else if(t.dataset.bk==="json") bkDownload("json", t); else if(t.dataset.bk==="xlsx") bkDownload("xlsx", t); else if(t.dataset.bk==="restore") openBKRestore();
     });
     root.addEventListener("change", e=>{ const t = e.target.closest("[data-agf]"); if(!t) return; aggToggle(t.dataset.agf, t.checked).catch(err=>{ t.checked = !t.checked; P.toast(P.errMsg(err)); }); });
   }
@@ -8065,6 +8106,8 @@ function renderAGG(){
   const b = AGG.bk;
   $("#agBk").innerHTML = `<h3>Backup e ripristino</h3>
     <p class="sc-sub">Il backup scarica in un unico file tutti gli archivi di Bussola Lavoro (${BK_COLL.length} archivi: anagrafica, CCNL, scadenziari, assunzioni, ratei, lettere, disciplinari, impostazioni…). Conservalo nella cartella dello studio: serve a recuperare i dati dopo un import sbagliato o una cancellazione. Il file Excel è la stessa copia in formato leggibile, un foglio per archivio.${b&&b.ultimo?` Ultimo backup: <b>${esc(fmtD(parseD(b.ultimo.slice(0,10))))}</b>${b.documenti?`, ${fmtN(b.documenti)} documenti`:""}.`:""}</p>
+    <div class="bkd ${bkdStato().cls}"><b>Backup automatico su Google Drive</b><span>${bkdStato().txt}</span>${b&&b.driveFolderUrl?`<a href="${esc(b.driveFolderUrl)}" target="_blank" rel="noopener">Apri la cartella «Backup Bussola Lavoro»</a>`:""}
+      ${state.canWrite?`<button class="btn sm" type="button" data-bk="drive">Salva ora su Google Drive</button>`:""}</div>
     <div class="ag-bkb"><button class="btn primary" type="button" data-bk="json">Scarica backup completo</button><button class="btn" type="button" data-bk="xlsx">Scarica in Excel</button>${state.canWrite?`<button class="btn ghost" type="button" data-bk="restore">Ripristina da un backup…</button>`:""}</div>
     <p class="sc-sub" id="agBkMsg" aria-live="polite"></p>`;
 }
@@ -8118,11 +8161,69 @@ async function bkDownload(kind, btn){
       const buf = await wb.xlsx.writeBuffer();
       await downloads.save({ filename:`Backup Bussola Lavoro ${stamp}.xlsx`, data:new Blob([buf]) });
     }
-    try{ await state.db.collection("impostazioni").doc("backup").set({ ultimo:now.toISOString(), da:state.myId||"", formato:kind, documenti:n }); }catch(e){}
+    try{ await state.db.collection("impostazioni").doc("backup").set({ ...(AGG.bk||{}), ultimo:now.toISOString(), da:state.myId||"", formato:kind, documenti:n }); }catch(e){}
     say(`Backup salvato: ${fmtN(n)} documenti in ${BK_COLL.length} archivi.`); P.toast("Backup salvato");
   }catch(e){ if(e && e.code==="declined") say("Salvataggio annullato."); else { say("Backup non riuscito: " + (P.errMsg ? P.errMsg(e) : (e && e.message) || "")); P.toast("Backup non riuscito"); } }
   finally{ AGG.busy = false; if(btn){ btn.disabled = false; btn.textContent = lbl; } }
 }
+/* ---- backup automatico su Google Drive: ogni 7 giorni, alla prima apertura di Bussola da parte di chi ha Google Drive collegato ---- */
+const BKD_SRV = "Google Drive";
+function bkdStato(){
+  const b = AGG.bk || {}, dr = b.drive, gg = dr && dr.il ? dayDiff(parseD(dr.il.slice(0,10)), today) : null, ogni = b.driveGiorni || 7;
+  if(!dr) return { cls:"warn", txt:`Nessun backup su Drive finora. Ogni ${ogni} giorni Bussola salva da sola una copia completa nella cartella dello studio, quando la apre chi ha collegato Google Drive.` };
+  return { cls: gg > ogni*2 ? "bad" : gg > ogni ? "warn" : "ok", txt:`Ultimo backup su Drive ${gg===0?"oggi":gg===1?"ieri":`${gg} giorni fa`}${dr.documenti?` (${fmtN(dr.documenti)} documenti)`:""}${dr.file?`: «${dr.file}»`:""}. Il prossimo parte da solo dopo ${ogni} giorni.` };
+}
+function bkdErr(e){
+  const c = e && e.code;
+  if(c==="server_not_connected") return "Google Drive non è collegato: aggiungilo in claude.ai › Impostazioni › Connettori.";
+  if(c==="needs_reauth") return "Il collegamento a Google Drive è scaduto: ricollegalo in claude.ai › Impostazioni › Connettori.";
+  if(c==="not_in_manifest" || c==="consent_required") return "Google Drive non è autorizzato per questa pagina: riattivalo dal menu Autorizzazioni dell'artefatto.";
+  if(c==="selection_required") return "Hai più account Google Drive collegati: scegli quale usare nella finestra di Claude.";
+  if(c==="blocked_by_policy" || c==="approval_required") return "Le regole dell'organizzazione non consentono di usare Google Drive da questa pagina.";
+  if(c==="server_unavailable") return "Google Drive non risponde: riprova tra qualche minuto.";
+  if(c==="tool_error") return "Google Drive ha rifiutato il file: " + (e.message||"");
+  return "Backup su Drive non riuscito" + (e && e.message ? ": " + e.message : "");
+}
+async function bkDrive(manual, btn){
+  if(AGG.busy || !state.canWrite) return;
+  const say = t => { const m = document.getElementById("agBkMsg"); if(m) m.textContent = t; };
+  const mcp = window.claude && window.claude.use ? await window.claude.use("mcp") : null;
+  if(!mcp){ if(manual) P.toast("Google Drive non è disponibile in questa vista"); return; }
+  let lt = null; try{ lt = await mcp.listTools(); }catch(e){ if(manual) say(bkdErr(e)); return; }
+  if(!lt || !lt.fileArgs){ if(manual) say("Questa vista non permette di caricare file su Google Drive: usa «Scarica backup completo»."); return; }
+  const cur = AGG.bk || {}, lock = cur.driveLock && cur.driveLock.il ? (Date.now() - Date.parse(cur.driveLock.il)) : 1e12;
+  if(!manual && lock < 30*60*1000) return;   /* un altro collega sta già facendo il backup */
+  AGG.busy = true; const lbl = btn ? btn.textContent : ""; if(btn){ btn.disabled = true; btn.textContent = "Salvo su Drive…"; }
+  try{
+    try{ await state.db.collection("impostazioni").doc("backup").set({ ...cur, driveLock:{ il:new Date().toISOString(), da:state.myId||"" } }); }catch(e){}
+    const { out, n } = await bkReadAll(manual ? say : null), now = new Date();
+    const stamp = isoD(now) + "_" + String(now.getHours()).padStart(2,"0") + String(now.getMinutes()).padStart(2,"0"), title = `Backup Bussola Lavoro ${stamp}.json`;
+    const blob = new Blob([JSON.stringify({ app:"Bussola Lavoro", tipo:"backup", versione:1, creatoIl:now.toISOString(), creatoDa:state.myId||"", documenti:n, collezioni:out })], {type:"application/json"});
+    if(manual) say("Carico il file su Google Drive…");
+    const inp = { title, base64Content:{ $file:{ data:blob, name:"backup.json", type:"application/json" } }, contentMimeType:"application/json", disableConversionToGoogleType:true };
+    let res;
+    try{ res = await mcp.callTool(BKD_SRV, "create_file", cur.driveFolder ? { ...inp, parentId:cur.driveFolder } : inp); }
+    catch(e){ if(e && e.code==="tool_error" && cur.driveFolder) res = await mcp.callTool(BKD_SRV, "create_file", inp); else throw e; }   /* cartella non condivisa con chi fa il backup: salvo nel suo Drive */
+    const f = (res && res.payload) || {};
+    const nb = { ...(AGG.bk||cur), drive:{ il:now.toISOString(), da:state.myId||"", documenti:n, file:title, id:f.id||"", url:f.viewUrl||"", auto:!manual } };
+    delete nb.driveLock;
+    await state.db.collection("impostazioni").doc("backup").set(nb);
+    say(`Backup salvato su Google Drive: ${fmtN(n)} documenti.`); if(manual) P.toast("Backup salvato su Google Drive"); else P.toast("Backup settimanale salvato su Google Drive");
+  }catch(e){
+    const msg = bkdErr(e); say(msg); if(manual) P.toast(msg);
+    try{ const b = { ...(AGG.bk||cur) }; delete b.driveLock; b.driveErr = { il:new Date().toISOString(), code:(e&&e.code)||"", msg }; await state.db.collection("impostazioni").doc("backup").set(b); }catch(x){}
+  } finally{ AGG.busy = false; if(btn){ btn.disabled = false; btn.textContent = lbl; } }
+}
+/* controllo all'apertura: parte da solo solo se Google Drive è già autorizzato per la pagina (nessuna richiesta di consenso a sorpresa) */
+async function bkdAuto(){
+  if(!state.canWrite || !AGG.bk) return;
+  const b = AGG.bk, dr = b.drive, ogni = b.driveGiorni || 7;
+  if(dr && dr.il && dayDiff(parseD(dr.il.slice(0,10)), today) < ogni) return;
+  try{ const perm = await window.claude.use("permissions"); const st = perm ? await perm.state("mcp:" + BKD_SRV).catch(()=>"unavailable") : "unavailable"; if(st!=="granted") return; }catch(e){ return; }
+  bkDrive(false);
+}
+setTimeout(()=>{ try{ if(!AGG.unsub) subscribeAGG(); }catch(e){} setTimeout(()=>{ bkdAuto().catch(()=>{}); }, 4000); }, 20000);
+
 /* ---- ripristino da un file di backup (.json) ---- */
 function openBKRestore(){
   if(!state.canWrite) return;
@@ -9334,14 +9435,14 @@ async function sicExcel(btn){
 /* ================= NAVIGAZIONE A GRUPPI ================= */
 const NAV_G = [
   {id:"oggi", l:"Oggi", v:["oggi"]},
-  {id:"clienti", l:"Clienti", v:["clienti","dipendenti","contatori"]},
+  {id:"clienti", l:"Clienti", v:["clienti","dipendenti","contatori","personale"]},
   {id:"rapporti", l:"Rapporti di lavoro", v:["assunzioni","termine","apprendisti","tirocini","ratei"]},
   {id:"adempimenti", l:"Adempimenti", v:["durc","mesepaghe","controlli","sicurezza","disciplinari"]},
-  {id:"strumenti", l:"Strumenti", v:["prontuario","calcolatori","costo","lettere","scadenziario"]},
+  {id:"strumenti", l:"Strumenti", v:["prontuario","calcolatori","costo","lettere","scadenziario","minimi"]},
   {id:"agevolazioni", l:"Agevolazioni", v:["agevolazioni","simulatore"]},
   {id:"studio", l:"Studio", v:["storico","dati"]}
 ];
-const NAV_SHORT = { clienti:"Anagrafica", dipendenti:"Dipendenti", contatori:"Contatori", assunzioni:"Assunzioni", termine:"Contratti a termine", apprendisti:"Apprendistato", tirocini:"Tirocini", ratei:"Ferie e permessi", durc:"DURC", mesepaghe:"Mese paghe", controlli:"Controlli", sicurezza:"Sicurezza", disciplinari:"Disciplinari", prontuario:"Prontuario CCNL", calcolatori:"Calcolatori", costo:"Costo del lavoro", lettere:"Lettere", scadenziario:"Scadenze CCNL", agevolazioni:"Verifica e pratiche", simulatore:"Simula assunzione", storico:"Storico modifiche", dati:"Aggiorna dati e backup" };
+const NAV_SHORT = { clienti:"Anagrafica", dipendenti:"Dipendenti", contatori:"Contatori", personale:"Costo del personale", minimi:"Scadenze minimi", assunzioni:"Assunzioni", termine:"Contratti a termine", apprendisti:"Apprendistato", tirocini:"Tirocini", ratei:"Ferie e permessi", durc:"DURC", mesepaghe:"Mese paghe", controlli:"Controlli", sicurezza:"Sicurezza", disciplinari:"Disciplinari", prontuario:"Prontuario CCNL", calcolatori:"Calcolatori", costo:"Costo del lavoro", lettere:"Lettere", scadenziario:"Scadenze CCNL", agevolazioni:"Verifica e pratiche", simulatore:"Simula assunzione", storico:"Storico modifiche", dati:"Aggiorna dati e backup" };
 const NBV = {};
 let NAV_LAST = {};
 try{ NAV_LAST = JSON.parse(localStorage.getItem("bussola.navLast")||"{}") || {}; }catch(e){}
@@ -9748,10 +9849,262 @@ function renderHS(){
     (HS.list.length>=1000 ? `<p class="sc-legend">Sono mostrate le ultime 1.000 modifiche.</p>` : "");
 }
 
+/* ================= SCADENZIARIO DEI MINIMI TABELLARI ================= */
+var MN = { f:"attivi", sel:"", bound:false };
+const MN_WIN = 90;
+const mnLivRef = (cc, R) => R.livelloDefault && R.livelli.includes(R.livelloDefault) ? R.livelloDefault : R.livelli[Math.floor(R.livelli.length/2)];
+/* clienti e dipendenti in forza per CCNL */
+function mnUso(){
+  const u = {};
+  CL.list.forEach(c=>{ if(!c.ccnl) return; const x = u[c.ccnl] = u[c.ccnl] || {cl:0, dip:0, ids:[]}; x.cl++; x.ids.push(c._id);
+    x.dip += (typeof DP!=="undefined" && DP.loaded && DP.docs[c._id]) ? dpOrg(c._id).tot : (c.ti||0) + (c.td||0); });
+  return u;
+}
+function mnRows(){
+  const u = mnUso(), t = isoD(today), out = [];
+  P.ccnlList().forEach(c=>{
+    const R = rulesOf(c.id); if(!R || !R.minimi || !R.minimi.length || !R.livelli) return;
+    const T = [...R.minimi].sort((a,b)=>a.dal.localeCompare(b.dal)), liv = mnLivRef(c.id, R);
+    const curI = T.reduce((k,x,i)=>x.dal<=t ? i : k, -1), cur = curI>=0 ? T[curI] : null, next = T[curI+1] || null, last = T[T.length-1];
+    const {d:scad} = scadInfo(c), us = u[c.id] || {cl:0, dip:0, ids:[]};
+    const v = x => x ? (x.v[liv]||0) : 0, dNext = next ? parseD(next.dal) : null, gg = dNext ? dayDiff(today, dNext) : null;
+    const aum = next && cur ? v(next) - v(cur) : 0;
+    let st, txt;
+    if(!cur && next){ st = "warn"; txt = "La prima tabella in archivio non è ancora in vigore"; }
+    else if(next && gg<=30){ st = "bad"; txt = `Aumento tra ${gg} ${gg===1?"giorno":"giorni"}: aggiorna le paghe`; }
+    else if(next && gg<=MN_WIN){ st = "warn"; txt = `Aumento entro ${MN_WIN} giorni`; }
+    else if(next){ st = "ok"; txt = "Prossimo aumento già in archivio"; }
+    else if(scad && scad < today){ st = "bad"; txt = "Nessun aumento in archivio e CCNL scaduto: verifica rinnovo, una tantum o IVC"; }
+    else { st = "none"; txt = scad ? `Ultima tranche in vigore: nessun aumento in archivio fino alla scadenza del ${fmtD(scad)}` : "Ultima tranche in vigore: nessun aumento in archivio"; }
+    out.push({ c, R, T, liv, cur, next, last, scad, us, gg, aum, st, txt, attivo: us.cl>0 });
+  });
+  return out.sort((a,b)=>({bad:0,warn:1,ok:2,none:3})[a.st]-({bad:0,warn:1,ok:2,none:3})[b.st] || (a.gg??9999)-(b.gg??9999) || b.us.dip-a.us.dip);
+}
+/* tutte le tranche future (12 mesi) dei CCNL applicati */
+function mnTimeline(rows){
+  const t = isoD(today), lim = isoD(addMonths(today, 12)), ev = [];
+  rows.filter(r=>r.attivo).forEach(r=>{ r.T.forEach((x,i)=>{ if(x.dal > t && x.dal <= lim){ const p = r.T[i-1]; ev.push({ r, x, d:parseD(x.dal), aum: p ? (x.v[r.liv]||0) - (p.v[r.liv]||0) : null }); } }); });
+  return ev.sort((a,b)=>a.d-b.d);
+}
+function mnOggi(add){
+  if(!CL.loaded) return;
+  mnRows().filter(r=>r.attivo && r.next && r.gg!=null && r.gg<=30).forEach(r=>{
+    add({d:parseD(r.next.dal), t:"ccnl", az:r.c.sigla||r.c.id, txt:`Aumento dei minimi (${r.liv}: +${fmtE(r.aum)}): aggiorna le paghe di ${r.us.cl} ${r.us.cl===1?"cliente":"clienti"}`, sev:r.gg<=7?"bad":"warn", go:{v:"minimi"}, ccnl:true});
+  });
+}
+const MN_ST = { bad:["bad","Da aggiornare"], warn:["warn","In arrivo"], ok:["ok","In archivio"], none:["none","Nessun aumento"] };
+function renderMN(){
+  const root = $("#viewMinimi");
+  if(!root.dataset.built){
+    root.dataset.built = "1";
+    root.innerHTML = `<div class="toolbar"><div style="flex:1"><h2 style="margin:0 0 2px;font-size:20px">Scadenziario dei minimi tabellari</h2>
+        <p class="sc-sub" style="margin:0">Per ogni CCNL applicato ai clienti: tabella in vigore, prossimo aumento e fino a quando le tabelle in archivio coprono il contratto.</p></div></div>
+      <div class="chips" id="mnChips" role="group" aria-label="Filtra"></div><div class="kpis" id="mnKpi"></div>
+      <section class="mn-tl" id="mnTl"></section><div id="mnBody"></div>
+      <p class="sc-legend">Gli importi sono quelli del livello di riferimento di ogni CCNL (paga base e contingenza, senza scatti). «Da aggiornare»: aumento entro 30 giorni o tabelle finite con CCNL scaduto. Le tabelle si aggiornano dalle schede «Minimi tabellari» del prontuario.</p>`;
+    root.addEventListener("click", e=>{ const t = e.target.closest("[data-mnf],[data-mnopen],[data-mnsel],[data-mncl]"); if(!t) return;
+      if(t.dataset.mnf){ MN.f = t.dataset.mnf; renderMN(); }
+      else if(t.dataset.mnopen){ P.setFilter(t.dataset.mnopen); setView("prontuario"); }
+      else if(t.dataset.mnsel!==undefined){ MN.sel = MN.sel===t.dataset.mnsel ? "" : t.dataset.mnsel; renderMN(); }
+      else if(t.dataset.mncl){ kshOpen(t.dataset.mncl); } });
+  }
+  if(!state.loadedC || !CL.loaded){ $("#mnBody").innerHTML = `<div class="empty"><h3>Caricamento…</h3></div>`; clearTimeout(MN.t); MN.t = setTimeout(()=>{ if(view==="minimi") renderMN(); }, 700); return; }
+  const all = mnRows(), base = all.filter(r=>MN.f==="tutti" || r.attivo), n = s => base.filter(r=>r.st===s).length;
+  const chip = (k,l,col,c) => `<button class="chip" type="button" data-mnf="${k}" aria-pressed="${MN.f===k}"><span class="dot" style="--cc:${col}"></span>${l} <span class="n">${c}</span></button>`;
+  $("#mnChips").innerHTML = chip("attivi","CCNL applicati ai clienti","var(--accent)", all.filter(r=>r.attivo).length) + chip("tutti","Tutti i CCNL","var(--ink)", all.length);
+  const tl = mnTimeline(all);
+  $("#mnKpi").innerHTML = `<span><b>${n("bad")}</b> da aggiornare</span><span><b>${n("warn")}</b> aumenti entro ${MN_WIN} giorni</span><span><b>${tl.length}</b> aumenti nei prossimi 12 mesi</span><span><b>${n("none")}</b> senza aumenti in archivio</span>`;
+  $("#mnTl").innerHTML = tl.length ? `<h3>Prossimi 12 mesi</h3><ol>${tl.map(e=>`<li class="${dayDiff(today,e.d)<=30?"bad":dayDiff(today,e.d)<=MN_WIN?"warn":""}"><span class="mn-d">${fmtD(e.d)}<small>${esc(ggTxt(dayDiff(today,e.d)))}</small></span><span><span class="ccpill" style="--cc:${P.ccColor(e.r.c.id)}">${esc(e.r.c.sigla||e.r.c.id)}</span> ${e.aum!=null?`livello ${esc(e.r.liv)} <b>+${fmtE(e.aum)}</b> (${fmtE(e.x.v[e.r.liv]||0)})`:"nuova tabella"}<small>${e.r.us.cl} ${e.r.us.cl===1?"cliente":"clienti"}, ${fmtN(e.r.us.dip)} dipendenti</small></span></li>`).join("")}</ol>` : `<p class="sc-sub">Nessun aumento in archivio nei prossimi 12 mesi per i CCNL applicati.</p>`;
+  if(!base.length){ $("#mnBody").innerHTML = `<div class="empty"><h3>Nessun CCNL</h3></div>`; return; }
+  $("#mnBody").innerHTML = `<div class="tblwrap"><table class="cl mn-tbl"><thead><tr><th>CCNL</th><th>Stato</th><th>In vigore dal</th><th>Prossimo aumento</th><th>Tabelle fino al</th><th>Scadenza CCNL</th><th class="num">Clienti</th><th class="num">Dip.</th><th></th></tr></thead><tbody>
+    ${base.map(r=>{ const [cls,lbl] = MN_ST[r.st], open = MN.sel===r.c.id;
+      return `<tr><td><span class="ccpill" style="--cc:${P.ccColor(r.c.id)}">${esc(r.c.sigla||r.c.id)}</span><span class="sc-sub">livello di riferimento ${esc(r.liv)}</span></td>
+        <td><span class="sc-st ${cls}">${lbl}</span><span class="sc-sub">${esc(r.txt)}</span></td>
+        <td class="sc-date">${r.cur?fmtD(parseD(r.cur.dal)):"—"}<span class="sc-sub">${r.cur?fmtE(r.cur.v[r.liv]||0):""}</span></td>
+        <td class="sc-date">${r.next?`${fmtD(parseD(r.next.dal))}<span class="sc-sub">${esc(ggTxt(r.gg))} · +${fmtE(r.aum)}</span>`:"—"}</td>
+        <td class="sc-date">${fmtD(parseD(r.last.dal))}<span class="sc-sub">ultima tranche</span></td>
+        <td class="sc-date">${r.scad?fmtD(r.scad):"—"}${r.scad?`<span class="sc-sub">${esc(ggTxt(dayDiff(today,r.scad)))}</span>`:""}</td>
+        <td class="num">${r.us.cl||"—"}</td><td class="num">${r.us.dip?fmtN(r.us.dip):"—"}</td>
+        <td><div class="rowact"><button class="btn ghost sm" type="button" data-mnsel="${esc(r.c.id)}" aria-expanded="${open}">${open?"Chiudi":"Tabelle"}</button><button class="btn ghost sm" type="button" data-mnopen="${esc(r.c.id)}">Prontuario</button></div></td></tr>
+        ${open?`<tr class="mn-det"><td colspan="9">${mnDet(r)}</td></tr>`:""}`; }).join("")}</tbody></table></div>`;
+}
+function mnDet(r){
+  const t = isoD(today), L = r.R.livelli;
+  return `<div class="tbl"><table><thead><tr><th>Livello</th>${r.T.map(x=>`<th class="num${x===r.cur?" mn-cur":""}">${fmtD(parseD(x.dal))}${x===r.cur?" · in vigore":x.dal>t?" · futuro":""}</th>`).join("")}</tr></thead><tbody>
+    ${L.map(l=>`<tr${l===r.liv?' class="mn-ref"':""}><td>${esc(l)}</td>${r.T.map(x=>`<td class="num">${x.v[l]!=null?fmtN(x.v[l],2):"—"}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+    ${r.us.ids.length?`<p class="sc-sub" style="margin:8px 0 0">Clienti: ${r.us.ids.map(id=>{ const c = CL.list.find(x=>x._id===id); return c?`<button class="btn ghost sm" type="button" data-mncl="${esc(id)}">${esc(c.azienda)}</button>`:""; }).join(" ")}</p>`:""}
+    ${r.R.minimiNota?`<p class="sc-sub" style="margin:6px 0 0">${esc(r.R.minimiNota)}</p>`:""}`;
+}
+
+/* ================= COSTO DEL PERSONALE PER CLIENTE ================= */
+var CP = { cl:"", anno:today.getFullYear(), docs:{}, unsub:null, loaded:false, last:null, t:0 };
+try{ const x = JSON.parse(localStorage.getItem("bussola.cp")||"{}"); if(x.cl) CP.cl = x.cl; if(x.anno) CP.anno = +x.anno; }catch(e){}
+function cpSaveLocal(){ try{ localStorage.setItem("bussola.cp", JSON.stringify({cl:CP.cl, anno:CP.anno})); }catch(e){} }
+function subscribeCP(){
+  if(CP.unsub || !state.db) return;
+  CP.unsub = state.db.collection("costo_personale").onSnapshot(snap=>{ const m = {}; snap.docs.forEach(d=>{ m[d.id] = d.data(); }); CP.docs = m; CP.loaded = true; if(view==="personale") renderCP(); }, ()=>{ CP.loaded = true; });
+}
+const ROMANI = ["","I","II","III","IV","V","VI","VII","VIII","IX","X"];
+const cpNorm = s => String(s||"").toLowerCase().replace(/[°ª^.]/g,"").replace(/\s+/g,"").replace(/super$/,"s");
+/* livello del CCNL a partire dal livello TeamSystem («4^LIVELLO», «LIVELLO D1 (ex 2^)», «Liv. C4 (ex 1)», «CATEGORIA D»…) */
+function cpGuess(cc, d, qual){
+  const R = rulesOf(cc), L = (R && R.livelli) || [], s = String(d.livD||"").toUpperCase(), N = L.map(cpNorm);
+  const find = cands => { for(const c of cands){ const i = N.indexOf(cpNorm(c)); if(i>=0) return L[i]; } return null; };
+  const pref = qual==="operaio" ? ["Op. ","Lapidei Op. ","Legno Op. ",""] : ["Imp. ","Lapidei Imp. ","Legno Imp. ",""];
+  const wp = xs => pref.flatMap(p=>xs.map(x=>p+x)).concat(xs);
+  if(!s.trim()) return { liv:null, sure:false, why:"livello non indicato in TeamSystem" };
+  let m = s.match(/\b([A-D][1-9])\b/); if(m){ const l = find(wp([m[1]])); if(l) return { liv:l, sure:true }; }
+  if(/QUADR/.test(s)){ const l = L.find(x=>/quadr/i.test(x)) || find(["Q","Q1","A"]); if(l) return { liv:l, sure:L.filter(x=>/quadr|^Q|^A$|^B$/i.test(x)).length<=1 }; }
+  m = s.match(/AREA\s*(\d)/); if(m){ const l = find(["Area "+m[1]]); if(l) return { liv:l, sure:true }; }
+  m = s.match(/CATEGORIA\s+([A-F])\b/); if(m){ const l = find(wp([m[1]])); if(l) return { liv:l, sure:false, why:"categoria TeamSystem abbinata per lettera" }; }
+  m = s.match(/(\d)\s*\^?\s*(S|J|Q)?\s*LIVELLO/) || s.match(/LIVELLO\s*(\d)\s*\^?\s*(S|J|Q)?/);
+  if(m){ const n = +m[1], suf = m[2]==="S" ? ["S"," S"," Super"] : m[2]==="J" ? [" Junior"] : [""];
+    const forms = suf.flatMap(x=>[n+x, n+"°"+x, n+"ª"+x, ROMANI[n]+x]);
+    const l = find(wp(forms)); if(l) return { liv:l, sure:!/\(EX/.test(s), why:/\(EX/.test(s) ? "doppia numerazione nel livello TeamSystem" : "" }; }
+  return { liv:null, sure:false, why:`«${d.livD}» non abbinato` };
+}
+/* rapporti da calcolare per l'anno: dipendenti (non tirocinanti, collaboratori o dirigenti) in forza almeno un mese */
+function cpRighe(clId, anno){
+  dpAll(); const c = CL.list.find(x=>x._id===clId); if(!c) return [];
+  const cc = c.ccnl, R = rulesOf(cc), ov = CP.docs[clId] || {}, y0 = `${anno}-01-01`, y1 = `${anno}-12-31`;
+  return (DP.byCl.get(clId)||[]).filter(o=>!o.tir && !o.col).map(o=>{
+    const d = o.d, key = `${d.m}|${d.f||""}`, ini = d.ini || d.ass || "", end = d.dc || (d.t && d.t!=="I" ? (d.fine||"") : "");
+    const fuori = (!d.dc && ["cess","tras","prob"].includes(o.st.k)) || (ini && ini > y1) || (end && end < y0);
+    const dir = String(d.qi)==="3";
+    const qual = /QUADR/i.test(d.livD||"") ? "quadro" : ["2","Y"].includes(String(d.qi)) ? "impiegato" : "operaio";
+    const g = R ? cpGuess(cc, d, qual) : { liv:null, sure:false };
+    const liv = (ov.liv||{})[key] || g.liv;
+    const dal = !ini || ini < y0 ? 1 : +ini.slice(5,7), al = end && end <= y1 ? +end.slice(5,7) : 12;
+    return { o, d, key, nome:dpCap(o.nome), ini, end, fuori, dir, qual, g, liv, man:!!(ov.liv||{})[key], dal, al, prima: !ini || ini < y0,
+      sm: +((ov.sm||{})[key]||0), scatti: +((ov.sc||{})[key]||0), escl: (ov.escl||[]).includes(key) };
+  }).filter(r=>!r.fuori);
+}
+function cpK(c, r, anno, big){
+  const cc = c.ccnl, R = rulesOf(cc), permOpts = clPermessi(cc, R);
+  const app = !!r.o.app && !!APP_RET[cc], ass = parseD(r.ini);
+  const k = { cc, liv:r.liv, qual: r.qual==="quadro" ? "quadro" : clQualDef(cc, r.liv)==="quadro" ? "quadro" : r.qual, anno, dal:r.dal, al:r.al, prima:r.prima,
+    pt: sgPtv(r.o), orario:40, gg:5, app, appp:70, apppFisso:false, appAss: app ? ass : null, appFine: app && ass ? addDays(addMonths(ass, appDurata(cc, r.liv)), -1) : null, apLiv:"fin",
+    scatti:r.scatti, sm:r.sm, alt:0, premio:0, premioM:12, premioTfr:false, bp:0, bpG:null, bpEl:true,
+    ader:true, fondo:false, II: c.accordo_ii==="SI", az:0, lav:0, inail:0, esPerc:0, esMax:0, esDal:1, esAl:12, addiz:0, crit:"competenza", rMens:false,
+    permOre:(permOpts[0]||{ore:0}).ore, permIdx:0, assenze:0, patr:null, ov:{} };
+  let pid = csInpsDefault(k); if(pid==="terz" && big) pid = "terz50";
+  const P0 = CL_INPS.find(p=>p.id===pid) || CL_INPS[0];
+  k.az = P0.az; k.lav = P0.lav; k.inail = P0.inail;
+  if(r.d.t==="D") k.az += 1.4;   /* contributo addizionale NASpI dei contratti a termine (esclusi stagionali e sostituzioni) */
+  return k;
+}
+function cpCalc(clId, anno){
+  const c = CL.list.find(x=>x._id===clId); if(!c) return null;
+  const R = c.ccnl ? rulesOf(c.ccnl) : null; if(!R || !R.minimi) return { c, err:"ccnl" };
+  const big = dpOrg(clId).tot > 50, rows = cpRighe(clId, anno), mesi = Array(12).fill(0);
+  const tot = { costo:0, retr:0, contr:0, tfr:0, contratt:0, netto:0, n:0 };
+  rows.forEach(r=>{
+    if(r.dir){ r.skip = "Dirigente: CCNL dei dirigenti non gestito"; return; }
+    if(r.escl){ r.skip = "Escluso dal calcolo"; return; }
+    if(!r.liv){ r.skip = "Livello da scegliere"; return; }
+    try{ r.k = cpK(c, r, anno, big); r.res = calcolaCosto(r.k); }catch(e){ r.skip = "Errore nel calcolo: " + (e.message||""); return; }
+    if(!r.res){ r.skip = "Nessun mese nell'anno"; return; }
+    const T = r.res.tot; ["costo","retr","contr","tfr","contratt","netto"].forEach(x=>tot[x] += T[x]||0); tot.n++;
+    (r.res.rows.costo||[]).forEach((v,i)=>{ mesi[i] += v||0; });
+  });
+  return { c, R, rows, mesi, tot, big };
+}
+async function cpSet(clId, field, key, val){
+  if(!state.canWrite){ P.toast("Non hai i permessi per salvare le modifiche"); return; }
+  const cur = CP.docs[clId] || {}, doc = { ...cur, liv:{...(cur.liv||{})}, sm:{...(cur.sm||{})}, sc:{...(cur.sc||{})}, escl:[...(cur.escl||[])] };
+  if(field==="escl"){ doc.escl = val ? [...new Set([...doc.escl, key])] : doc.escl.filter(x=>x!==key); }
+  else if(val==="" || val==null || (field!=="liv" && !(+val))) delete doc[field][key]; else doc[field][key] = field==="liv" ? val : +val;
+  doc.aggiornatoIl = new Date().toISOString(); doc.aggiornatoDa = state.myId||"";
+  CP.docs[clId] = doc; renderCP();
+  try{ await state.db.collection("costo_personale").doc(clId).set(doc); }catch(e){ P.toast(P.errMsg(e)); }
+}
+function renderCP(){
+  const root = $("#viewPersonale");
+  if(!root.dataset.built){
+    root.dataset.built = "1";
+    root.innerHTML = `<div class="toolbar"><div style="flex:1;min-width:240px"><h2 style="margin:0 0 2px;font-size:20px">Costo del personale</h2>
+        <p class="sc-sub" style="margin:0">Costo annuo di ogni cliente, dipendente per dipendente, con l'anagrafica TeamSystem e il motore del Costo del lavoro.</p></div>
+        <button class="btn primary" type="button" id="cpXls" hidden>Scarica Excel</button></div>
+      <div class="ct-bar cp-bar"><div class="az"><label for="cpCl">Cliente</label><select id="cpCl"></select></div><div><label for="cpAnno">Anno</label><select id="cpAnno"></select></div><div></div><span></span></div>
+      <div id="cpBody"></div>`;
+    $("#cpCl").addEventListener("change", e=>{ CP.cl = e.target.value; cpSaveLocal(); renderCP(); });
+    $("#cpAnno").addEventListener("change", e=>{ CP.anno = +e.target.value; cpSaveLocal(); renderCP(); });
+    $("#cpXls").addEventListener("click", e=>cpExcel(e.currentTarget));
+    root.addEventListener("change", e=>{ const t = e.target.closest("[data-cpf]"); if(!t) return;
+      cpSet(CP.cl, t.dataset.cpf, t.dataset.cpk, t.type==="checkbox" ? !t.checked : t.value.replace(",", ".")); });
+    root.addEventListener("click", e=>{ const t = e.target.closest("[data-cpopen],[data-cpcl]"); if(!t) return;
+      if(t.dataset.cpcl){ kshOpen(t.dataset.cpcl); return; }
+      const r = (CP.last && CP.last.rows || []).find(x=>x.key===t.dataset.cpopen); if(r && r.k) cpToCosto(CP.last.c, r); });
+    (async()=>{ try{ const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null; $("#cpXls").hidden = !dl; }catch(e){} })();
+  }
+  subscribeCP(); if(typeof DP!=="undefined" && !DP.unsub) subscribeDP();
+  const body = $("#cpBody");
+  if(!CL.loaded || !state.loadedC || typeof DP==="undefined" || !DP.loaded){ body.innerHTML = `<div class="empty"><h3>Caricamento di clienti e dipendenti…</h3></div>`; clearTimeout(CP.t); CP.t = setTimeout(()=>{ if(view==="personale") renderCP(); }, 800); return; }
+  const cls = opL(CL.list, "_id").filter(c=>DP.docs[c._id]).sort((a,b)=>a.azienda.localeCompare(b.azienda));
+  if(!CP.cl || !cls.some(c=>c._id===CP.cl)) CP.cl = (activeClient && cls.some(c=>c._id===activeClient._id)) ? activeClient._id : "";
+  $("#cpCl").innerHTML = `<option value="">— Scegli il cliente —</option>` + cls.map(c=>`<option value="${esc(c._id)}" ${c._id===CP.cl?"selected":""}>${esc(c.azienda)}${c.n!=null?` · n. ${c.n}`:""}</option>`).join("");
+  const y = today.getFullYear(); $("#cpAnno").innerHTML = [y-1, y, y+1].map(a=>`<option ${a===CP.anno?"selected":""}>${a}</option>`).join("");
+  if(!CP.cl){ CP.last = null; body.innerHTML = `<div class="empty"><h3>Scegli un cliente</h3><p>Il calcolo usa i dipendenti in forza nell'anagrafica TeamSystem e il CCNL del cliente.</p></div>`; return; }
+  const X = cpCalc(CP.cl, CP.anno); CP.last = X;
+  if(X.err==="ccnl"){ body.innerHTML = `<div class="empty"><h3>CCNL senza tabelle</h3><p>Il cliente non ha un CCNL con i minimi in archivio: assegnalo dalla scheda cliente.</p><button class="btn" type="button" data-cpcl="${esc(CP.cl)}">Apri la scheda cliente</button></div>`; return; }
+  const { c, rows, tot, mesi } = X, R = X.R, ro = !state.canWrite;
+  const daVer = rows.filter(r=>!r.dir && !r.escl && (!r.liv || (!r.g.sure && !r.man))).length, skip = rows.filter(r=>r.skip).length;
+  const k = (v, l, s) => `<div class="big"><div class="lbl">${l}</div><div class="val">${v}</div>${s?`<div class="sub">${s}</div>`:""}</div>`;
+  const opts = r => `<option value="">— scegli —</option>${R.livelli.map(l=>`<option ${l===r.liv?"selected":""}>${esc(l)}</option>`).join("")}`;
+  const mx = Math.max(1, ...mesi);
+  body.innerHTML = `<p class="note" style="border:0;padding:0;margin:0 0 10px">${esc(P.ccName(c.ccnl))} · ${rows.length} rapporti nell'anno ${CP.anno} · organico ${X.big?"oltre":"fino a"} 50 dipendenti${c.regione?` · ${esc(c.regione)}`:""} · <button class="btn ghost sm" type="button" data-cpcl="${esc(c._id)}">Scheda cliente</button></p>
+    <div class="cs-kpis">${k(fmtE(tot.costo), `Costo del personale ${CP.anno}`, `${tot.n} ${tot.n===1?"dipendente calcolato":"dipendenti calcolati"}${skip?`, ${skip} esclusi`:""}`)}${k(fmtE(tot.n?tot.costo/tot.n:0), "Costo medio per dipendente", "sull'anno, in proporzione ai mesi")}${k(fmtE(tot.retr), "Retribuzioni lorde", `netto stimato ${fmtE(tot.netto)}`)}${k(fmtE(tot.contr + tot.tfr + tot.contratt), "Contributi, TFR e costi del CCNL", `contributi ${fmtE(tot.contr)} · TFR ${fmtE(tot.tfr)}`)}</div>
+    ${daVer?`<div class="notice" style="margin-top:12px"><b>${daVer} ${daVer===1?"livello da verificare":"livelli da verificare"}</b>: il livello TeamSystem non corrisponde con certezza a un livello del CCNL. Sceglilo nella colonna «Livello CCNL»: la scelta resta salvata per tutto lo studio.</div>`:""}
+    <section class="cs-box" style="margin:12px 0"><h4>Costo mese per mese</h4><div class="cp-mesi" role="img" aria-label="Costo mensile: ${esc(mesi.map((v,i)=>`${MESI[i]} ${fmtE(v)}`).join(", "))}">${mesi.map((v,i)=>`<div class="cp-m"><span class="cp-v">${v?fmtN(Math.round(v)):""}</span><span class="cp-b" style="height:${v/mx*100}%"></span><span class="cp-l">${MESI[i]}</span></div>`).join("")}</div></section>
+    <div class="tblwrap"><table class="cl cp-tbl"><thead><tr><th>Dipendente</th><th>Contratto</th><th>Livello TeamSystem</th><th>Livello CCNL</th><th class="num">Mesi</th><th class="num">Superminimo</th><th class="num">Scatti</th><th class="num">Retribuzione</th><th class="num">Contributi</th><th class="num">TFR</th><th class="num">Costo annuo</th><th></th></tr></thead><tbody>
+    ${rows.sort((a,b)=>a.nome.localeCompare(b.nome)).map(r=>{ const T = r.res && !r.skip ? r.res.tot : null, ver = !r.dir && !r.escl && (!r.liv || (!r.g.sure && !r.man));
+      return `<tr class="${r.skip?"cp-skip":""}"><td class="az">${esc(r.nome)}<span class="sc-sub">matr. ${esc(r.d.m)}${r.o.app?" · apprendista":""}</span></td>
+        <td>${esc(dpTipoTxt(r.o))}<span class="sc-sub">${sgPtv(r.o)<100?`part-time ${sgPtv(r.o)}%`:"tempo pieno"}${r.end?` · fino al ${fmtD(parseD(r.end))}`:""}</span></td>
+        <td>${esc(r.d.livD||r.d.liv||"—")}</td>
+        <td>${r.dir?`<span class="sc-sub">Dirigente</span>`:`<select class="cp-sel ${ver?"ver":""}" data-cpf="liv" data-cpk="${esc(r.key)}" aria-label="Livello CCNL di ${esc(r.nome)}" ${ro?"disabled":""}>${opts(r)}</select>${ver?`<span class="sc-sub" style="color:var(--warn)">${esc(r.g.why||"da verificare")}</span>`:r.man?`<span class="sc-sub">scelto a mano</span>`:""}`}</td>
+        <td class="num">${r.al-r.dal+1}</td>
+        <td class="num"><input class="cp-in" inputmode="decimal" data-cpf="sm" data-cpk="${esc(r.key)}" value="${r.sm?fmtN(r.sm,2):""}" placeholder="0" aria-label="Superminimo di ${esc(r.nome)}" ${ro?"disabled":""}></td>
+        <td class="num"><input class="cp-in sm" inputmode="numeric" data-cpf="sc" data-cpk="${esc(r.key)}" value="${r.scatti||""}" placeholder="0" aria-label="Scatti di ${esc(r.nome)}" ${ro?"disabled":""}></td>
+        ${T?`<td class="num">${fmtE(T.retr)}</td><td class="num">${fmtE(T.contr)}</td><td class="num">${fmtE(T.tfr)}</td><td class="num"><b>${fmtE(T.costo)}</b></td>`:`<td colspan="4"><span class="sc-sub">${esc(r.skip||"")}</span></td>`}
+        <td><div class="rowact">${T?`<button class="btn ghost sm" type="button" data-cpopen="${esc(r.key)}" title="Apri il prospetto mese per mese">Dettaglio</button>`:""}${r.dir?"":`<label class="cp-chk" title="Includi nel calcolo"><input type="checkbox" data-cpf="escl" data-cpk="${esc(r.key)}" ${r.escl?"":"checked"} ${ro?"disabled":""}> incluso</label>`}</div></td></tr>`; }).join("")}
+      <tr class="cp-tot"><td colspan="7">Totale ${CP.anno}</td><td class="num">${fmtE(tot.retr)}</td><td class="num">${fmtE(tot.contr)}</td><td class="num">${fmtE(tot.tfr)}</td><td class="num"><b>${fmtE(tot.costo)}</b></td><td></td></tr></tbody></table></div>
+    ${noteBox(`Stima con i minimi del CCNL e le aliquote standard del Costo del lavoro. Mancano gli elementi che l'anagrafica TeamSystem non contiene: superminimi, scatti, indennità, straordinari, premi, assenze ed eventuali agevolazioni: superminimi e scatti si possono inserire qui. I contratti a termine includono l'1,40% addizionale NASpI; gli apprendisti seguono la progressione del CCNL dalla data di assunzione. Dirigenti, tirocinanti e collaboratori sono esclusi.`)}`;
+}
+function cpToCosto(c, r){
+  activeClient = c; CS.fromClient = c._id; try{ renderBanner(); }catch(e){}
+  if(CS.cc!==r.k.cc){ CS.cc = r.k.cc; CS.ov = {}; }
+  Object.assign(CS.v, { "cs-liv":r.k.liv, "cs-qual":r.k.qual, "cs-anno":String(r.k.anno), "cs-pt":String(r.k.pt), "cs-dal":r.k.dal, "cs-al":r.k.al, "cs-prima":r.k.prima,
+    "cs-app":r.k.app, "cs-apass":r.k.appAss?isoD(r.k.appAss):"", "cs-apfine":r.k.appFine?isoD(r.k.appFine):"", "cs-aplv":r.k.app?"fin":"", "cs-scatti":String(r.k.scatti||0), "cs-sm":r.k.sm?itNum(r.k.sm):"", "cs-alt":"" });
+  if(r.d.t==="D") CS.v["cs-az"] = itNum(r.k.az); else delete CS.v["cs-az"];
+  csSave(); setView("costo");
+}
+async function cpExcel(btn){
+  const X = CP.last; if(!X || !X.rows){ P.toast("Scegli prima un cliente"); return; }
+  const downloads = window.claude && window.claude.use ? await window.claude.use("downloads") : null; if(!downloads){ P.toast("Il download non è disponibile in questa vista"); return; }
+  const lbl = btn.textContent; btn.disabled = true; btn.textContent = "Preparo il file…";
+  try{
+    const ExcelJS = await xlLoad(), wb = new ExcelJS.Workbook(); wb.creator = "Bussola Lavoro";
+    const ws = wb.addWorksheet("Costo del personale", {views:[{state:"frozen", ySplit:4, xSplit:1}], pageSetup:{paperSize:9, orientation:"landscape", fitToPage:true, fitToWidth:1, fitToHeight:0}});
+    const head = ["Dipendente","Matricola","Contratto","Part-time %","Livello TeamSystem","Livello CCNL","Mesi","Superminimo","Scatti","Retribuzione lorda","Contributi","TFR","Costi del CCNL","Costo annuo","Note", ...MESI];
+    ws.columns = head.map((h,i)=>({width: i===0?28 : i===14?32 : i>14?11 : 13}));
+    ws.mergeCells(1,1,1,15); const t = ws.getCell(1,1); t.value = `Costo del personale ${CP.anno} · ${X.c.azienda}`; t.font = {bold:true, size:15, color:{argb:"FFFFFFFF"}}; t.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FF8B1A14"}}; ws.getRow(1).height = 24;
+    ws.getCell(2,1).value = `${P.ccName(X.c.ccnl)} · stima su minimi CCNL e aliquote standard, al ${fmtD(today)}`; ws.getCell(2,1).font = {italic:true, color:{argb:"FF555555"}};
+    const hr = ws.getRow(4); head.forEach((h,i)=>{ const c = hr.getCell(i+1); c.value = h; c.font = {bold:true}; c.alignment = {wrapText:true, vertical:"middle"}; c.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FFE9EDF1"}}; });
+    let r = 5;
+    X.rows.forEach(x=>{ const T = x.res && !x.skip ? x.res.tot : null, M = T ? (x.res.rows.costo||[]) : [];
+      ws.getRow(r).values = [x.nome, x.d.m, dpTipoTxt(x.o), sgPtv(x.o), x.d.livD||x.d.liv||"", x.liv||"", x.al-x.dal+1, x.sm||null, x.scatti||null, T?T.retr:null, T?T.contr:null, T?T.tfr:null, T?T.contratt:null, T?T.costo:null, x.skip||(!x.g.sure&&!x.man?"Livello da verificare":""), ...Array.from({length:12},(_,i)=>M[i]||null)];
+      [8,10,11,12,13,14,...Array.from({length:12},(_,i)=>16+i)].forEach(j=>{ ws.getRow(r).getCell(j).numFmt = "#,##0.00"; }); r++; });
+    const tr = ws.getRow(r); tr.values = ["Totale","","","","","","","","", X.tot.retr, X.tot.contr, X.tot.tfr, X.tot.contratt, X.tot.costo, "", ...X.mesi]; tr.font = {bold:true};
+    [10,11,12,13,14,...Array.from({length:12},(_,i)=>16+i)].forEach(j=>{ tr.getCell(j).numFmt = "#,##0.00"; });
+    const buf = await wb.xlsx.writeBuffer();
+    await downloads.save({ filename:`Costo del personale ${CP.anno} - ${X.c.azienda}.xlsx`, data:new Blob([buf]) }); P.toast("File Excel salvato");
+  }catch(e){ if(!(e && e.code==="declined")) P.toast("Salvataggio non riuscito"); } finally{ btn.disabled = false; btn.textContent = lbl; }
+}
+
 let startView = "oggi";
 try{ const v = localStorage.getItem("prontuario.view"); if(v && localStorage.getItem("bussola.oggiVisto")) startView = v; localStorage.setItem("bussola.oggiVisto","1"); }catch(e){}
 const h = (location.hash||"").replace("#","");
-if(["oggi","prontuario","clienti","calcolatori","costo","scadenziario","termine","apprendisti","durc","agevolazioni","lettere","controlli","mesepaghe","disciplinari","assunzioni","tirocini","ratei","dati","dipendenti","contatori","sicurezza","simulatore","storico"].includes(h)) startView = h;
+if(["oggi","prontuario","clienti","calcolatori","costo","scadenziario","termine","apprendisti","durc","agevolazioni","lettere","controlli","mesepaghe","disciplinari","assunzioni","tirocini","ratei","dati","dipendenti","contatori","sicurezza","simulatore","storico","personale","minimi"].includes(h)) startView = h;
 setView(startView);
 })();
 </script>
