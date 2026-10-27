@@ -488,6 +488,7 @@ table.cl tr.ap-detrow td,table.cl tr.ap-detrow:hover td{background:var(--surface
 .gs-btn kbd,.gs kbd{font:600 11px/1 var(--f-body);border:1px solid currentColor;border-radius:5px;padding:3px 5px;opacity:.75}
 .side .tabs{position:static;display:flex;flex-direction:column;gap:2px;margin:0;padding:0;background:none;border:0;overflow:visible}
 .side .nav-g{font-size:12px;font-weight:600;color:var(--side-muted);padding:14px 10px 4px}
+.side .tab .ti{display:flex;align-items:center;gap:11px;min-width:0}.side .tab .ti svg{flex:none;opacity:.8}.side .tab[aria-selected="true"] .ti svg{opacity:1}
 .side .tab{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;border:0;border-radius:8px;padding:8px 10px;margin:0;font-size:14.5px;font-weight:600;color:var(--side-ink);background:none;opacity:.86}
 .side .tab:hover{background:var(--side-hover);opacity:1;border:0;color:var(--side-ink)}
 .side .tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);opacity:1}
@@ -870,6 +871,136 @@ table.sic-tbl .sc-st{white-space:nowrap}
 .sic-ck.ok .sic-ck-i{background:var(--ok-bg);color:var(--ok)}.sic-ck.warn .sic-ck-i{background:var(--warn-bg);color:var(--warn)}.sic-ck.bad .sic-ck-i{background:color-mix(in srgb,var(--danger) 14%,transparent);color:var(--danger)}
 .sic-ck b{font-size:14px;margin-right:4px}.sic-ck span{display:block;font-size:13px;margin-top:3px}.sic-ck small{display:block;font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
 .sic-ck .sc-st{display:inline-block;margin:0}
+/* ===== Navigazione a gruppi e sottoschede ===== */
+.side .tab .nb{margin-left:auto}
+.side .tab .nb.dot{min-width:9px;width:9px;height:9px;padding:0;margin-right:5px;box-shadow:0 0 0 2px var(--side-bg)}
+.side .tab[aria-selected="true"] .nb.dot{background:#fff}
+.subnav{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 0 18px;padding:4px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:var(--shadow)}
+.subnav::-webkit-scrollbar{display:none}
+.subnav:empty{display:none}
+.subnav .tab{flex:none;display:inline-flex;align-items:center;gap:7px;border:0;border-radius:9px;padding:8px 13px;margin:0;font-size:14px;font-weight:600;color:var(--muted);background:none;cursor:pointer;white-space:nowrap}
+.subnav .tab:hover{background:var(--surface-2);color:var(--ink)}
+.subnav .tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+.subnav .tab[aria-selected="true"] .nb{background:rgba(255,255,255,.25);color:inherit}
+.subnav .tab:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.sn-g{flex:none;align-self:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0 8px 0 6px;border-right:1px solid var(--line);margin-right:2px}
+@media (max-width:640px){.sn-g{display:none}.subnav{margin-inline:-4px}}
+.side-foot{display:flex;flex-direction:column;gap:8px}
+.th-btn{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--side-line);color:var(--side-muted);font-size:12.5px;font-weight:600;cursor:pointer}
+.th-btn:hover{color:var(--side-ink);background:var(--side-hover)}
+.th-btn:focus-visible{outline:2px solid var(--side-ink);outline-offset:2px}
+.th-btn b{color:var(--side-ink);font-weight:600;margin-left:auto}
+
+/* ===== Paginazione degli elenchi lunghi ===== */
+.pg-off{display:none!important}
+.pg-more{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 12px;margin:10px 0 4px;font-size:13px;color:var(--muted)}
+.pg-more b{color:var(--ink)}
+
+/* ===== Righe cliccabili accessibili da tastiera ===== */
+table.cl tr[tabindex]:focus-visible td{background:var(--accent-soft)!important}
+table.cl tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+/* ===== Prontuario: indice degli argomenti ===== */
+.pi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
+.pi-ch{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px;min-width:0}
+.pi-ch h3{margin:0;font-family:var(--f-display);font-size:17px;line-height:1.25;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.pi-ch h3 button{all:unset;cursor:pointer}
+.pi-ch h3 button:hover{color:var(--accent)}
+.pi-ch h3 button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.pi-ch h3 small{font-family:var(--f-body);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.pi-v{display:flex;flex-wrap:wrap;gap:6px}
+.pi-v button{border:1px solid var(--line-strong);background:var(--surface-2);border-radius:999px;padding:3px 10px;font-size:13px;cursor:pointer;color:var(--ink);text-align:left}
+.pi-v button:hover{border-color:var(--accent);color:var(--accent)}
+.pi-v button span{color:var(--muted);font-size:11.5px;margin-left:4px}
+.pi-back{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+
+/* ===== Oggi: numeri coerenti, date, mobile ===== */
+.og-info{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;border:1px solid var(--line-strong);font-size:10.5px;font-weight:700;color:var(--muted);margin-left:6px;vertical-align:1px;text-transform:none;letter-spacing:0}
+.og-it.nd{grid-template-columns:minmax(0,1fr) auto}
+@media (max-width:640px){
+  .og-cards{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin-inline:-16px;padding:2px 16px 8px;scrollbar-width:none}
+  .og-cards::-webkit-scrollbar{display:none}
+  .og-card{flex:0 0 min(64%,240px);scroll-snap-align:start}
+  .og-it.nd{grid-template-columns:minmax(0,1fr) auto}
+}
+
+/* ===== Scheda cliente: azioni principali e menu Altro ===== */
+.ksh-foot{position:relative;align-items:center}
+.ksh-more{position:relative;margin-left:auto}
+.ksh-more>summary{list-style:none;cursor:pointer}
+.ksh-more>summary::-webkit-details-marker{display:none}
+.ksh-more>summary::after{content:"▾";font-size:11px;margin-left:2px}
+.ksh-menu{position:absolute;right:0;bottom:calc(100% + 6px);z-index:5;min-width:230px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lift);padding:6px;display:flex;flex-direction:column}
+.ksh-menu button{all:unset;box-sizing:border-box;padding:8px 10px;border-radius:8px;font-size:14px;cursor:pointer;color:var(--ink)}
+.ksh-menu button:hover,.ksh-menu button:focus-visible{background:var(--accent-soft);color:var(--accent)}
+.ksh-menu hr{border:0;border-top:1px solid var(--line);margin:4px 2px}
+
+/* ===== Anagrafica clienti: colonne e prima colonna fissa ===== */
+.cl-cols{position:relative}
+.cl-cols>summary{list-style:none;cursor:pointer}
+.cl-cols>summary::-webkit-details-marker{display:none}
+.cl-cols-pop{position:absolute;right:0;top:calc(100% + 6px);z-index:30;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lift);padding:10px 12px;display:flex;flex-direction:column;gap:6px;min-width:220px}
+.cl-cols-pop p{margin:0 0 2px;font-size:12px;color:var(--muted)}
+#clBody.hc3 table.cl tr>*:nth-child(3),#clBody.hc4 table.cl tr>*:nth-child(4),#clBody.hc5 table.cl tr>*:nth-child(5),#clBody.hc6 table.cl tr>*:nth-child(6),#clBody.hc7 table.cl tr>*:nth-child(7),#clBody.hc8 table.cl tr>*:nth-child(8),#clBody.hc9 table.cl tr>*:nth-child(9),#clBody.hc10 table.cl tr>*:nth-child(10){display:none}
+#clBody table.cl tr>:nth-child(1){position:sticky;left:0;z-index:1;width:52px;min-width:52px;max-width:52px;background:var(--surface)}
+#clBody table.cl tr>:nth-child(2){position:sticky;left:52px;z-index:1;background:var(--surface);box-shadow:1px 0 0 var(--line)}
+#clBody table.cl tbody tr:nth-child(even)>:nth-child(-n+2){background:color-mix(in srgb,var(--surface-2) 60%,var(--surface))}
+#clBody table.cl thead th:nth-child(-n+2){background:var(--surface-2);z-index:2}
+@media (max-width:600px){#clBody table.cl tr>:nth-child(1){position:static}#clBody table.cl tr>:nth-child(2){left:0;min-width:160px}}
+
+/* ===== Simulatore assunzione ===== */
+.sim-layout{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:1180px){.sim-layout{grid-template-columns:minmax(0,1fr)}}
+.sim-form{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
+.sim-form h3{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin:8px 0 -2px;padding-top:10px;border-top:1px solid var(--line)}
+.sim-form h3:first-child{border-top:0;padding-top:0;margin-top:0}
+.sim-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sim-form details{border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.sim-form details>summary{cursor:pointer;font-weight:600;font-size:13.5px}
+.sim-form details[open]>summary{margin-bottom:8px}
+.sim-form details .field{margin-bottom:8px}
+.sim-out{display:flex;flex-direction:column;gap:14px;min-width:0}
+.sim-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (min-width:1600px){.sim-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:520px){.sim-kpis{grid-template-columns:minmax(0,1fr)}}
+.sim-kpis .big .val{font-size:25px}
+.sim-kpis .big.save{border-color:color-mix(in srgb,var(--ok) 45%,var(--line));background:color-mix(in srgb,var(--ok-bg) 55%,var(--surface))}
+.sim-kpis .big.save .val{color:var(--ok)}
+.sim-bars{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.sim-bar{display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13.5px}
+.sim-bar .tr{height:14px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.sim-bar .tr span{display:block;height:100%;border-radius:999px;background:var(--c1)}
+.sim-bar.with .tr span{background:var(--ok)}
+.sim-bar b{font-variant-numeric:tabular-nums}
+@media (max-width:600px){.sim-bar{grid-template-columns:minmax(0,1fr) auto}.sim-bar .tr{grid-column:1/-1;grid-row:2}}
+.sim-tbl td{white-space:nowrap}
+.sim-tbl th{white-space:normal!important;vertical-align:bottom}
+.sim-tbl td:first-child{white-space:normal;min-width:150px}
+.sim-tbl td,.sim-tbl th{padding-inline:8px}
+.sim-tbl tr.best td{background:color-mix(in srgb,var(--ok-bg) 70%,var(--surface))!important}
+.sim-acts{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ===== Storico modifiche ===== */
+.hs-day{margin:18px 0 8px;font-size:13px;font-weight:700;color:var(--muted);text-transform:capitalize}
+.hs-list{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.hs-it{display:grid;grid-template-columns:56px minmax(0,1fr);gap:4px 14px;padding:10px 14px;border-top:1px solid var(--line)}
+.hs-it:first-child{border-top:0}
+.hs-t{font-variant-numeric:tabular-nums;font-weight:700;font-size:13.5px}
+.hs-m{min-width:0;font-size:14px;line-height:1.45}
+.hs-who{font-weight:600}
+.hs-az{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:0 7px;margin-right:6px;vertical-align:1px;border:1px solid currentColor}
+.hs-az.crea{color:var(--ok)}.hs-az.modifica{color:var(--c6)}.hs-az.elimina{color:var(--danger)}.hs-az.import{color:var(--c2)}.hs-az.salva{color:var(--muted)}
+.hs-sez{color:var(--muted);font-size:13px}
+.hs-lbl{font-weight:700}
+.hs-lbl button{all:unset;cursor:pointer;text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.hs-lbl button:hover{color:var(--accent)}
+.hs-lbl button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hs-ch{list-style:none;margin:4px 0 0;padding:0;font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.hs-ch b{color:var(--ink);font-weight:600}
+.hs-ch del{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--danger) 60%,transparent)}
+.hs-ch ins{text-decoration:none;color:var(--ink)}
+.hs-more summary{cursor:pointer;font-size:12.5px;color:var(--accent);margin-top:2px}
+@media (max-width:600px){.hs-it{grid-template-columns:minmax(0,1fr)}.hs-t{font-size:12.5px;color:var(--muted)}}
 </style>
 
 <div class="app">
@@ -882,37 +1013,20 @@ table.sic-tbl .sc-st{white-space:nowrap}
   <button class="gs-btn" type="button" id="gsOpen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Cerca</span><kbd>Ctrl K</kbd></button>
   <label class="opf" for="opfSel"><span>Operatore</span><select id="opfSel"><option value="">Tutto lo studio</option></select></label>
   <nav class="tabs" role="tablist" aria-label="Sezioni">
-    <button class="tab" role="tab" type="button" data-view="oggi" aria-selected="false"><span>Oggi</span><span class="nb" data-nb="oggi" hidden></span></button>
-    <div class="nav-g" role="presentation">Consulta</div>
-    <button class="tab" role="tab" type="button" data-view="prontuario" aria-selected="true"><span>Prontuario CCNL</span><span class="nb" data-nb="prontuario" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="calcolatori" aria-selected="false"><span>Calcolatori</span><span class="nb" data-nb="calcolatori" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="costo" aria-selected="false"><span>Costo del lavoro</span><span class="nb" data-nb="costo" hidden></span></button>
-    <div class="nav-g" role="presentation">Clienti</div>
-    <button class="tab" role="tab" type="button" data-view="clienti" aria-selected="false"><span>Anagrafica clienti</span><span class="nb" data-nb="clienti" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="dipendenti" aria-selected="false"><span>Dipendenti</span><span class="nb" data-nb="dipendenti" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="contatori" aria-selected="false"><span>Contatori</span></button>
-    <button class="tab" role="tab" type="button" data-view="assunzioni" aria-selected="false"><span>Assunzioni</span><span class="nb" data-nb="assunzioni" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="ratei" aria-selected="false"><span>Ratei dipendenti</span><span class="nb" data-nb="ratei" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="agevolazioni" aria-selected="false"><span>Agevolazioni</span><span class="nb" data-nb="agevolazioni" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="lettere" aria-selected="false"><span>Lettere</span><span class="nb" data-nb="lettere" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="sicurezza" aria-selected="false"><span>Sicurezza</span><span class="nb" data-nb="sicurezza" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="controlli" aria-selected="false"><span>Controlli</span><span class="nb" data-nb="controlli" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="disciplinari" aria-selected="false"><span>Disciplinari</span><span class="nb" data-nb="disciplinari" hidden></span></button>
-    <div class="nav-g" role="presentation">Scadenze</div>
-    <button class="tab" role="tab" type="button" data-view="mesepaghe" aria-selected="false"><span>Mese paghe</span><span class="nb" data-nb="mesepaghe" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="termine" aria-selected="false"><span>Contratti a termine</span><span class="nb" data-nb="termine" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="tirocini" aria-selected="false"><span>Tirocini</span><span class="nb" data-nb="tirocini" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="apprendisti" aria-selected="false"><span>Apprendistato</span><span class="nb" data-nb="apprendisti" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="durc" aria-selected="false"><span>DURC</span><span class="nb" data-nb="durc" hidden></span></button>
-    <button class="tab" role="tab" type="button" data-view="scadenziario" aria-selected="false"><span>Scadenze CCNL</span><span class="nb" data-nb="scadenziario" hidden></span></button>
-    <div class="nav-g" role="presentation">Studio</div>
-    <button class="tab" role="tab" type="button" data-view="dati" aria-selected="false"><span>Aggiorna dati e backup</span><span class="nb" data-nb="dati" hidden></span></button>
+    <button class="tab" role="tab" type="button" data-group="oggi" aria-selected="false"><span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/><path d="m8.5 15 2.3 2.3 4.7-4.6"/></svg><span>Oggi</span></span><span class="nb" data-nbg="oggi" hidden></span></button>
+    <button class="tab" role="tab" type="button" data-group="clienti" aria-selected="false"><span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg><span>Clienti</span></span><span class="nb" data-nbg="clienti" hidden></span></button>
+    <button class="tab" role="tab" type="button" data-group="rapporti" aria-selected="false"><span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8.5 7V5.5A2 2 0 0 1 10.5 3.5h3a2 2 0 0 1 2 2V7M3 12.5h18"/></svg><span>Rapporti di lavoro</span></span><span class="nb" data-nbg="rapporti" hidden></span></button>
+    <button class="tab" role="tab" type="button" data-group="adempimenti" aria-selected="false"><span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4V3h6v1"/><path d="m9 12.5 2 2 4-4"/></svg><span>Adempimenti</span></span><span class="nb" data-nbg="adempimenti" hidden></span></button>
+    <button class="tab" role="tab" type="button" data-group="strumenti" aria-selected="false"><span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg><span>Strumenti</span></span><span class="nb" data-nbg="strumenti" hidden></span></button>
+    <button class="tab" role="tab" type="button" data-group="agevolazioni" aria-selected="false"><span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m19 5-14 14"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg><span>Agevolazioni</span></span><span class="nb" data-nbg="agevolazioni" hidden></span></button>
+    <button class="tab" role="tab" type="button" data-group="studio" aria-selected="false"><span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span>Studio</span></span><span class="nb" data-nbg="studio" hidden></span></button>
   </nav>
-  <p class="side-foot">Studio Prosdocimo S.r.l., Portici</p>
+  <div class="side-foot"><button class="th-btn" type="button" id="thBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17A8.5 8.5 0 0 0 12 3.5z" fill="currentColor"/></svg><span>Tema</span><b>Automatico</b></button><span>Studio Prosdocimo S.r.l., Portici</span></div>
 </aside>
 <div class="side-scrim" id="sideScrim" hidden></div>
 <div class="wrap">
   <div class="mbar"><button type="button" id="menuBtn" aria-controls="side" aria-expanded="false" aria-label="Apri il menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span class="nb" data-nb="oggi-m" hidden></span></button><span class="mbar-title" id="mbarTitle">Bussola Lavoro</span><button type="button" id="gsOpen2" aria-label="Cerca"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button></div>
+  <nav class="subnav" id="subNav" role="tablist"></nav>
   <header class="top">
     <div class="brand">
       <img class="logo logo-light" src="logo-studio-prosdocimo.png" alt="Studio Prosdocimo" width="325" height="60">
@@ -979,6 +1093,8 @@ table.sic-tbl .sc-st{white-space:nowrap}
   <div id="viewDipendenti" hidden></div>
   <div id="viewContatori" hidden></div>
   <div id="viewSicurezza" hidden></div>
+  <div id="viewSimulatore" hidden></div>
+  <div id="viewStorico" hidden></div>
 </div>
 </div><!-- /app -->
 
@@ -1114,6 +1230,7 @@ function render(){
   const groups = new Map();
   scored.forEach((sc,s)=>{
     if(state.chapter!=="tutti" && s.capitolo!==state.chapter) return;
+    if(state.voce && s.voce_id!==state.voce) return;
     const k = s.voce_id;
     if(!groups.has(k)) groups.set(k,{id:k, best:0, ordine:1e9, items:[]});
     const g = groups.get(k); g.best=Math.max(g.best,sc); g.ordine=Math.min(g.ordine, sortKey(s));
@@ -1131,11 +1248,12 @@ function render(){
   }
   arr.forEach(g=>g.items.sort((a,b)=>(state.ccnl[a.ccnl]?.ordine||99)-(state.ccnl[b.ccnl]?.ordine||99)));
 
-  const autoOpen = toks.length>0 && arr.length<=4;
+  const autoOpen = (toks.length>0 && arr.length<=4) || !!state.voce;
+  const idxMode = !toks.length && state.chapter==="tutti" && !state.voce && !state.showAll && !ccFromQ;
   const nSchede = arr.reduce((a,g)=>a+g.items.length,0);
   $("#status").innerHTML = (state.loadedS && state.schede.length) ?
     `<span><strong>${arr.length}</strong> ${arr.length===1?"voce":"voci"} · ${nSchede} ${nSchede===1?"scheda":"schede"}${state.q?` per «${esc(state.q)}»`:""}${ccFromQ?` · solo ${esc(ccName(ccFromQ))}`:""}</span>
-     <button class="btn ghost" type="button" id="btnAll">${state._allOpen?"Chiudi tutti i dettagli":"Apri tutti i dettagli"}</button>` : "";
+     ${idxMode ? `<button class="btn ghost" type="button" id="btnShowAll">Mostra tutte le schede</button>` : `${state.showAll && !toks.length && !state.voce && state.chapter==="tutti" ? `<button class="btn ghost" type="button" id="btnIdx">Torna all'indice</button>` : ""}<button class="btn ghost" type="button" id="btnAll">${state._allOpen?"Chiudi tutti i dettagli":"Apri tutti i dettagli"}</button>`}` : "";
 
   const res = $("#results");
   if(!state.loadedS){ return; }
@@ -1147,7 +1265,9 @@ function render(){
     res.innerHTML = `<div class="empty"><h3>Nessuna scheda trovata</h3><p>Nessuna voce corrisponde a «${esc(state.q)}»${sel.length?` in ${esc(sel.map(ccName).join(", "))}`:""}${state.chapter!=="tutti"?` nell'argomento «${esc(state.chapter)}»`:""}. Prova una parola più generica o togli i filtri.</p></div>`;
     return;
   }
-  res.innerHTML = arr.map(g=>{
+  if(idxMode){ res.innerHTML = prIndexHTML(arr); return; }
+  const back = !toks.length && (state.voce || state.chapter!=="tutti") ? `<div class="pi-back"><button class="btn sm" type="button" id="btnIdx">← Indice degli argomenti</button>${state.voce?`<span class="sc-sub">Tocca altri CCNL in alto per metterli a confronto su questa voce.</span>`:""}</div>` : "";
+  res.innerHTML = back + arr.map(g=>{
     const head = g.items[0];
     return `<article class="group"><div class="group-head"><h3>${hl(head.voce)}</h3><span class="cap">${esc(head.capitolo)}</span></div>
       <div class="cols">${g.items.map(s=>card(s, head, autoOpen)).join("")}</div></article>`;
@@ -1155,6 +1275,11 @@ function render(){
   resolveNames();
 }
 
+function prIndexHTML(arr){
+  const by = new Map(); arr.forEach(g=>{ const ch = g.items[0].capitolo; if(!by.has(ch)) by.set(ch, []); by.get(ch).push(g); });
+  return `<div class="pi-grid">${[...by].map(([ch, gs])=>`<section class="pi-ch"><h3><button type="button" data-ch="${esc(ch)}">${esc(ch)}</button><small>${gs.length} ${gs.length===1?"voce":"voci"}</small></h3>
+    <div class="pi-v">${gs.map(g=>`<button type="button" data-pvoce="${esc(g.id)}" title="${g.items.length} ${g.items.length===1?"CCNL":"CCNL a confronto"}">${esc(g.items[0].voce)}<span>${g.items.length}</span></button>`).join("")}</div></section>`).join("")}</div>`;
+}
 function card(s, head, autoOpen){
   const key = s._id; const open = state.open.has(key) ? state.open.get(key) : (state._allOpen || autoOpen);
   const appT = s.voce_id==="apprendistato" && window.__appTable ? (()=>{ try{ return window.__appTable(s.ccnl); }catch(e){ return ""; } })() : "";
@@ -1188,21 +1313,27 @@ async function resolveNames(){
 
 /* ---------- events ---------- */
 let qTimer;
-$("#q").addEventListener("input", e=>{ clearTimeout(qTimer); qTimer=setTimeout(()=>{ state.q=e.target.value.trim(); state.open.clear(); state.showWeak=false; render(); },120); });
+$("#q").addEventListener("input", e=>{ clearTimeout(qTimer); qTimer=setTimeout(()=>{ state.q=e.target.value.trim(); state.open.clear(); state.voce=""; state.showWeak=false; render(); },120); });
 $("#qClear").addEventListener("click", ()=>{ $("#q").value=""; state.q=""; render(); $("#q").focus(); });
 $("#hints").insertAdjacentHTML("beforeend", HINTS.map(h=>`<button class="hint" type="button" data-hint="${esc(h)}">${esc(h)}</button>`).join(""));
 document.addEventListener("click", e=>{
   const t = e.target.closest("[data-hint],[data-cc],[data-ch],[data-tog],[data-edit],#btnAll,#btnWeak");
   if(!t) return;
-  if(t.dataset.hint){ $("#q").value=t.dataset.hint; state.q=t.dataset.hint; render(); }
+  if(t.dataset.hint){ $("#q").value=t.dataset.hint; state.q=t.dataset.hint; state.voce=""; render(); }
   else if(t.dataset.cc){ const id=t.dataset.cc; if(id==="tutti") state.filterCcnl="tutti"; else { let cur=selOf(); cur = cur.includes(id) ? cur.filter(x=>x!==id) : cur.concat(id); state.filterCcnl = cur.length?cur.join(","):"tutti"; } try{localStorage.setItem("prontuario.ccnl",state.filterCcnl)}catch(_){} render(); }
-  else if(t.dataset.ch){ state.chapter=t.dataset.ch; render(); }
+  else if(t.dataset.ch){ state.chapter=t.dataset.ch; state.voce=""; render(); window.scrollTo({top:0}); }
   else if(t.dataset.tog){ const k=t.dataset.tog; const isOpen=t.getAttribute("aria-expanded")==="true"; state.open.set(k,!isOpen); render(); }
   else if(t.dataset.edit){ const s=state.schede.find(x=>x._id===t.dataset.edit); if(s) openEditor(s); }
   else if(t.id==="btnWeak"){ state.showWeak=true; render(); }
   else if(t.id==="btnAll"){ state._allOpen=!state._allOpen; state.open.clear(); render(); }
 });
-$("#chapterSelect").addEventListener("change", e=>{ state.chapter=e.target.value; render(); });
+$("#chapterSelect").addEventListener("change", e=>{ state.chapter=e.target.value; state.voce=""; render(); });
+document.addEventListener("click", e=>{
+  const t = e.target.closest("[data-pvoce],#btnIdx,#btnShowAll"); if(!t) return;
+  if(t.dataset.pvoce){ state.voce = t.dataset.pvoce; state.showAll = false; render(); window.scrollTo({top:0}); }
+  else if(t.id==="btnIdx"){ state.voce = ""; state.chapter = "tutti"; state.showAll = false; render(); window.scrollTo({top:0}); }
+  else { state.showAll = true; render(); }
+});
 $("#btnNew").addEventListener("click", ()=>openEditor(null));
 $("#btnNewCcnl").addEventListener("click", openCcnlEditor);
 
@@ -1303,6 +1434,51 @@ function errMsg(e){
   return "Salvataggio non riuscito. Controlla la connessione e riprova.";
 }
 
+/* ---------- storico modifiche: ogni scrittura nel database lascia una traccia in «storico» ---------- */
+const AUD = { cache:{}, q:[], t:null, raw:null,
+  skip:new Set(["storico","ratei","ratei_meta","dipendenti","dipendenti_meta"]),
+  ign:new Set(["aggiornatoIl","aggiornatoDa","importatoIl","importatoDa","_h"]) };
+function audVal(v){ if(v==null) return ""; const s = typeof v==="string" ? v : JSON.stringify(v); return s.length>160 ? s.slice(0,157)+"…" : s; }
+function audDiff(a, b){
+  const out = [];
+  new Set([...Object.keys(a||{}), ...Object.keys(b||{})]).forEach(k=>{
+    if(AUD.ign.has(k) || k.startsWith("_")) return;
+    const x = (a||{})[k], y = (b||{})[k];
+    if(JSON.stringify(x??"")===JSON.stringify(y??"")) return;
+    out.push({k, da:audVal(x), a:audVal(y)});
+  });
+  return out.slice(0, 30);
+}
+function audLabel(d){ return d ? String(d.azienda || d.lavoratore || d.dipendente || d.apprendista || d.tirocinante || d.voce || d.agNome || d.nome || d.sigla || d.testo || d.controllo || "").slice(0,120) : ""; }
+function audLog(c, id, op, before, data){
+  const known = !!AUD.cache[c];
+  let azione, campi = [], d = data;
+  if(op==="delete"){ azione = "elimina"; d = before; }
+  else if(op==="update"){ azione = "modifica"; d = {...(before||{}), ...data}; campi = audDiff(before||{}, d); if(!campi.length) return; }
+  else { azione = before ? "modifica" : known ? "crea" : "salva"; campi = audDiff(before||{}, data); if(before && !campi.length) return; }
+  AUD.q.push({ ts:new Date().toISOString(), uid:state.myId||"", coll:c, docId:String(id), azione, label:audLabel(d||before), cliente: c==="clienti" ? String(id) : String((d && d.cliente) || (before && before.cliente) || ""), campi });
+  clearTimeout(AUD.t); AUD.t = setTimeout(audFlush, 1200);
+}
+async function audFlush(){
+  const q = AUD.q.splice(0); if(!q.length || !AUD.raw) return;
+  const by = new Map(); q.forEach(x=>{ if(!by.has(x.coll)) by.set(x.coll, []); by.get(x.coll).push(x); });
+  const out = [];
+  by.forEach((xs, c)=>{ if(xs.length>5) out.push({ ts:xs[0].ts, uid:xs[0].uid, coll:c, docId:"", azione:"import", label:"", cliente:"", campi:[], n:xs.length }); else out.push(...xs); });
+  for(const x of out){ try{ await AUD.raw.collection("storico").doc("h-"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)).set(x); }catch(e){} }
+}
+function audFwd(target, wrap){ return new Proxy({}, { get(_, p){ const v = target[p]; if(wrap){ const w = wrap(p, v); if(w!==undefined) return w; } return typeof v==="function" ? v.bind(target) : v; } }); }
+function auditWrap(db){
+  AUD.raw = db;
+  const docW = (c, ref, id) => audFwd(ref, (p, v)=>{ if(typeof v==="function" && (p==="set" || p==="update" || p==="delete")) return async (...args)=>{ const m = AUD.cache[c], before = m && m.get(String(id)); const r = await v.apply(ref, args); try{ audLog(c, id, p, before ? {...before} : null, args[0]); }catch(e){} return r; }; });
+  const colW = (c, ref) => audFwd(ref, (p, v)=>{
+    if(typeof v!=="function") return;
+    if(p==="doc") return (id, ...r)=>{ const d = v.call(ref, id, ...r); return AUD.skip.has(c) || id==null ? d : docW(c, d, id); };
+    if(p==="onSnapshot") return (cb, ...r)=>v.call(ref, snap=>{ try{ if(!AUD.skip.has(c) && snap && snap.docs){ const m = new Map(); snap.docs.forEach(x=>m.set(x.id, x.data())); AUD.cache[c] = m; } }catch(e){} return cb(snap); }, ...r);
+  });
+  return audFwd(db, (p, v)=>{ if(p==="collection" && typeof v==="function") return (c, ...r)=>colW(c, v.call(db, c, ...r)); });
+}
+window.addEventListener("pagehide", ()=>{ if(AUD.q.length) audFlush(); });
+
 /* ---------- bridge for the Clients and Calculators module ---------- */
 window.__pront = { state, render, ccName, cnelOf, nomeBase, ccColor, ccnlList, esc, norm, modal, closeModal, toast, errMsg, fmtDate,
   setFilter(cc){ state.filterCcnl = cc; state.q=""; const q=document.getElementById("q"); if(q) q.value=""; render(); } };
@@ -1316,11 +1492,11 @@ render();
     $("#results").innerHTML = `<div class="empty"><h3>Database non raggiungibile</h3><p>Apri il prontuario da claude.ai con il tuo account per consultare le schede.</p></div>`;
     return;
   }
-  state.db = db; fire("db");
-  db.collection("ccnl").onSnapshot(snap=>{
+  state.db = auditWrap(db); fire("db");
+  state.db.collection("ccnl").onSnapshot(snap=>{
     const m={}; snap.docs.forEach(d=>m[d.id]=d.data()); state.ccnl=m; state.loadedC=true; render(); fire("ccnl");
   }, ()=>{});
-  db.collection("schede").onSnapshot(snap=>{
+  state.db.collection("schede").onSnapshot(snap=>{
     state.schede = snap.docs.map(d=>({...d.data(), _id:d.id})); state.loadedS=true; render();
   }, e=>{ $("#results").innerHTML = `<div class="empty"><h3>Lettura interrotta</h3><p>Ricarica la pagina per riprendere.</p></div>`; });
   const user = window.claude.use ? await window.claude.use("user") : null;
@@ -1402,7 +1578,7 @@ function minimoInfo(cc, liv, data){ const R=rulesOf(cc); const L=(R&&R.minimi)||
 let view = "prontuario";
 function setView(v){
   view = v; window.__view = v;
-  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", t.dataset.view===v ? "true":"false"));
+  navSel(v);
   $("#viewProntuario").hidden = v!=="prontuario";
   $("#viewClienti").hidden = v!=="clienti";
   $("#viewCalcolatori").hidden = v!=="calcolatori";
@@ -1424,6 +1600,8 @@ function setView(v){
   $("#viewDipendenti").hidden = v!=="dipendenti";
   $("#viewContatori").hidden = v!=="contatori";
   $("#viewSicurezza").hidden = v!=="sicurezza";
+  $("#viewSimulatore").hidden = v!=="simulatore";
+  $("#viewStorico").hidden = v!=="storico";
   const ta = $("#topActions"); if(ta) ta.hidden = !state.canWrite || v!=="prontuario";
   if(v==="clienti") renderClienti();
   if(v==="calcolatori") renderCalc();
@@ -1445,12 +1623,13 @@ function setView(v){
   if(v==="dipendenti") renderDP();
   if(v==="contatori") renderCN();
   if(v==="sicurezza") renderSIC();
+  if(v==="simulatore") renderSIM();
+  if(v==="storico") renderHS();
   try{ opBar(); }catch(e){}
   try{ localStorage.setItem("prontuario.view", v); }catch(e){}
   try{ uxOnView(v); }catch(e){}
   window.scrollTo({top:0});
 }
-document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>setView(t.dataset.view)));
 
 /* ================= active client banner ================= */
 let activeClient = null;
@@ -1474,7 +1653,7 @@ function opMap(){ if(_opmSrc!==CL.list){ _opmSrc = CL.list; _opm = new Map(CL.li
 function opOk(clId){ return !OPF.op || (!!clId && opMap().get(clId)===OPF.op); }
 function opL(list, k){ k = k || "cliente"; return OPF.op ? list.filter(x=>opOk(x[k])) : list; }
 function opNames(){ return [...new Set(CL.list.map(c=>(c.operatore||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); }
-const OP_VIEWS = ["oggi","clienti","sicurezza","dipendenti","contatori","assunzioni","ratei","dati","agevolazioni","lettere","controlli","disciplinari","mesepaghe","termine","tirocini","apprendisti","durc"];
+const OP_VIEWS = ["oggi","clienti","sicurezza","storico","dipendenti","contatori","assunzioni","ratei","dati","agevolazioni","lettere","controlli","disciplinari","mesepaghe","termine","tirocini","apprendisti","durc"];
 function opBar(){
   const el = document.getElementById("opBar"); if(!el) return;
   if(!OPF.op || !OP_VIEWS.includes(view)){ el.innerHTML = ""; return; }
@@ -1531,7 +1710,7 @@ function subscribeClients(){
     if(view==="termine") renderCT();
     if(view==="durc") renderDU();
     if(view==="oggi") renderOggi(); navBadgesSoon(); if(KSH.id) kshRender();
-    opfFill(); opfAuto(); if(view==="disciplinari") renderDSC(); if(view==="sicurezza") renderSIC();
+    opfFill(); opfAuto(); if(view==="disciplinari") renderDSC(); if(view==="sicurezza") renderSIC(); if(view==="storico") renderHS();
     if(activeClient){ const u = CL.list.find(x=>x._id===activeClient._id); if(u){ activeClient=u; renderBanner(); } }
   }, ()=>{ CL.loaded=true; if(view==="clienti") renderClienti(); });
 }
@@ -1577,7 +1756,7 @@ function renderClienti(){
       else if(t.dataset.cledit){ const c=CL.list.find(x=>x._id===t.dataset.cledit); if(c) openClientEditor(c); }
     });
   }
-  $("#clNew").hidden = !state.canWrite; $("#clImp").hidden = !state.canWrite;
+  $("#clNew").hidden = !state.canWrite; $("#clImp").hidden = !state.canWrite; clColsUi();
   const list = CL.list;
   const cnt = k => list.filter(c=> k==="nessuno" ? !c.ccnl : k==="confermare" ? c.abbinamento==="da confermare" : c.ccnl===k).length;
   const ccs = P.ccnlList();
@@ -5386,13 +5565,10 @@ function renderOggi(){
   const apBad = ap.filter(I=>I.st==="scaduto").length, ap30 = ap.filter(I=>I.st==="30").length;
   const trI = typeof TR!=="undefined" && TR.loaded ? opL(TR.list).map(trInfo).filter(I=>!I.chiuso) : null, trBad = trI ? trI.filter(I=>I.st==="scaduto").length : 0, tr30 = trI ? trI.filter(I=>I.st==="15").length : 0;
   const agFin = opL(AG.pr).filter(p=>!["conclusa","respinta"].includes(p.stato) && p.fineBeneficio && dayDiff(today, parseD(p.fineBeneficio))<=60).length;
-  $("#ogCards").innerHTML = !ready ? "" :
-    card("durc","DURC", duBad + du.filter(I=>I.st==="15"||I.st==="30").length, "da rinnovare o sistemare", [r(du.filter(I=>I.st==="scaduto").length,"scaduti"), r(du.filter(I=>I.st==="15").length,"entro 15 giorni"), r(du.filter(I=>I.st==="irr"||I.st==="ver").length,"irregolari o in verifica"), r(du.filter(I=>I.ins).length,"con contributi non pagati")], duBad?"bad":"warn") +
-    card("termine","Contratti a termine", ctBad + ct30, "scaduti o in scadenza entro 30 giorni", [r(ctBad,"scaduti senza esito"), r(ct.filter(I=>I.st==="7").length,"entro 7 giorni"), r(ct.filter(I=>I.avv.some(a=>!a.startsWith("Scaduto"))).length,"con avvisi su durata o proroghe")], ctBad?"bad":ct30?"warn":"ok") +
-    (trI ? card("tirocini","Tirocini", trBad + tr30, "terminati o in scadenza entro 15 giorni", [r(trBad,"terminati senza esito"), r(trI.filter(I=>I.presMiss).length,"senza presenze del mese scorso")], trBad?"bad":tr30?"warn":"ok") : "") +
-    card("apprendisti","Apprendistato", apBad + ap30, "decisioni entro 30 giorni o in ritardo", [r(apBad,"formazione finita senza esito"), r(ap.filter(I=>I.st==="90").length,"fine formazione entro 90 giorni"), r(ap.filter(I=>I.st==="disdetta").length,"in preavviso")], apBad?"bad":ap30?"warn":"ok") +
-    card("agevolazioni","Agevolazioni", agFin, "benefici che finiscono entro 60 giorni", [r(opL(AG.pr).filter(p=>p.stato==="richiesta").length,"domande in attesa INPS"), r(opL(AG.pr).filter(p=>p.stato==="autorizzata").length,"pratiche autorizzate in corso")], agFin?"warn":"ok") +
-    card("scadenziario","CCNL", ccS.filter(d=>d<today).length, "contratti collettivi scaduti", [r(ccS.filter(d=>d>=today && dayDiff(today,d)<=180).length,"in scadenza entro 6 mesi")], "warn");
+  $("#ogCards").innerHTML = !ready ? "" : OG_CARDS.filter(x=>x[0]!=="tirocini" || trI).map(([v, t, title, bt, info])=>{
+    const its = all.filter(it=>it.t===t), gq = [0,0,0,0]; its.forEach(it=>gq[ogGroup(it)]++);
+    const tone = its.some(it=>it.sev==="bad") ? "bad" : its.some(it=>it.sev==="warn") ? "warn" : "ok";
+    return card(v, `${title}<span class="og-info" title="${esc(info)}">?</span>`, its.length, bt, [r(gq[0],"da sistemare subito"), r(gq[1],"entro 7 giorni"), r(gq[2],"entro 30 giorni"), r(gq[3],"più avanti")], tone); }).join("");
   const qOk = it => !OG.q || norm(OG.q).split(/\s+/).filter(Boolean).every(t=>norm([it.az, it.chi, it.txt].join(" ")).includes(t));
   const pass = it => (OG.f==="tutti" || it.t===OG.f) && qOk(it);
   const base = all.filter(qOk);
@@ -5409,7 +5585,7 @@ function renderOggi(){
   const byG = [[],[],[],[]]; rows.forEach((it,i)=>byG[ogGroup(it)].push([it,i]));
   body.innerHTML = byG.map((g, gi)=> !g.length ? "" : `<section class="og-group"><h3>${GR[gi][0]} <span class="n">${g.length}</span>${GR[gi][1]?`<small>${GR[gi][1]}</small>`:""}</h3><ul class="og-list">
     ${g.map(([it,i])=>{ const [tl,tc] = OG_TIPI[it.t];
-      return `<li class="og-it ${it.sev}"><span class="og-d">${it.d?fmtD(it.d):"—"}${it.d?`<small>${esc(ggTxt(dayDiff(today,it.d)))}</small>`:""}</span>
+      return `<li class="og-it ${it.sev}${it.d?"":" nd"}">${it.d?`<span class="og-d">${fmtD(it.d)}<small>${esc(ggTxt(dayDiff(today,it.d)))}</small></span>`:""}
         <span class="og-m"><span class="og-tipo" style="--cc:${tc}">${tl}</span><b>${esc(it.az)}</b>${it.chi?` · ${esc(it.chi)}`:""}<span class="og-txt">${esc(it.txt)}</span>${it.extra?`<span class="ct-tag warn">${esc(it.extra)}</span>`:""}</span>
         <button class="btn ghost sm" type="button" data-ogi="${i}">Apri</button></li>`; }).join("")}</ul></section>`).join("");
 }
@@ -5428,7 +5604,7 @@ function ogGo(g){
 
 /* ================= NAVIGAZIONE, RICERCA GLOBALE, SCHEDA CLIENTE ================= */
 const cnelOf = c => P.cnelOf(c);
-const UX_LABEL = { oggi:"Oggi", prontuario:"Prontuario CCNL", clienti:"Clienti", calcolatori:"Calcolatori", costo:"Costo del lavoro", termine:"Contratti a termine", apprendisti:"Apprendistato", durc:"DURC", agevolazioni:"Agevolazioni", scadenziario:"Scadenziario CCNL", lettere:"Lettere", controlli:"Controlli", mesepaghe:"Mese paghe", disciplinari:"Disciplinari", assunzioni:"Assunzioni", tirocini:"Tirocini", ratei:"Ratei dipendenti", dati:"Aggiorna dati e backup", dipendenti:"Dipendenti", contatori:"Contatori", sicurezza:"Sicurezza" };
+const UX_LABEL = { oggi:"Oggi", prontuario:"Prontuario CCNL", clienti:"Clienti", calcolatori:"Calcolatori", costo:"Costo del lavoro", termine:"Contratti a termine", apprendisti:"Apprendistato", durc:"DURC", agevolazioni:"Agevolazioni", scadenziario:"Scadenziario CCNL", lettere:"Lettere", controlli:"Controlli", mesepaghe:"Mese paghe", disciplinari:"Disciplinari", assunzioni:"Assunzioni", tirocini:"Tirocini", ratei:"Ratei dipendenti", dati:"Aggiorna dati e backup", dipendenti:"Dipendenti", contatori:"Contatori", sicurezza:"Sicurezza", simulatore:"Simula assunzione", storico:"Storico modifiche" };
 function uxDrawer(open){
   const side = document.getElementById("side"), scrim = document.getElementById("sideScrim"), btn = document.getElementById("menuBtn");
   if(!side) return;
@@ -5444,7 +5620,7 @@ function uxOnView(v){
 let _nbT = null;
 function navBadgesSoon(){ clearTimeout(_nbT); _nbT = setTimeout(navBadges, 120); }
 function navBadges(){
-  const set = (k, n, tone, title) => { const el = document.querySelector(`[data-nb="${k}"]`); if(!el) return; el.hidden = !n; el.textContent = n > 99 ? "99+" : String(n||""); el.className = "nb " + (tone||""); el.title = title||""; };
+  const set = (k, n, tone, title) => nbSet(k, n, tone, title);
   try{
     if(DU.loaded){ const I = opL(DU.list).map(duInfo); set("durc", I.filter(x=>["scaduto","15","irr"].includes(x.st)).length, "bad", "DURC scaduti, irregolari o in scadenza entro 15 giorni"); }
     if(CT.loaded){ const I = opL(CT.list).map(ctInfo); set("termine", I.filter(x=>x.st==="scaduto"||x.st==="7").length, "bad", "Contratti scaduti o in scadenza entro 7 giorni"); }
@@ -5460,7 +5636,8 @@ function navBadges(){
     if(AG.prLoaded){ set("agevolazioni", opL(AG.pr).map(prInfo).filter(x=>x.st==="scaduta"||x.st==="pre").length, "warn", "Agevolazioni terminate da chiudere o in pre-scadenza"); }
     if(CL.loaded){ set("sicurezza", CL.list.filter(c=>opOk(c._id) && sicDip(c)>0 && (clAdCat(c.dlgs81)==="no" || /^SI\s*\/\s*NO/i.test(c.telecamere||""))).length, "bad", "Clienti con dipendenti senza DVR o con telecamere senza accordo"); }
     if(state.loadedC){ set("scadenziario", P.ccnlList().filter(c=>{ const d = scadInfo(c).d; return d && d < today; }).length, "warn", "CCNL scaduti"); }
-    if(DU.loaded && CT.loaded && AP.loaded && CL.loaded){ const it = ogCollect(); set("oggi", it.filter(x=>x.sev==="bad").length, "bad", "Scadenze urgenti"); }
+    if(DU.loaded && CT.loaded && AP.loaded && CL.loaded){ const it = ogCollect(); set("oggi", it.filter(x=>x.sev==="bad" && ogGroup(x)===0).length, "bad", "Scadute o da sistemare subito"); }
+    navGroupPaint();
   }catch(e){ console.error(e); }
 }
 document.addEventListener("click", e=>{
@@ -5568,6 +5745,7 @@ function kshAct(k, arg){
   const c = CL.list.find(x=>x._id===KSH.id); if(!c && k!=="close") return;
   if(k==="close"){ kshClose(); return; }
   if(k==="edit"){ kshClose(); openClientEditor(c); return; }
+  const mn = document.querySelector("#ksh .ksh-more"); if(mn) mn.open = false;
   if(k==="print"){ kshPrint(); return; }
   if(k==="pdf"){ const el = document.getElementById("ksh"); const btn = el.querySelector('[data-ksh="pdf"]'); el.querySelectorAll("details").forEach(d=>d.open = true);
     const html = `<div class="ksh-pdf">${el.querySelector(".ksh-head").outerHTML}${el.querySelector(".ksh-body").outerHTML}<p style="font-size:9pt;color:#666;margin-top:12pt">Scheda generata il ${fmtD(today)} con Bussola Lavoro · Studio Prosdocimo S.r.l.</p></div>`;
@@ -5590,6 +5768,8 @@ function kshAct(k, arg){
   else if(k==="va"){ vaOpen({ cliente:c._id }); }
   else if(k==="cn"){ CN.az = c._id; setView("contatori"); }
   else if(k==="sic"){ setView("sicurezza"); sicOpen(c._id); }
+  else if(k==="sim"){ SIM.v["sim-cl"] = c._id; simFromClient(); simSave(); setView("simulatore"); }
+  else if(k==="hist"){ HS.cl = c._id; HS.per = "tutto"; setView("storico"); }
   else if(k==="sg"){ sgOpen(c._id); }
   else if(k==="dpa"){ DU.vista = "dpa"; DU.cl = c._id; DU.q = ""; DPA.f = "tutti"; setView("durc"); }
   else if(k==="newdurc"){ setView("durc"); openDUEditor(null, c._id); }
@@ -5667,6 +5847,8 @@ function kshRender(){
   dsOpen.filter(o=>o.I.next).forEach(o=>nx.push({d:o.I.next, l:`Disciplinare ${o.r.lavoratore||""}: ${o.I.nextL.toLowerCase()}`}));
   nx.sort((a,b)=>a.d-b.d);
   const nxv = nx.filter(x=>dayDiff(today,x.d)>=-30).slice(0,8);
+  const sx = typeof sicInfo==="function" ? sicInfo(c) : null;
+  const sicRow = sx && (sx.n || CL_AD_MAIN.some(k=>c[k]) || c.telecamere) ? row("sic", "Sicurezza", SIC_SEV[sx.sev][0], `${SIC_SEV[sx.sev][1]}${sx.score!=null?` · indice ${sx.score}%`:""}`, sx.issues.length ? sx.issues.slice(0,2).map(z=>esc(z.t)).join("; ") : sx.miss.length ? `dati mancanti: ${esc(sx.miss.join(", ").toLowerCase())}` : "") : "";
   const dati = [["Operatore", c.operatore||"Non assegnato"], ["Mensilità aggiuntive", c.mensilita], ["Dipendenti", `${fmtN(c.ti||0)} a tempo indeterminato, ${fmtN(c.td||0)} a termine`], ["Settore", c.settore], ["Ente bilaterale", c.ente_bilaterale], ["Sanità integrativa", c.sanita], ["Accordo di II livello", c.accordo_ii==="SI"?"Sì":""], ["Buoni pasto", c.buoni_pasto==="SI"?"Sì":""], ["TFR al Fondo Tesoreria", c.tfr_inps==="SI"?"Sì":""], ["Disabili in forza", c.disabili||""], ...azRighe(c), ["Note", c.note]].filter(([,v])=>v!=null && v!=="" && v!==0);
   el.innerHTML = `
     <div class="ksh-head">
@@ -5676,19 +5858,24 @@ function kshRender(){
       <button class="btn ghost sm ksh-x" type="button" id="kshClose" data-ksh="close" aria-label="Chiudi la scheda">Chiudi</button>
     </div>
     <div class="ksh-body">
-      <section><h3>Situazione</h3><div class="ksh-rows">${pmRow}${ckRow}${mpRow}${dpRow}${sgRow}${duRow}${dpaRow}${ctRow}${trRow}${apRow}${agRow}${asRow}${rtRow}${dsRow}${ltRow}</div></section>
+      <section><h3>Situazione</h3><div class="ksh-rows">${pmRow}${ckRow}${mpRow}${dpRow}${sgRow}${duRow}${dpaRow}${sicRow}${ctRow}${trRow}${apRow}${agRow}${asRow}${rtRow}${dsRow}${ltRow}</div></section>
       ${nxv.length?`<section><h3>Prossime scadenze</h3><ul class="ksh-next">${nxv.map(x=>{ const g = dayDiff(today,x.d); return `<li class="${g<0?"bad":g<=15?"warn":""}"><span>${fmtD(x.d)}</span><span>${esc(x.l)}</span></li>`; }).join("")}</ul></section>`:""}
       <section><h3>Sicurezza e adempimenti</h3>${CL_AD.some(d=>c[d.k])?`<dl class="ksh-dl ksh-ad">${CL_AD.filter(d=>c[d.k] || d.neg).map(d=>{ const t = clAdTone(d.k, c[d.k]); return `<dt>${esc(d.l)}</dt><dd><span class="sc-st ${t}">${esc(c[d.k]||"Non indicato")}</span></dd>`; }).join("")}</dl>`:`<p class="sc-sub" style="margin:0">Nessun dato su sicurezza e adempimenti.${state.canWrite?" Aggiungili con «Modifica dati».":""}</p>`}<button class="btn sm" type="button" data-ksh="sic" style="margin-top:8px">Apri nella sezione Sicurezza</button></section>
       <section><h3>Dati del cliente</h3><dl class="ksh-dl">${dati.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(String(v))}</dd>`).join("")}</dl></section>
     </div>
     <div class="ksh-foot">
-      ${cc?`<button class="btn sm" type="button" data-ksh="prontuario">Regole del CCNL</button>`:""}
-      ${c.ccnl && rulesOf(c.ccnl)?`<button class="btn sm" type="button" data-ksh="calc">Calcolatori</button><button class="btn sm" type="button" data-ksh="costo">Costo del lavoro</button>`:""}
-      <button class="btn sm" type="button" data-ksh="lettere">Lettere</button>${DP.loaded && DP.docs[c._id]?`<button class="btn sm" type="button" data-ksh="va">Verifica prima di assumere</button><button class="btn sm" type="button" data-ksh="cn">Contatori</button>`:""}
-      ${state.canWrite?`<button class="btn sm" type="button" data-ksh="newpm">+ Promemoria</button><button class="btn sm" type="button" data-ksh="newdsc">+ Disciplinare</button>`:""}
-      <button class="btn sm" type="button" data-ksh="pdf">Scarica PDF</button><button class="btn sm" type="button" data-ksh="print">Stampa scheda</button>
-      ${state.canWrite?`<button class="btn ghost sm" type="button" data-ksh="edit">Modifica dati</button>`:""}
+      <button class="btn primary sm" type="button" data-ksh="lettere">Prepara lettera</button>
+      ${state.canWrite?`<button class="btn sm" type="button" data-ksh="newpm">+ Promemoria</button><button class="btn sm" type="button" data-ksh="edit">Modifica dati</button>`:""}
+      <details class="ksh-more"><summary class="btn sm">Altro</summary><div class="ksh-menu" role="menu">
+        ${cc?`<button type="button" role="menuitem" data-ksh="prontuario">Regole del CCNL</button>`:""}
+        ${c.ccnl && rulesOf(c.ccnl)?`<button type="button" role="menuitem" data-ksh="calc">Calcolatori</button><button type="button" role="menuitem" data-ksh="costo">Costo del lavoro</button><button type="button" role="menuitem" data-ksh="sim">Simula un'assunzione</button>`:""}
+        ${DP.loaded && DP.docs[c._id]?`<button type="button" role="menuitem" data-ksh="va">Verifica prima di assumere</button><button type="button" role="menuitem" data-ksh="cn">Contatori</button>`:""}
+        ${state.canWrite?`<button type="button" role="menuitem" data-ksh="newdsc">+ Procedimento disciplinare</button>`:""}
+        <button type="button" role="menuitem" data-ksh="hist">Storico modifiche</button>
+        <hr><button type="button" role="menuitem" data-ksh="pdf">Scarica PDF</button><button type="button" role="menuitem" data-ksh="print">Stampa scheda</button>
+      </div></details>
     </div>`;
+  el.querySelector(".ksh-more").addEventListener("toggle", e=>{ if(e.target.open){ const b = e.target.querySelector(".ksh-menu button"); if(b) b.focus(); } });
 }
 
 
@@ -8562,7 +8749,7 @@ function sgRender(){
     ${vis.map(({c,S,T},i)=>`<tr><td class="az"><button class="btn ghost sm ck-clb" type="button" data-sgd="${esc(c._id)}">${esc(c.azienda)}</button><span class="sc-sub">n. ${esc(String(c.n??""))}${c.operatore?` · ${esc(c.operatore)}`:""}</span></td>
       <td class="num">${S.head}${S.app?`<span class="sc-sub">${S.app} appr.</span>`:""}</td><td class="num">${sgNum(S.comp)}</td><td class="num"><b>${sgNum(S.l68)}</b></td>
       <td class="num">${S.q || S.q18 ? `${S.q}${S.q18?` + ${S.q18}`:""}` : "—"}</td><td class="num">${S.dis || S.cp ? `${S.dis}${S.cp?` + ${S.cp}`:""}` : (S.q ? "0" : "—")}</td>
-      <td>${tags(vis[i]) || `<span class="sc-sub">—</span>`}</td><td><button class="btn sm" type="button" data-sgd="${esc(c._id)}">Dettaglio</button></td></tr>`).join("")}
+      <td>${tags(vis[i]) || `<span class="sc-sub">—</span>`}</td><td><button class="btn sm" type="button" data-sgd="${esc(c._id)}">Apri</button></td></tr>`).join("")}
     </tbody></table></div>`}`;
   $("#dpLeg").textContent = "Base di computo L. 68/1999: dipendenti in forza esclusi apprendisti, dirigenti, contratti a termine fino a 6 mesi, disabili e categorie protette già assunti; part-time in proporzione all'orario. Quota: 1 tra 15 e 35, 2 tra 36 e 50, 7% oltre 50 (più l'1% per le categorie protette dell'art. 18). «Computabili» esclude solo gli apprendisti ed è il numero usato per le soglie dei 15 dipendenti; la soglia dei 50 usa tutti i dipendenti in forza. Calcolo indicativo sull'azienda intera: non considera somministrati, esoneri, convenzioni, sospensioni e, in edilizia, l'esclusione del personale di cantiere. Disabili, categorie protette e prospetto si aggiornano dal dettaglio del cliente.";
   if(!SG.bound){ SG.bound = true; $("#viewDipendenti").addEventListener("click", e=>{ const t = e.target.closest("[data-sgf],[data-sgd],[data-sgva]"); if(!t) return;
@@ -8895,7 +9082,7 @@ function sicInfo(c){
   const items = [dvr, vis, rls, tlc], app = items.filter(x=>x.tone!=="na"), known = app.filter(x=>x.tone!=="none");
   const score = known.length ? Math.round(app.reduce((s,x)=>s + (x.tone==="ok" ? 1 : x.tone==="warn" ? 0.5 : 0), 0) / app.length * 100) : null;
   const sev = !n ? "nodip" : items.some(x=>x.tone==="bad") ? "bad" : items.some(x=>x.tone==="warn") ? "warn" : items.some(x=>x.tone==="none") ? "none" : "ok";
-  const issues = items.filter(x=>x.tone==="bad" || x.tone==="warn").map(x=>({tone:x.tone, t:`${x.l}: ${x.txt.charAt(0).toLowerCase()+x.txt.slice(1)}`}));
+  const issues = items.filter(x=>x.tone==="bad" || x.tone==="warn").map(x=>({tone:x.tone, t:`${x.l}: ${/^[A-Z]{2}/.test(x.txt) ? x.txt : x.txt.charAt(0).toLowerCase()+x.txt.slice(1)}`}));
   const miss = items.filter(x=>x.tone==="none" && x.k!=="telecamere").map(x=>x.l);
   return { c, n, dvr, vis, rls, tlc, items, score, sev, issues, miss, sis:sicSisma(c.sisma), sisTxt:String(c.sisma||"").trim() };
 }
@@ -9125,10 +9312,427 @@ async function sicExcel(btn){
 }
 
 
+/* ================= NAVIGAZIONE A GRUPPI ================= */
+const NAV_G = [
+  {id:"oggi", l:"Oggi", v:["oggi"]},
+  {id:"clienti", l:"Clienti", v:["clienti","dipendenti","contatori"]},
+  {id:"rapporti", l:"Rapporti di lavoro", v:["assunzioni","termine","apprendisti","tirocini","ratei"]},
+  {id:"adempimenti", l:"Adempimenti", v:["durc","mesepaghe","controlli","sicurezza","disciplinari"]},
+  {id:"strumenti", l:"Strumenti", v:["prontuario","calcolatori","costo","lettere","scadenziario"]},
+  {id:"agevolazioni", l:"Agevolazioni", v:["agevolazioni","simulatore"]},
+  {id:"studio", l:"Studio", v:["storico","dati"]}
+];
+const NAV_SHORT = { clienti:"Anagrafica", dipendenti:"Dipendenti", contatori:"Contatori", assunzioni:"Assunzioni", termine:"Contratti a termine", apprendisti:"Apprendistato", tirocini:"Tirocini", ratei:"Ferie e permessi", durc:"DURC", mesepaghe:"Mese paghe", controlli:"Controlli", sicurezza:"Sicurezza", disciplinari:"Disciplinari", prontuario:"Prontuario CCNL", calcolatori:"Calcolatori", costo:"Costo del lavoro", lettere:"Lettere", scadenziario:"Scadenze CCNL", agevolazioni:"Verifica e pratiche", simulatore:"Simula assunzione", storico:"Storico modifiche", dati:"Aggiorna dati e backup" };
+const NBV = {};
+let NAV_LAST = {};
+try{ NAV_LAST = JSON.parse(localStorage.getItem("bussola.navLast")||"{}") || {}; }catch(e){}
+const navGroupOf = v => NAV_G.find(g=>g.v.includes(v)) || NAV_G[0];
+function navLast(gid){ const g = NAV_G.find(x=>x.id===gid) || NAV_G[0]; return g.v.includes(NAV_LAST[gid]) ? NAV_LAST[gid] : g.v[0]; }
+function nbEl(el, o){ el.hidden = !o.n; el.textContent = o.n > 99 ? "99+" : String(o.n||""); el.className = "nb " + (o.tone||""); el.title = o.title||""; }
+function nbSet(k, n, tone, title){
+  const o = NBV[k] = {n:n||0, tone, title};
+  document.querySelectorAll(`[data-nb="${k}"]`).forEach(el=>nbEl(el, o));
+  if(k==="oggi") document.querySelectorAll('[data-nb="oggi-m"]').forEach(el=>nbEl(el, o));
+}
+function navGroupPaint(){
+  NAV_G.forEach(g=>{
+    let o;
+    if(g.id==="oggi") o = NBV.oggi || {n:0};
+    else {
+      const ch = g.v.map(v=>[v, NBV[v]]).filter(([,x])=>x && x.n);
+      const bad = ch.filter(([,x])=>x.tone==="bad"), list = bad.length ? bad : ch;
+      o = { n:list.length, tone: bad.length ? "bad" : "warn", title: list.map(([v,x])=>`${NAV_SHORT[v]||v}: ${x.n}`).join(" · "), dot:true };
+    }
+    document.querySelectorAll(`[data-nbg="${g.id}"]`).forEach(el=>{ nbEl(el, o); if(o.dot){ el.textContent = ""; el.classList.add("dot"); el.setAttribute("aria-label", o.n ? `Da vedere: ${o.title}` : ""); } });
+  });
+}
+function navSel(v){
+  const g = navGroupOf(v);
+  if(NAV_LAST[g.id]!==v){ NAV_LAST[g.id] = v; try{ localStorage.setItem("bussola.navLast", JSON.stringify(NAV_LAST)); }catch(e){} }
+  document.querySelectorAll(".side .tab[data-group]").forEach(t=>t.setAttribute("aria-selected", t.dataset.group===g.id ? "true":"false"));
+  const sn = document.getElementById("subNav");
+  if(sn){
+    sn.innerHTML = g.v.length<2 ? "" : `<span class="sn-g" aria-hidden="true">${esc(g.l)}</span>` + g.v.map(x=>`<button class="tab" role="tab" type="button" data-view="${x}" aria-selected="${x===v}"><span>${esc(NAV_SHORT[x]||UX_LABEL[x]||x)}</span><span class="nb" data-nb="${x}" hidden></span></button>`).join("");
+    sn.setAttribute("aria-label", g.l);
+    sn.querySelectorAll("[data-nb]").forEach(el=>{ const o = NBV[el.dataset.nb]; if(o) nbEl(el, o); });
+    const sel = sn.querySelector('[aria-selected="true"]'); if(sel && sel.scrollIntoView && sn.scrollWidth>sn.clientWidth) sel.scrollIntoView({block:"nearest", inline:"center"});
+  }
+  if(PG.v!==v){ PG.v = v; PG.mem = {}; }
+}
+document.addEventListener("click", e=>{
+  const t = e.target.closest(".side .tab[data-group], .subnav .tab[data-view]"); if(!t) return;
+  setView(t.dataset.group ? navLast(t.dataset.group) : t.dataset.view);
+});
+document.addEventListener("keydown", e=>{
+  const sn = e.target.closest && e.target.closest(".subnav"); if(!sn || !["ArrowLeft","ArrowRight"].includes(e.key)) return;
+  const tabs = [...sn.querySelectorAll(".tab")], i = tabs.indexOf(e.target); if(i<0) return;
+  e.preventDefault(); const n = tabs[(i + (e.key==="ArrowRight"?1:-1) + tabs.length) % tabs.length]; n.focus(); n.click();
+});
+
+/* ================= TEMA CHIARO / SCURO ================= */
+const TH_L = { "":"Automatico", light:"Chiaro", dark:"Scuro" };
+function thApply(t){ if(t) document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme"); const b = document.getElementById("thBtn"); if(b){ b.querySelector("b").textContent = TH_L[t||""]; b.setAttribute("aria-label", `Tema: ${TH_L[t||""]}. Cambia tema`); } }
+let TH = ""; try{ TH = localStorage.getItem("bussola.theme") || ""; }catch(e){}
+thApply(TH);
+document.addEventListener("click", e=>{ if(!e.target.closest("#thBtn")) return; TH = TH==="" ? "light" : TH==="light" ? "dark" : ""; try{ localStorage.setItem("bussola.theme", TH); }catch(x){} thApply(TH); P.toast(`Tema: ${TH_L[TH].toLowerCase()}`); });
+
+/* ================= ELENCHI LUNGHI: «MOSTRA ALTRI» ================= */
+var PG = { mem:{}, v:null, t:0 };
+function pgView(){ return document.getElementById("view" + view.charAt(0).toUpperCase() + view.slice(1)); }
+function pgScan(){
+  const root = pgView(); if(!root) return;
+  const mob = window.matchMedia("(max-width:640px)").matches;
+  root.querySelectorAll("table.cl > tbody").forEach((tb,i)=>pgApply(tb, "t"+i, 50, 60));
+  root.querySelectorAll("ul.og-list").forEach((ul,i)=>pgApply(ul, "o"+i, mob?10:20, mob?12:25));
+  root.querySelectorAll("table.cl tr[data-clsheet], table.cl tr[data-sicd]").forEach(tr=>{ if(!tr.hasAttribute("tabindex")){ tr.tabIndex = 0; } });
+}
+function pgApply(box, key, step, min){
+  if(box.dataset.pg) return; box.dataset.pg = "1";
+  if(box.closest(".cs-tbl,[data-nopg],.modal,.ksh")) return;
+  const kids = [...box.children], main = kids.filter(x=>!x.classList.contains("ap-detrow"));
+  const n = main.length; if(n <= min) return;
+  const k = view + "|" + key;
+  let shown = Math.max(step, PG.mem[k]||0);
+  const anchor = box.closest(".tblwrap") || box.closest("table") || box;
+  const old = anchor.nextElementSibling; if(old && old.classList.contains("pg-more")) old.remove();
+  const bar = document.createElement("div"); bar.className = "pg-more";
+  anchor.after(bar);
+  const paint = () => {
+    let idx = -1; kids.forEach(x=>{ if(!x.classList.contains("ap-detrow")) idx++; x.classList.toggle("pg-off", idx>=shown); });
+    bar.hidden = shown>=n;
+    bar.innerHTML = `<span>Mostrate <b>${Math.min(shown,n)}</b> di <b>${n}</b></span><button class="btn sm" type="button" data-pgmore>Mostra altre ${Math.min(step, n-shown)}</button><button class="btn ghost sm" type="button" data-pgall>Mostra tutte</button>`;
+  };
+  bar.addEventListener("click", e=>{
+    const b = e.target.closest("[data-pgmore],[data-pgall]"); if(!b) return;
+    const first = shown; shown = b.dataset.pgall!==undefined ? n : shown + step; PG.mem[k] = shown; paint();
+    const nx = main[first]; if(nx){ const f = nx.matches("tr[tabindex],li") ? nx : nx.querySelector("button,[tabindex]"); if(f && f.focus) f.focus({preventScroll:true}); }
+  });
+  paint();
+}
+(function(){ const w = document.querySelector(".wrap"); if(!w) return; new MutationObserver(()=>{ if(!PG.t) PG.t = requestAnimationFrame(()=>{ PG.t = 0; try{ pgScan(); }catch(e){ console.error(e); } }); }).observe(w, {childList:true, subtree:true}); })();
+document.addEventListener("keydown", e=>{
+  const tr = e.target; if(!tr || tr.tagName!=="TR" || !tr.hasAttribute("tabindex")) return;
+  if(e.key==="Enter" || e.key===" "){ e.preventDefault(); tr.click(); }
+});
+
+/* ================= ANAGRAFICA: COLONNE VISIBILI ================= */
+const CL_COLS = [[3,"CCNL"],[4,"Settore"],[5,"T.I."],[6,"T.D."],[7,"Ente bilaterale"],[8,"Sanità integrativa"],[9,"Sicurezza e servizi"],[10,"Altro"]];
+let CL_HIDE = [4,10];
+try{ const s = JSON.parse(localStorage.getItem("bussola.clcols")||"null"); if(Array.isArray(s)) CL_HIDE = s; }catch(e){}
+function clColsUi(){
+  const tb = document.querySelector("#viewClienti .toolbar"); if(!tb) return;
+  if(!tb.querySelector(".cl-cols")){
+    const d = document.createElement("details"); d.className = "cl-cols";
+    d.innerHTML = `<summary class="btn" aria-label="Scegli le colonne della tabella">Colonne</summary><div class="cl-cols-pop" role="group" aria-label="Colonne visibili"><p>Colonne da mostrare</p>${CL_COLS.map(([i,l])=>`<label class="check"><input type="checkbox" data-clcol="${i}"> ${esc(l)}</label>`).join("")}</div>`;
+    tb.insertBefore(d, tb.querySelector("#clImp"));
+    d.addEventListener("change", e=>{ const t = e.target.closest("[data-clcol]"); if(!t) return; const i = +t.dataset.clcol; CL_HIDE = t.checked ? CL_HIDE.filter(x=>x!==i) : [...new Set([...CL_HIDE, i])]; try{ localStorage.setItem("bussola.clcols", JSON.stringify(CL_HIDE)); }catch(x){} clColsApply(); });
+    document.addEventListener("click", e=>{ if(d.open && !d.contains(e.target)) d.open = false; });
+  }
+  clColsApply();
+}
+function clColsApply(){
+  const body = document.getElementById("clBody"); if(!body) return;
+  CL_COLS.forEach(([i])=>body.classList.toggle("hc"+i, CL_HIDE.includes(i)));
+  document.querySelectorAll("#viewClienti [data-clcol]").forEach(el=>{ el.checked = !CL_HIDE.includes(+el.dataset.clcol); });
+}
+
+/* ================= OGGI: SCHEDE COERENTI CON I FILTRI ================= */
+const OG_CARDS = [
+  ["durc","durc","DURC","DURC e DPA da gestire","Stesso conteggio del filtro «DURC» qui sotto: DURC scaduti, irregolari o in verifica, in scadenza entro 30 giorni, contributi non pagati e DPA del mese."],
+  ["termine","ct","Contratti a termine","scaduti o in scadenza entro 30 giorni","Stesso conteggio del filtro «Contratto a termine»: contratti scaduti senza esito o in scadenza entro 30 giorni."],
+  ["tirocini","tr","Tirocini","tirocini da gestire","Stesso conteggio del filtro «Tirocinio»: tirocini terminati senza esito, in scadenza o con presenze da ricevere."],
+  ["apprendisti","ap","Apprendistato","decisioni da prendere","Stesso conteggio del filtro «Apprendistato»: formazione finita senza esito, fine formazione entro 30 giorni, promemoria al cliente e fine del preavviso."],
+  ["agevolazioni","ag","Agevolazioni","pratiche da seguire","Stesso conteggio del filtro «Agevolazione»: benefici terminati o che finiscono entro 60 giorni, pre-scadenze e domande in attesa INPS."],
+  ["scadenziario","ccnl","CCNL","scaduti o in scadenza","Stesso conteggio del filtro «CCNL»: contratti collettivi scaduti nell'ultimo anno o in scadenza entro 60 giorni."]
+];
+
+/* ================= SIMULATORE ASSUNZIONE ================= */
+var SIM = { v:{}, t:0 };
+try{ SIM.v = JSON.parse(localStorage.getItem("bussola.sim")||"{}") || {}; }catch(e){}
+function simSave(){ try{ localStorage.setItem("bussola.sim", JSON.stringify(SIM.v)); }catch(e){} }
+const sv = (id, def) => SIM.v[id]!==undefined ? SIM.v[id] : def;
+const SIM_TIPI = [["ti","Tempo indeterminato"],["trasf","Trasformazione a tempo indeterminato"],["td","Tempo determinato"]];
+function simCc(){ const ids = csIds(); const c = sv("sim-cc",""); return ids.includes(c) ? c : ids.includes("commercio") ? "commercio" : ids[0]; }
+function simLiv(cc){ const R = rulesOf(cc), l = sv("sim-liv",""); return R.livelli.includes(l) ? l : (R.livelloDefault || (cc==="commercio"?"IV":cc==="metalmeccanica"?"C2":R.livelli[Math.floor(R.livelli.length/2)])); }
+function renderSIM(){
+  const root = $("#viewSimulatore");
+  try{ subscribeAG(); }catch(e){}
+  if(!csIds().length){ root.innerHTML = `<div class="empty"><h3>Caricamento dei CCNL…</h3></div>`; root.dataset.built = ""; return; }
+  if(!root.dataset.built){
+    root.dataset.built = "1";
+    root.innerHTML = `<div class="cs-head"><div><h2>Simula un'assunzione</h2><p>Costo annuo del lavoratore con e senza gli incentivi per cui può avere i requisiti: unisce Costo del lavoro e Agevolazioni.</p></div>
+      <div class="cs-actions"><button class="btn ghost" type="button" id="simReset">Azzera i dati</button></div></div>
+      <p class="ag-intro"><b>Stima per proporre l'assunzione al cliente, non parere definitivo.</b> I requisiti segnati «da verificare» vanno controllati sulla circolare INPS vigente e sui documenti del lavoratore prima di applicare l'incentivo.</p>
+      <div class="sim-layout"><form class="sim-form" id="simForm" novalidate autocomplete="off"></form><div class="sim-out" id="simOut" aria-live="polite"></div></div>`;
+    const onEdit = e => { const el = e.target; if(!el.id || !el.closest("#simForm")) return;
+      SIM.v[el.id] = el.type==="checkbox" ? el.checked : el.value;
+      if(el.id==="sim-cl") simFromClient();
+      if(e.type==="change" && ["sim-cl","sim-cc","sim-naspi","sim-tipo"].includes(el.id)){ simSave(); simForm(); simCompute(); return; }
+      simSave(); clearTimeout(SIM.t); SIM.t = setTimeout(simCompute, 150); };
+    root.addEventListener("input", onEdit); root.addEventListener("change", onEdit);
+    root.addEventListener("click", e=>{
+      if(e.target.closest("#simReset")){ SIM.v = {}; simSave(); simForm(); simCompute(); return; }
+      const t = e.target.closest("[data-simcs],[data-simag],[data-simpdf],[data-agcat]"); if(!t) return;
+      if(t.dataset.simcs!==undefined) simToCosto();
+      else if(t.dataset.simag!==undefined) simToAg();
+      else if(t.dataset.simpdf!==undefined) simPdf(t);
+      else if(t.dataset.agcat){ AG.sub = "catalogo"; AG.built = false; setView("agevolazioni"); setTimeout(()=>{ const el = document.getElementById("cat-"+t.dataset.agcat); if(el) el.scrollIntoView({behavior:"smooth"}); }, 30); }
+    });
+  }
+  simForm(); simCompute();
+}
+function simFromClient(){
+  const cl = CL.list.find(x=>x._id===SIM.v["sim-cl"]); if(!cl) return;
+  if(cl.ccnl && csIds().includes(cl.ccnl)){ if(SIM.v["sim-cc"]!==cl.ccnl) delete SIM.v["sim-liv"]; SIM.v["sim-cc"] = cl.ccnl; }
+  if(cl.regione) SIM.v["sim-reg"] = cl.regione;
+  SIM.v["sim-dip"] = String((cl.ti||0) + (cl.td||0));
+}
+function simForm(){
+  const f = $("#simForm"); if(!f) return;
+  const cc = simCc(), R = rulesOf(cc), liv = simLiv(cc), cls = [...CL.list].sort((a,b)=>a.azienda.localeCompare(b.azienda));
+  const fld = (id, l, inner, hint) => `<div class="field"><label for="${id}">${l}</label>${inner}${hint?`<small>${hint}</small>`:""}</div>`;
+  const inp = (id, l, def, extra, hint) => fld(id, l, `<input id="${id}" value="${esc(String(sv(id, def)))}" ${extra||""}>`, hint);
+  const sel = (id, l, opts, def, hint) => fld(id, l, `<select id="${id}">${opts.map(([v,t])=>`<option value="${esc(v)}" ${String(sv(id,def))===String(v)?"selected":""}>${esc(t)}</option>`).join("")}</select>`, hint);
+  const tri = (id, l) => sel(id, l, [["","Da verificare"],["si","Sì"],["no","No"]], "");
+  const chk = (id, l) => `<label class="check" for="${id}"><input type="checkbox" id="${id}" ${sv(id,false)?"checked":""}> <span>${l}</span></label>`;
+  const td = sv("sim-tipo","ti")==="td", cl = CL.list.find(x=>x._id===sv("sim-cl",""));
+  f.innerHTML = `
+    <h3>Azienda e contratto</h3>
+    ${sel("sim-cl","Cliente", [["","— Nessun cliente (simulazione libera) —"], ...cls.map(c=>[c._id, `${c.azienda}${c.n!=null?` (n. ${c.n})`:""}`])], "", cl ? `${cl.ccnl?`CCNL ${esc(P.ccName(cl.ccnl))}`:"CCNL non nel prontuario"} · ${cl.ti||0} T.I. e ${cl.td||0} T.D.${cl.regione?"":" · regione non indicata in anagrafica"}` : "")}
+    <div class="row2">${sel("sim-cc","CCNL", csIds().map(id=>[id, P.ccName(id)]), cc)}${sel("sim-liv","Livello", R.livelli.map(l=>[l,l]), liv)}</div>
+    <div class="row2">${inp("sim-ass","Data di assunzione", isoD(today), 'type="date"')}${sel("sim-tipo","Contratto", SIM_TIPI, "ti")}</div>
+    <div class="row2">${inp("sim-pt","Part-time (%)", "100", 'inputmode="decimal"', "100 = tempo pieno")}${td ? inp("sim-dur","Durata del termine (mesi)", "12", 'type="number" min="1"') : `<div></div>`}</div>
+    <div class="row2">${sel("sim-reg","Regione della sede", [["","Non indicata"], ...REGIONI.map(r=>[r,r])], "")}${inp("sim-dip","Dipendenti dell'azienda", "", 'type="number" min="0"')}</div>
+    <h3>Lavoratore</h3>
+    <div class="row2">${inp("sim-nasc","Data di nascita", "", 'type="date"')}${sel("sim-gen","Genere", [["","Non indicato"],["F","Donna"],["M","Uomo"]], "")}</div>
+    ${inp("sim-mesi","Mesi senza impiego regolarmente retribuito", "", 'type="number" min="0" placeholder="Vuoto = non so"')}
+    ${chk("sim-dipl","Senza diploma o qualifica professionale")}
+    ${chk("sim-disp","Professione o settore con disparità di genere (genere sottorappresentato)")}
+    ${tri("sim-rzes","Residente in una regione della ZES unica / area svantaggiata?")}
+    ${tri("sim-maiti","Mai occupato a tempo indeterminato?")}
+    ${sel("sim-dis","Disabilità", [["","Nessuna"],["alta","Oltre 79% o I-III categoria"],["media","Tra 67% e 79% o IV-VI categoria"],["psi","Intellettiva o psichica oltre 45%"]], "")}
+    ${chk("sim-naspi","Percepisce la NASpI")}
+    ${sv("sim-naspi",false) ? `<div class="row2">${inp("sim-naspiimp","NASpI mensile (€)", "", 'inputmode="decimal"')}${inp("sim-naspimesi","Mesi di NASpI residui", "", 'inputmode="decimal"')}</div>` : ""}
+    ${chk("sim-adi","Beneficiario di Assegno di inclusione o SFL")}
+    <details ${["sim-inc","sim-lic","sim-durc","sim-obb","sim-cig","sim-imp","sim-coll","sim-rapp","sim-siisl"].some(k=>sv(k,""))?"open":""}><summary>Requisiti dell'azienda e del rapporto</summary>
+      <small class="cs-hint" style="margin-bottom:8px">Se non li conosci lascia «Da verificare»: l'incentivo resta tra i possibili.</small>
+      ${tri("sim-inc","L'assunzione crea un incremento occupazionale netto?")}
+      ${tri("sim-lic","Licenziamenti per GMO o collettivi negli ultimi 6 mesi nella stessa unità?")}
+      ${tri("sim-durc","DURC regolare?")}
+      ${tri("sim-obb","Assunzione obbligatoria per legge o CCNL, o in violazione di un diritto di precedenza?")}
+      ${tri("sim-cig","Cassa integrazione o sospensioni in corso nella stessa unità?")}
+      ${tri("sim-coll","Lavoratore licenziato negli ultimi 6 mesi da un datore collegato?")}
+      ${tri("sim-rapp","Rapporto con lo stesso datore negli ultimi 6 mesi?")}
+      ${tri("sim-siisl","Offerta pubblicata sul SIISL prima dell'assunzione?")}
+      ${tri("sim-imp","Il datore ha reddito d'impresa o di lavoro autonomo (non forfettario)?")}
+    </details>`;
+}
+function simRun(){
+  const cc = simCc(), R = rulesOf(cc), liv = simLiv(cc);
+  const ass = parseD(sv("sim-ass","")) || today, anno = ass.getFullYear(), tipo = sv("sim-tipo","ti");
+  const pt = Math.min(100, Math.max(1, num(sv("sim-pt","100"))||100));
+  const dipS = String(sv("sim-dip","")).trim(), dip = dipS==="" ? null : Math.max(0, parseInt(dipS,10)||0);
+  const permOpts = clPermessi(cc, R);
+  const k = { cc, liv, qual:clQualDef(cc, liv), anno, dal:1, al:12, prima:true, pt, orario:40, gg:5,
+    app:false, appp:70, apppFisso:true, appAss:null, appFine:null, apLiv:"", scatti:0, sm:0, alt:0,
+    premio:0, premioM:12, premioTfr:false, bp:0, bpG:null, bpEl:true, ader:true, fondo:false, II:false,
+    az:0, lav:0, inail:0, esPerc:0, esMax:0, esDal:1, esAl:12, addiz:0, crit:"competenza",
+    permOre:(permOpts[0]||{ore:0}).ore, permIdx:0, assenze:0, patr:null, ov:{} };
+  let pid = csInpsDefault(k); if(pid==="terz" && dip!=null && dip>50) pid = "terz50";
+  const P0 = CL_INPS.find(p=>p.id===pid) || CL_INPS[0];
+  k.az = P0.az; k.lav = P0.lav; k.inail = P0.inail;
+  const tdAdd = tipo==="td" ? 1.4 : 0; k.az += tdAdd;
+  const res = calcolaCosto(k); if(!res) return null;
+  const T = res.tot, inpsAzY = (res.rows.inpsAz||[]).reduce((a,b)=>a+b, 0);
+  const cl = CL.list.find(x=>x._id===sv("sim-cl","")), reg = sv("sim-reg","");
+  const mesiS = String(sv("sim-mesi","")).trim();
+  const F = { cliente: cl ? cl._id : "", cl, regione:reg, dip,
+    incremento:triVal(sv("sim-inc","")), licenz:triVal(sv("sim-lic","")), durc:triVal(sv("sim-durc","")), obbligo:triVal(sv("sim-obb","")), cig:triVal(sv("sim-cig","")), impresa:triVal(sv("sim-imp","")),
+    lavoratore:"", nascita:parseD(sv("sim-nasc","")), genere:sv("sim-gen",""), mesi: mesiS==="" ? null : Math.max(0, parseInt(mesiS,10)||0),
+    senzaDiploma:!!sv("sim-dipl",false), soloCarico:false, disparita:!!sv("sim-disp",false), minoranza:false, resZes:triVal(sv("sim-rzes","")), figli2:false,
+    naspi:!!sv("sim-naspi",false), naspiImp:num(sv("sim-naspiimp","")), naspiMesi:num(sv("sim-naspimesi","")), adi:!!sv("sim-adi",false), siisl:triVal(sv("sim-siisl","")),
+    disab:sv("sim-dis",""), maiTI:triVal(sv("sim-maiti","")), licCollegato:triVal(sv("sim-coll","")), rapp6:triVal(sv("sim-rapp","")),
+    ass, tipo, part:pt<100, durataTD: tipo==="td" ? (num(sv("sim-dur","12"))||12) : 0, dirigente:false };
+  F.eta = agEta(F.nascita, ass); F.zes = reg ? ZES.includes(reg) : null;
+  F.mensil = R.mensilita || 13; F.ret = T.retr / F.mensil; F.aliq = k.az;
+  F.contribMese = inpsAzY / 12; F.leader = ccnlLeader(cc);
+  const ev = AG.list.map(A=>agEval(A, F));
+  const inc = ev.filter(r=>r.A._id!=="maxi-deduzione" && r.esito!=="no" && r.stima && r.stima.tot>0).map(r=>{
+      const dur = r.durata || 12, m1 = Math.min(dur, 12), E = simEsonero(r, F, tipo);
+      if(E){ const r1 = calcolaCosto({...k, esPerc:E.perc, esMax:E.mass||0, esDal:1, esAl:m1}); const y1 = Math.max(0, T.costo - r1.tot.costo); return {...r, E, dur, y1, mese:y1/m1, tot: dur<=12 ? y1 : y1*dur/12, costo1: T.costo - y1}; }
+      const y1 = r.stima.mese*m1; return {...r, dur, y1, mese:r.stima.mese, tot:r.stima.tot, costo1: T.costo - y1}; })
+    .sort((a,b)=>({ok:0,maybe:1}[a.esito]-{ok:0,maybe:1}[b.esito]) || b.tot-a.tot);
+  const best = [...inc].sort((a,b)=>b.tot-a.tot)[0] || null;
+  const maxi = ev.find(r=>r.A._id==="maxi-deduzione" && r.esito!=="no" && r.stima && r.stima.anno);
+  const no = ev.filter(r=>r.esito==="no");
+  return { cc, liv, anno, tipo, pt, k, P0, tdAdd, res, T, inpsAzY, F, cl, inc, best, maxi, no };
+}
+function simCompute(){
+  const out = $("#simOut"); if(!out) return;
+  if(!AG.loaded){ out.innerHTML = `<div class="empty"><h3>Carico il catalogo delle agevolazioni…</h3></div>`; clearTimeout(SIM.w); SIM.w = setTimeout(()=>{ if(view==="simulatore") simCompute(); }, 400); return; }
+  let S; try{ S = simRun(); }catch(e){ console.error(e); out.innerHTML = `<div class="empty"><h3>Controlla i dati inseriti</h3><p>${esc(e.message||"")}</p></div>`; return; }
+  if(!S){ out.innerHTML = `<div class="empty"><h3>Dati insufficienti per il calcolo</h3></div>`; return; }
+  SIM.last = S;
+  const { T, best, inc, maxi, no, F } = S;
+  const tipoL = (SIM_TIPI.find(x=>x[0]===S.tipo)||[])[1] || "";
+  const sub = `${esc(P.ccName(S.cc))} · livello ${esc(S.liv)} · ${S.pt<100?`part-time ${fmtN(S.pt,0)}%`:"tempo pieno"} · ${S.anno}`;
+  const kp = [big("Costo annuo senza incentivi", fmtE(T.costo), sub)];
+  if(best){
+    kp.push(`<div class="big save"><div class="lbl">Costo del primo anno con incentivo</div><div class="val">${fmtE(best.costo1)}</div><div class="sub">${esc(best.A.nome)}${best.esito==="maybe"?" · requisiti da completare":""}</div></div>`);
+    kp.push(big("Risparmio complessivo stimato", fmtE(best.tot), `circa ${fmtE(best.mese)} al mese per ${best.dur} mesi`));
+  } else kp.push(big("Incentivi contributivi", "Nessuno", F.nascita || F.mesi!=null ? "con i dati indicati" : "indica età e mesi senza impiego del lavoratore"));
+  kp.push(big("Costo medio mensile", fmtE(T.costo/12), `netto stimato al lavoratore ${fmtE(T.netto/12)} al mese`));
+  const mx = T.costo || 1;
+  const bars = best ? `<div class="sim-bars" role="img" aria-label="Costo del primo anno: ${fmtE(T.costo)} senza incentivi, ${fmtE(best.costo1)} con ${esc(best.A.nome)}">
+      <div class="sim-bar"><span>Senza incentivi</span><span class="tr"><span style="width:100%"></span></span><b>${fmtE(T.costo)}</b></div>
+      <div class="sim-bar with"><span>Con ${esc(best.A.nome)}</span><span class="tr"><span style="width:${Math.max(2, best.costo1/mx*100).toFixed(1)}%"></span></span><b>${fmtE(best.costo1)}</b></div></div>` : "";
+  const tbl = inc.length ? `<div class="tblwrap"><table class="cl sim-tbl"><thead><tr><th>Incentivo</th><th>Esito</th><th class="num">Mesi</th><th class="num">Al mese</th><th class="num">Risparmio 1° anno</th><th class="num">Risparmio totale</th><th class="num">Costo 1° anno</th></tr></thead><tbody>
+      ${inc.map(r=>{ const [c,l] = AG_ESITO[r.esito]; return `<tr class="${r===best?"best":""}"><td><b>${esc(r.A.nome)}</b>${r===best?` <span class="ct-tag ok">Più conveniente</span>`:""}</td><td><span class="sc-st ${c}">${r.esito==="ok"?"Requisiti ok":"Da verificare"}</span></td><td class="num">${r.dur}</td><td class="num">${fmtE(r.mese)}</td><td class="num">${fmtE(r.y1)}</td><td class="num">${fmtE(r.tot)}</td><td class="num">${fmtE(r.costo1)}</td></tr>`; }).join("")}
+    </tbody></table></div>` : `<div class="empty" style="padding:18px"><h3>Nessun incentivo contributivo possibile</h3><p>Con i dati indicati il lavoratore non ha i requisiti per gli esoneri in catalogo.${F.nascita?"":" Indica almeno data di nascita e mesi senza impiego."}</p></div>`;
+  const req = inc.map(r=>`<details class="ag-card ${r.esito==="ok"?"ok":"maybe"}"><summary style="cursor:pointer"><b>${esc(r.A.nome)}</b> · requisiti: ${r.C.filter(x=>x.s==="ok").length} soddisfatti, ${r.C.filter(x=>x.s==="q").length} da verificare</summary>
+      <ul class="ag-checks">${r.C.map(x=>`<li><span class="ag-i ${x.s==="ok"?"ok":x.s==="ko"?"ko":"q"}">${x.s==="ok"?"✓":x.s==="ko"?"✗":"?"}</span><span>${esc(x.t)}${x.n?`<small>${esc(x.n)}</small>`:""}</span></li>`).join("")}</ul>
+      ${r.extra?`<p class="sc-sub" style="margin:6px 0 0">${esc(r.extra)}</p>`:""}<p class="sc-sub" style="margin:6px 0 0">${esc(r.A.norma||"")} · <button class="btn ghost sm" type="button" data-agcat="${esc(r.A._id)}">Scheda normativa</button></p></details>`).join("");
+  const note = [`Stima su 12 mesi con i parametri del Costo del lavoro: contributi INPS «${esc(S.P0.l)}» (${fmtN(S.k.az,2)}% a carico dell'azienda${S.tdAdd?", compreso l'1,40% addizionale NASpI dei contratti a termine":""}), senza superminimi, scatti né premi.`,
+    "Gli esoneri contributivi di norma non si cumulano tra loro: la tabella li mette a confronto e il riepilogo usa il più conveniente.",
+    S.tipo==="td" ? `Il contratto dura ${fmtN(F.durataTD,0)} mesi: il costo resta calcolato su 12 mesi per confrontarlo con il tempo indeterminato.` : ""].filter(Boolean);
+  out.innerHTML = `<div class="sim-kpis">${kp.join("")}</div>${bars}
+    <h3 style="margin:4px 0 0;font-size:16px">Incentivi possibili per questa assunzione</h3>${tbl}
+    ${maxi ? `<div class="ag-best">Si aggiunge la <b>${esc(maxi.A.nome)}</b> (cumulabile con gli esoneri): risparmio d'imposta stimato di <b>${fmtE(maxi.stima.anno)}</b> l'anno, che non riduce il costo del lavoro ma le imposte dell'azienda.</div>` : ""}
+    ${req ? `<div>${req}</div>` : ""}
+    ${no.length ? `<details class="cs-box"><summary style="cursor:pointer;font-weight:600">Incentivi esclusi (${no.length})</summary><ul class="ap-list" style="margin-top:8px">${no.map(r=>`<li><b>${esc(r.A.nome)}</b>: ${esc(r.C.filter(x=>x.s==="ko").map(x=>x.t).join("; "))}</li>`).join("")}</ul></details>` : ""}
+    <div class="sim-acts"><button class="btn" type="button" data-simcs>Apri il dettaglio in Costo del lavoro</button><button class="btn" type="button" data-simag>Verifica completa in Agevolazioni</button><button class="btn" type="button" data-simpdf>Scarica PDF per il cliente</button></div>
+    ${noteBox(note.map(esc).join(" "))}`;
+}
+function simEsonero(r, F, tipo){
+  if(!r || !/esonero|riduzione/i.test(r.A.categoria||"")) return null;
+  let p = r.A.p || {}; if(typeof p==="string"){ try{ p = JSON.parse(p.replace(/'/g,'"')); }catch(e){ p = {}; } }
+  const td = ["td","stag"].includes(tipo);
+  const perc = td ? (p.percTD ?? p.perc) : (p.percTI ?? p.perc);
+  const mass = (F.zes && p.massMeseZes) ? p.massMeseZes : p.massMese != null ? p.massMese : p.massAnno ? p.massAnno/12 : td && p.massAnnoTD ? p.massAnnoTD/12 : p.massAnnoTI ? p.massAnnoTI/12 : 0;
+  return perc ? {perc, mass, mesi:Math.min(12, r.durata||12)} : null;
+}
+const itNum = x => String(r2(x)).replace(".", ",");
+function simToCosto(){
+  const S = SIM.last; if(!S) return;
+  if(S.cl){ activeClient = S.cl; CS.fromClient = S.cl._id; renderBanner(); }
+  if(CS.cc!==S.cc){ CS.cc = S.cc; CS.ov = {}; delete CS.v["cs-qual"]; }
+  Object.assign(CS.v, { "cs-liv":S.liv, "cs-anno":String(S.anno), "cs-pt":String(S.pt), "cs-dal":1, "cs-al":12, "cs-app":false, "cs-scatti":"0", "cs-sm":"", "cs-alt":"" });
+  if(S.tdAdd) CS.v["cs-az"] = itNum(S.k.az); else delete CS.v["cs-az"];
+  const E = S.best && S.best.E;
+  if(E){ Object.assign(CS.v, { "cs-es":S.best.A._id, "cs-esp":itNum(E.perc), "cs-esmax":E.mass ? itNum(E.mass) : "", "cs-esdal":1, "cs-esal":E.mesi }); }
+  else Object.assign(CS.v, { "cs-es":"", "cs-esp":"", "cs-esmax":"" });
+  csSave(); setView("costo");
+  P.toast(E ? `Costo del lavoro con l'esonero «${S.best.A.nome}» nei primi ${E.mesi} mesi` : "Costo del lavoro senza esoneri");
+}
+function simToAg(){
+  const S = SIM.last; if(!S) return;
+  AG.cl = S.cl ? S.cl._id : ""; AG.sub = "verifica"; AG.built = false; setView("agevolazioni");
+  const put = (id, v) => { const el = document.getElementById(id); if(!el || v==null) return; if(el.type==="checkbox") el.checked = !!v; else el.value = v; };
+  const tv = id => sv(id, "");
+  put("g-reg", sv("sim-reg","")); put("g-dip", sv("sim-dip","")); put("g-ass", isoD(S.F.ass)); put("g-tipo", S.tipo); put("g-durtd", S.tipo==="td" ? String(S.F.durataTD) : "");
+  put("g-part", S.pt<100); put("g-nasc", sv("sim-nasc","")); put("g-gen", sv("sim-gen","")); put("g-mesi", sv("sim-mesi",""));
+  put("g-dipl", !!sv("sim-dipl",false)); put("g-disp", !!sv("sim-disp",false)); put("g-dis", sv("sim-dis",""));
+  put("g-naspi", !!sv("sim-naspi",false)); put("g-naspiimp", sv("sim-naspiimp","")); put("g-naspimesi", sv("sim-naspimesi","")); put("g-adi", !!sv("sim-adi",false));
+  ["rzes","maiti","inc","lic","durc","obb","cig","coll","rapp","siisl","imp"].forEach(x=>put("g-"+x, tv("sim-"+x)));
+  put("g-ret", itNum(S.F.ret)); put("g-aliq", itNum(S.k.az));
+  try{ agResults(true); }catch(e){}
+}
+function simPdf(btn){
+  const S = SIM.last, out = $("#simOut"); if(!S || !out) return;
+  const clone = out.cloneNode(true); clone.querySelectorAll(".sim-acts,button").forEach(x=>x.remove()); clone.querySelectorAll("details").forEach(d=>d.open = true);
+  const html = `<div class="sim-pdf"><h2 style="font-family:Georgia,serif;margin:0 0 4px">Simulazione di assunzione${S.cl?` · ${esc(S.cl.azienda)}`:""}</h2><p style="margin:0 0 12px;color:#555">${esc(P.ccName(S.cc))}, livello ${esc(S.liv)}, ${esc((SIM_TIPI.find(x=>x[0]===S.tipo)||[])[1]||"").toLowerCase()}, assunzione dal ${fmtD(S.F.ass)}</p>${clone.innerHTML}<p style="font-size:9pt;color:#666;margin-top:12pt">Stima generata il ${fmtD(today)} con Bussola Lavoro · Studio Prosdocimo S.r.l. I requisiti da verificare vanno confermati prima dell'assunzione.</p></div>`;
+  savePdf(html, `.sim-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px} .big,.sim-bars,.ag-card,.cs-box{break-inside:avoid;background:#fff} .tblwrap{overflow:visible!important} table.cl td,table.cl th{white-space:normal!important}`, `Simulazione assunzione${S.cl?` - ${S.cl.azienda.replace(/[\\/:*?"<>|]+/g," ")}`:""}.pdf`, btn, {light:true, width:"190mm", margin:[10,10,12,10]});
+}
+
+/* ================= STORICO MODIFICHE ================= */
+var HS = { list:[], loaded:false, unsub:null, q:"", sez:"tutte", chi:"", per:"30", cl:"", names:{} };
+const HS_COLL = { clienti:"Anagrafica clienti", durc:"DURC", dpa:"DPA", contratti:"Contratti a termine", apprendisti:"Apprendistato", tirocini:"Tirocini", assunzioni:"Assunzioni", pratiche_agevolazioni:"Agevolazioni", promemoria:"Promemoria", disciplinari:"Disciplinari", controlli_ok:"Controlli", mesepaghe:"Mese paghe", lettere:"Lettere", schede:"Prontuario", ccnl:"CCNL", impostazioni:"Impostazioni", aggiornamenti:"Aggiorna dati" };
+const HS_SEZ = [["tutte","Tutte"],["clienti","Clienti",["clienti"]],["scad","Scadenze",["durc","dpa","contratti","apprendisti","tirocini","assunzioni","mesepaghe"]],["adem","Adempimenti",["controlli_ok","disciplinari","promemoria","lettere"]],["ag","Agevolazioni",["pratiche_agevolazioni"]],["ccnl","CCNL e prontuario",["schede","ccnl"]],["altro","Altro"]];
+const HS_AZ = { crea:"Creato", modifica:"Modificato", elimina:"Eliminato", import:"Importazione", salva:"Salvato" };
+const HS_KEYS = { azienda:"Azienda", operatore:"Operatore", ccnl:"CCNL", ccnl_testo:"CCNL indicato", ti:"Dipendenti T.I.", td:"Dipendenti T.D.", note:"Note", stato:"Stato", scadenza:"Scadenza", dataRichiesta:"Data richiesta", esito:"Esito", insoluti:"Contributi non pagati", dipendente:"Dipendente", lavoratore:"Lavoratore", apprendista:"Apprendista", tirocinante:"Tirocinante", inizio:"Inizio", fine:"Fine", proroghe:"Proroghe", testo:"Testo", fatto:"Fatto", mensilita:"Mensilità", regione:"Regione", settore:"Settore", ente_bilaterale:"Ente bilaterale", sanita:"Sanità integrativa", sintesi:"Sintesi", punti:"Dettagli", verificata:"Verificata", agNome:"Agevolazione", fineBeneficio:"Fine beneficio", abbinamento:"Abbinamento CCNL" };
+function hsKey(k){ const d = CL_AD.find(x=>x.k===k); if(d) return d.l; if(HS_KEYS[k]) return HS_KEYS[k]; const s = String(k).replace(/_/g," ").replace(/([a-z])([A-Z])/g,"$1 $2").toLowerCase(); return s.charAt(0).toUpperCase()+s.slice(1); }
+function subscribeHS(){
+  if(HS.unsub || !state.db) return;
+  try{ HS.unsub = state.db.collection("storico").orderBy("ts","desc").limit(1000).onSnapshot(snap=>{ HS.list = snap.docs.map(d=>({...d.data(), _id:d.id})); HS.loaded = true; if(view==="storico") renderHS(); if(typeof KSH!=="undefined" && KSH.id) kshRender(); }, ()=>{ HS.loaded = true; if(view==="storico") renderHS(); }); }
+  catch(e){ HS.loaded = true; }
+}
+(window.__hooks = window.__hooks||[]).push(ev=>{ if(ev==="db") subscribeHS(); });
+async function hsNames(ids){
+  ids = ids.filter(id=>id && !(id in HS.names)); if(!ids.length || !state.user || !state.user.profiles) return;
+  ids.forEach(id=>HS.names[id] = "");
+  try{ const ps = await state.user.profiles(ids); ids.forEach(id=>{ HS.names[id] = (ps && ps[id] && ps[id].name) || "Un collega"; }); }catch(e){ ids.forEach(id=>{ HS.names[id] = "Un collega"; }); }
+  document.querySelectorAll("[data-hsuid]").forEach(el=>{ const n = HS.names[el.dataset.hsuid]; if(n) el.textContent = el.dataset.hsuid===state.myId ? "Tu" : n; });
+  if(view==="storico") hsChiFill();
+}
+const hsWho = id => !id ? "Sistema" : id===state.myId ? "Tu" : (HS.names[id] || "…");
+function hsChiFill(){
+  const s = document.getElementById("hsChi"); if(!s) return;
+  const ids = [...new Set(HS.list.map(x=>x.uid).filter(Boolean))];
+  s.innerHTML = `<option value="">Tutte le persone</option>` + ids.map(id=>`<option value="${esc(id)}" ${HS.chi===id?"selected":""}>${esc(hsWho(id))}</option>`).join("");
+}
+function hsPass(x){
+  if(!opOk(x.cliente) && OPF.op) return false;
+  if(HS.cl && x.cliente!==HS.cl) return false;
+  if(HS.chi && x.uid!==HS.chi) return false;
+  if(HS.per!=="tutto" && x.ts && (today - new Date(x.ts))/86400000 > +HS.per) return false;
+  if(HS.sez!=="tutte"){ const s = HS_SEZ.find(z=>z[0]===HS.sez); const inAny = HS_SEZ.some(z=>z[2] && z[2].includes(x.coll)); if(HS.sez==="altro" ? inAny : !(s[2]||[]).includes(x.coll)) return false; }
+  if(HS.q){ const h = norm([x.label, HS_COLL[x.coll]||x.coll, (CL.list.find(c=>c._id===x.cliente)||{}).azienda, ...(x.campi||[]).map(c=>`${hsKey(c.k)} ${c.da} ${c.a}`)].join(" ")); if(!norm(HS.q).split(/\s+/).filter(Boolean).every(t=>h.includes(t))) return false; }
+  return true;
+}
+function renderHS(){
+  const root = $("#viewStorico");
+  subscribeHS();
+  if(!root.dataset.built){
+    root.dataset.built = "1";
+    root.innerHTML = `<div class="toolbar"><div style="flex:1"><h2 style="margin:0 0 2px">Storico modifiche</h2>
+      <p class="sc-sub" style="margin:0">Chi ha cambiato cosa e quando nel database dello studio. Le importazioni da file compaiono come una sola voce.</p></div></div>
+      <div class="ct-bar"><div><label for="hsQ">Cerca</label><input id="hsQ" type="search" autocomplete="off" placeholder="Cliente, dipendente, campo modificato…"></div>
+        <div><label for="hsChi">Persona</label><select id="hsChi"></select></div>
+        <div><label for="hsPer">Periodo</label><select id="hsPer"><option value="1">Ultime 24 ore</option><option value="7">Ultimi 7 giorni</option><option value="30">Ultimi 30 giorni</option><option value="tutto">Tutto</option></select></div>
+        <button class="btn ghost" type="button" id="hsReset">Azzera filtri</button></div>
+      <div id="hsCl"></div>
+      <div class="chips" id="hsChips" role="group" aria-label="Filtra per sezione"></div>
+      <div id="hsBody"></div>`;
+    $("#hsQ").addEventListener("input", e=>{ HS.q = e.target.value.trim(); renderHS(); });
+    root.addEventListener("change", e=>{ if(e.target.id==="hsChi"){ HS.chi = e.target.value; renderHS(); } if(e.target.id==="hsPer"){ HS.per = e.target.value; renderHS(); } });
+    root.addEventListener("click", e=>{
+      const t = e.target.closest("[data-hssez],[data-hscl],#hsReset,[data-hsclx]"); if(!t) return;
+      if(t.id==="hsReset"){ HS.q = ""; HS.sez = "tutte"; HS.chi = ""; HS.per = "30"; HS.cl = ""; $("#hsQ").value = ""; renderHS(); }
+      else if(t.dataset.hssez){ HS.sez = t.dataset.hssez; renderHS(); }
+      else if(t.dataset.hsclx!==undefined){ HS.cl = ""; renderHS(); }
+      else if(t.dataset.hscl) kshOpen(t.dataset.hscl);
+    });
+  }
+  $("#hsPer").value = HS.per;
+  const clx = HS.cl && CL.list.find(c=>c._id===HS.cl);
+  $("#hsCl").innerHTML = clx ? `<div class="client-banner"><span>Solo le modifiche di <b>${esc(clx.azienda)}</b></span><button class="btn ghost sm" type="button" data-hsclx>✕ Mostra tutto</button></div>` : "";
+  const base = HS.list.filter(x=>{ const s = HS.sez; HS.sez = "tutte"; const ok = hsPass(x); HS.sez = s; return ok; });
+  const cnt = z => z[0]==="tutte" ? base.length : base.filter(x=> z[0]==="altro" ? !HS_SEZ.some(y=>y[2] && y[2].includes(x.coll)) : (z[2]||[]).includes(x.coll)).length;
+  $("#hsChips").innerHTML = HS_SEZ.map(z=>`<button class="chip" type="button" data-hssez="${z[0]}" aria-pressed="${HS.sez===z[0]}"><span class="dot" style="--cc:var(--ink)"></span>${esc(z[1])} <span class="n">${cnt(z)}</span></button>`).join("");
+  hsChiFill(); hsNames([...new Set(HS.list.map(x=>x.uid))]);
+  const body = $("#hsBody");
+  if(!HS.loaded){ body.innerHTML = `<div class="empty"><h3>Carico lo storico…</h3></div>`; return; }
+  const rows = HS.list.filter(hsPass);
+  if(!HS.list.length){ body.innerHTML = `<div class="empty"><h3>Lo storico è vuoto</h3><p>Da adesso ogni modifica fatta in Bussola Lavoro (clienti, DURC, contratti, pratiche…) viene registrata qui con autore e data.</p></div>`; return; }
+  if(!rows.length){ body.innerHTML = `<div class="empty"><h3>Nessuna modifica con questi filtri</h3><p>Allarga il periodo o togli un filtro.</p></div>`; return; }
+  const byDay = new Map(); rows.forEach(x=>{ const d = (x.ts||"").slice(0,10); if(!byDay.has(d)) byDay.set(d, []); byDay.get(d).push(x); });
+  const fmtV = v => v==null || v==="" ? "vuoto" : String(v);
+  body.innerHTML = [...byDay].map(([d, xs])=>{ const dd = parseD(d); const g = dd ? dayDiff(dd, today) : null;
+    return `<h3 class="hs-day">${g===0?"Oggi":g===1?"Ieri":dd?dd.toLocaleDateString("it-IT",{weekday:"long", day:"numeric", month:"long", year:"numeric"}):"Data sconosciuta"}</h3><ul class="hs-list">${xs.map(x=>{
+      const t = x.ts ? new Date(x.ts).toLocaleTimeString("it-IT",{hour:"2-digit", minute:"2-digit"}) : "";
+      const c = CL.list.find(z=>z._id===x.cliente), lbl = x.label || (c && c.azienda) || x.docId || "";
+      const ch = (x.campi||[]);
+      const li = f => `<li><b>${esc(hsKey(f.k))}</b>: ${x.azione==="crea" ? `<ins>${esc(fmtV(f.a))}</ins>` : `<del>${esc(fmtV(f.da))}</del> → <ins>${esc(fmtV(f.a))}</ins>`}</li>`;
+      return `<li class="hs-it"><span class="hs-t">${t}</span><div class="hs-m"><span class="hs-who" data-hsuid="${esc(x.uid||"")}">${esc(hsWho(x.uid))}</span> · <span class="hs-az ${esc(x.azione||"salva")}">${HS_AZ[x.azione]||"Salvato"}</span><span class="hs-sez">${esc(HS_COLL[x.coll]||x.coll||"")}</span>
+        <div class="hs-lbl">${x.azione==="import" ? esc(`${x.n||0} documenti aggiornati in un'unica operazione`) : x.cliente && c ? `<button type="button" data-hscl="${esc(x.cliente)}">${esc(lbl)}</button>${c.azienda!==lbl?` <span class="hs-sez">· ${esc(c.azienda)}</span>`:""}` : esc(lbl)}</div>
+        ${ch.length && x.azione!=="elimina" ? `<ul class="hs-ch">${ch.slice(0,4).map(li).join("")}</ul>${ch.length>4?`<details class="hs-more"><summary>Altri ${ch.length-4} campi</summary><ul class="hs-ch">${ch.slice(4).map(li).join("")}</ul></details>`:""}` : ""}</div></li>`; }).join("")}</ul>`; }).join("") +
+    (HS.list.length>=1000 ? `<p class="sc-legend">Sono mostrate le ultime 1.000 modifiche.</p>` : "");
+}
+
 let startView = "oggi";
 try{ const v = localStorage.getItem("prontuario.view"); if(v && localStorage.getItem("bussola.oggiVisto")) startView = v; localStorage.setItem("bussola.oggiVisto","1"); }catch(e){}
 const h = (location.hash||"").replace("#","");
-if(["oggi","prontuario","clienti","calcolatori","costo","scadenziario","termine","apprendisti","durc","agevolazioni","lettere","controlli","mesepaghe","disciplinari","assunzioni","tirocini","ratei","dati","dipendenti","contatori","sicurezza"].includes(h)) startView = h;
+if(["oggi","prontuario","clienti","calcolatori","costo","scadenziario","termine","apprendisti","durc","agevolazioni","lettere","controlli","mesepaghe","disciplinari","assunzioni","tirocini","ratei","dati","dipendenti","contatori","sicurezza","simulatore","storico"].includes(h)) startView = h;
 setView(startView);
 })();
 </script>
