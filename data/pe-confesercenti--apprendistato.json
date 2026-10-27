@@ -1,0 +1,271 @@
+{
+ "aggiornatoDa": "",
+ "aggiornatoIl": "2026-10-27T12:00:00+01:00",
+ "articoli": "Artt. 53-67",
+ "attenzione": "Importi della tabella TeleConsul in vigore dal 1/6/2026 per gli assunti dal 26/4/2012.",
+ "capitolo": "4. Le tipologie contrattuali",
+ "ccnl": "pe-confesercenti",
+ "ordine": 202,
+ "origine": "Copiata dal Turismo Confesercenti e aggiornata con le tabelle TeleConsul dei pubblici esercizi: da verificare",
+ "punti": [
+  "Rapporto apprendisti / qualificati: 3 a 2 nelle aziende con almeno 10 dipendenti, 1 a 1 sotto i 10; fino a 3 apprendisti se i qualificati sono meno di 3.",
+  "Nuove assunzioni subordinate alla conferma di almeno il 50% degli apprendisti nei 36 mesi precedenti.",
+  "Retribuzione progressiva all'80%, 85%, 90% e 95% del livello di destinazione per periodi uguali della durata.",
+  "Formazione professionalizzante 80, 60 o 40 ore annue secondo il livello.",
+  "Apprendistato in cicli stagionali: più contratti a termine entro 48 mesi, con somma dei periodi.",
+  "Iscrizione al Fondo ASTER e a Fon.Te. come per gli altri dipendenti."
+ ],
+ "sintesi": "Apprendistato professionalizzante per i livelli dal 2° al 6°: 36 mesi (24 per il 6° livello); figure artigiane 48 mesi (42 per il 4° livello). Retribuzione all'80% nei mesi 1-12, 85% nei mesi 13-24, 90% nei mesi 25-36 e 95% dal 37° del livello finale (paga base e contingenza).",
+ "tag": [
+  "apprendistato",
+  "apprendisti",
+  "professionalizzante",
+  "percentuali",
+  "stagionale"
+ ],
+ "verificata": false,
+ "voce": "Apprendistato professionalizzante",
+ "voce_id": "apprendistato",
+ "tabella": {
+  "intest": [
+   "Figura",
+   "Livello finale",
+   "Mesi",
+   "Totale mensile"
+  ],
+  "righe": [
+   {
+    "c": [
+     "Artigiano",
+     "2",
+     "1-12",
+     "1.533,08"
+    ]
+   },
+   {
+    "c": [
+     "Artigiano",
+     "2",
+     "13-24",
+     "1.628,90"
+    ]
+   },
+   {
+    "c": [
+     "Artigiano",
+     "2",
+     "25-36",
+     "1.724,71"
+    ]
+   },
+   {
+    "c": [
+     "Artigiano",
+     "2",
+     "37-48",
+     "1.820,53"
+    ]
+   },
+   {
+    "c": [
+     "Artigiano",
+     "3",
+     "1-12",
+     "1.440,59"
+    ]
+   },
+   {
+    "c": [
+     "Artigiano",
+     "3",
+     "13-24",
+     "1.530,62"
+    ]
+   },
+   {
+    "c": [
+     "Artigiano",
+     "3",
+     "25-36",
+     "1.620,65"
+    ]
+   },
+   {
+    "c": [
+     "Artigiano",
+     "3",
+     "37-48",
+     "1.710,70"
+    ]
+   },
+   {
+    "c": [
+     "Artigiano",
+     "4",
+     "1-12",
+     "1.354,15"
+    ]
+   },
+   {
+    "c": [
+     "Artigiano",
+     "4",
+     "13-24",
+     "1.438,79"
+    ]
+   },
+   {
+    "c": [
+     "Artigiano",
+     "4",
+     "25-36",
+     "1.523,42"
+    ]
+   },
+   {
+    "c": [
+     "Artigiano",
+     "4",
+     "37-42",
+     "1.608,05"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "2",
+     "1-12",
+     "1.533,08"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "2",
+     "13-24",
+     "1.628,90"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "2",
+     "25-36",
+     "1.724,71"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "3",
+     "1-12",
+     "1.440,59"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "3",
+     "13-24",
+     "1.530,62"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "3",
+     "25-36",
+     "1.620,65"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "4",
+     "1-12",
+     "1.354,15"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "4",
+     "13-24",
+     "1.438,79"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "4",
+     "25-36",
+     "1.523,42"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "5",
+     "1-12",
+     "1.264,08"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "5",
+     "13-24",
+     "1.343,07"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "5",
+     "25-36",
+     "1.422,08"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "6S",
+     "1-12",
+     "1.211,86"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "6S",
+     "13-24",
+     "1.287,60"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "6S",
+     "25-36",
+     "1.363,35"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "6",
+     "1-12",
+     "1.193,26"
+    ]
+   },
+   {
+    "c": [
+     "Professionalizzante",
+     "6",
+     "13-24",
+     "1.267,83"
+    ]
+   }
+  ]
+ }
+}

@@ -3162,6 +3162,7 @@ const APP_RET = {
   "oreficeria-industria":{t:"perc", parti:[85,90,95], fonte:"Accordo apprendistato: 85% nel primo terzo, 90% nel secondo, 95% nell'ultimo"},
   "portieri":{t:"perc", parti:[80,85,90], fonte:"Artt. 35-36: 80%, 85% e 90% per terzi della durata"},
   "turismo-confesercenti":{t:"perc", parti:[80,85,90,95], fonte:"Artt. 53-67: 80%, 85%, 90% e 95% del livello di destinazione per periodi uguali"},
+  "pe-confesercenti":{t:"perc", mesi:[[12,80],[24,85],[36,90],[999,95]], fonte:"Tabelle TeleConsul pubblici esercizi Confesercenti (giugno 2026): 80% nei mesi 1-12, 85% nei mesi 13-24, 90% nei mesi 25-36, 95% dal 37° (figure artigiane)"},
   "agenzie-viaggio":{t:"perc", mesi:[[12,80],[24,85],[36,90],[999,95]], fonte:"Artt. 58-70: 80% il 1° anno, 85% il 2°, 90% il 3°, 95% dal 4°"},
   "pubblici-esercizi":{t:"perc", mesi:[[12,80],[24,85],[36,90],[999,95]], fonte:"Artt. 60-74: 80% il 1° anno, 85% il 2°, 90% il 3°, 95% il 4°"},
   "autorimesse":{t:"perc", mesi:[[12,85],[999,90]], fonte:"Art. 32: 85% il 1° anno, 90% il 2°"},
@@ -3815,6 +3816,18 @@ const COSTI = {
       {id:"edr_ebt", g:"bil", n:"EDR mancato versamento EBT (0,60%)", t:"retr", calc:"perc", base:"tab", perc:0.60, mens:14, tfr:true, cond:"nonader"},
       {id:"edr_aster", g:"bil", n:"EDR mancato versamento ASTER", t:"retr", calc:"mese", imp:16, mens:14, tfr:true, pt:"int", who:"nonquadri", cond:"nonader"},
       {id:"funz", g:"ind", n:"Indennità di funzione Quadri", t:"retr", calc:"mese", imp:{A:75, B:70}, mens:14, tfr:true, who:"quadri", cond:"sempre"}
+    ]},
+  "pe-confesercenti": { inps:"terz", quadri:["A","B"], fonte:"Pubblici esercizi Confesercenti (tabelle TeleConsul giugno 2026). Schede Riepilogo costi, Elemento di garanzia, Sanità integrativa.",
+    voci:[
+      {id:"ebt", g:"bil", n:"EBT / EBN", t:"contr", calc:"perc", base:"tab", perc:0.20, mens:14, lav:{perc:0.20}, cond:"ader"},
+      {id:"aster", g:"san", n:"Fondo ASTER", t:"contr", calc:"mese", imp:12, impDal:[{dal:"2027-01-01", imp:15}], pt:"int", solid:true, who:"nonquadri", cond:"ader"},
+      {id:"aster_it", g:"san", n:"Fondo ASTER, iscrizione", t:"contr", calc:"once", imp:15, who:"nonquadri", cond:"ader", nota:"8 € per i part-time."},
+      {id:"quas", g:"san", n:"QuAS (Quadri)", t:"contr", calc:"anno", imp:380, spread:true, lav:{imp:50, ded:true}, solid:true, who:"quadri", cond:"ader"},
+      {id:"mal077", g:"bil", n:"Aliquota INPS aggiuntiva malattia (0,77%)", t:"contr", calc:"perc", base:"imp", perc:0.77, cond:"opz", nota:"Da verificare per l'azienda."},
+      {id:"fonte", g:"prev", n:"Fon.Te.", t:"contr", calc:"perc", base:"tfr", perc:0.55, lav:{perc:0.55, ded:true}, solid:true, cond:"fondo"},
+      {id:"edr_ebt", g:"bil", n:"EDR mancato versamento EBT (0,60%)", t:"retr", calc:"perc", base:"tab", perc:0.60, mens:14, tfr:true, cond:"nonader"},
+      {id:"edr_aster", g:"bil", n:"EDR mancato versamento ASTER", t:"retr", calc:"mese", imp:16, mens:14, tfr:true, pt:"int", who:"nonquadri", cond:"nonader"},
+      {id:"funz", g:"ind", n:"Indennità di funzione Quadri", t:"retr", calc:"mese", imp:{A:75, B:70}, mens:14, tfr:true, who:"quadri", cond:"sempre"}
     ]}
 };
 const CL_GRUPPI = { bil:"Bilateralità e assistenza contrattuale", san:"Sanità integrativa", prev:"Previdenza complementare", gar:"Elementi di garanzia e premi", ut:"Una tantum di rinnovo", welf:"Welfare contrattuale", ind:"Indennità e altri elementi" };
@@ -3970,7 +3983,10 @@ function calcolaCosto(k){
     }
   });
   // 13ª
-  if(!edileOp){
+  if(!edileOp && k.rMens){
+    /* ratei mensili: 13ª (e 14ª) pagate ogni mese in busta, 1/12 del mese */
+    mesiAttivi.forEach(x=>{ add("tredicesima", x.m, x.b13/12); if(agg.n===2) add("quattordicesima", x.m, x.b14/12); });
+  } else if(!edileOp){
     const p13 = Math.min(12, k.al);
     const pm = M[p13-1];
     add("tredicesima", p13, pm.b13*nAtt/12);
@@ -4029,8 +4045,8 @@ function calcolaCosto(k){
     const tfr = tfrBase/13.5, tratt = r2(impoR*0.005);
     // contributi agli enti
     let entiM = 0, solidM = 0, lavEnti = 0, lavDed = 0;
-    const tab13 = g("tredicesima") ? x.tab*nAtt/12 : 0;
-    const tab14 = (g("quattordicesima")+g("ratei14")) && x.b14 ? x.tab*((g("quattordicesima")+g("ratei14"))/x.b14) : 0;
+    const tab13 = !g("tredicesima") ? 0 : k.rMens ? x.tab/12 : x.tab*nAtt/12;
+    const tab14 = !(g("quattordicesima")+g("ratei14")) ? 0 : k.rMens ? x.tab/12 : x.b14 ? x.tab*((g("quattordicesima")+g("ratei14"))/x.b14) : 0;
     voci.filter(v=>v.on && (v.t==="contr"||v.t==="welf")).forEach(v=>{
       let a = 0, lav = 0;
       if(v.calc==="mese"){ a = (v.ovVal ?? vImp(v,k.liv,x.date,x.ctx)) * (v.pt==="int" ? 1 : ptF); if(v.lav&&v.lav.imp) lav = v.lav.imp*(v.pt==="int"?1:ptF); if(v.lavEq) lav = a; }
@@ -4149,7 +4165,7 @@ function csRead(){
     ader:cv("cs-ader",true)!==false, fondo:!!cv("cs-fondo",false), II:!!cv("cs-II",false),
     az:num(cv("cs-az","")), lav:num(cv("cs-lav","")), inail:num(cv("cs-inail","")),
     esPerc:num(cv("cs-esp","")), esMax:num(cv("cs-esmax","")), esDal:+cv("cs-esdal",1), esAl:+cv("cs-esal",12),
-    addiz:num(cv("cs-addiz","")), crit:cv("cs-crit","competenza"),
+    addiz:num(cv("cs-addiz","")), crit:cv("cs-crit","competenza"), rMens:!!cv("cs-rmens",false),
     permOre:(permOpts[permIdx]||{ore:0}).ore, permIdx, assenze:num(cv("cs-ass","")),
     patr: pat ? {g:+pat[1], m:+pat[2]} : null, ov:CS.ov
   };
@@ -4207,6 +4223,7 @@ function renderCosto(){
       <div class="row2">${csSel("cs-anno","Anno", yearOpts, k.anno)}${csSel("cs-crit","Criterio", [["competenza","Competenza (ratei)"],["cassa","Cassa (pagato nel mese)"]], k.crit)}</div>
       <div class="row2">${csSel("cs-dal","Dal mese", mesiOpts, k.dal)}${csSel("cs-al","Al mese", mesiOpts, k.al)}</div>
       ${csCheck("cs-prima","In forza già dall'anno precedente", k.prima, "Togli la spunta per un'assunzione nell'anno: cambia 14ª, una tantum e iscrizioni.")}
+      ${csCheck("cs-rmens","Ratei di 13ª e 14ª pagati ogni mese in busta", k.rMens, "Ogni mese si paga 1/12 delle mensilità aggiuntive invece di erogarle a dicembre e a luglio. Il costo annuo non cambia, cambia la distribuzione mensile. Serve l'accordo con il lavoratore e va verificata la compatibilità con il CCNL.")}
       <div class="row2">${csField("cs-pt","Part-time (%)", fmtN(k.pt,2), 'inputmode="decimal"')}${csField("cs-orario","Orario tempo pieno (ore/sett.)", fmtN(k.orario,0), 'inputmode="decimal"')}</div>
       <div class="row2">${csSel("cs-gg","Giorni lavorativi", [[5,"5 (lun-ven)"],[6,"6 (lun-sab)"]], k.gg)}${csField("cs-scatti","Scatti maturati", k.scatti, 'inputmode="numeric"')}</div>
       ${csCheck("cs-app","Apprendista", k.app)}
@@ -4425,7 +4442,7 @@ function csCompute(){
       </dl></div>
       <div class="cs-box"><h4>Parametri usati</h4><dl>
         <dt>Minimo ${esc(k.liv)} al ${fmtD(new Date(k.anno,k.dal-1,1))}</dt><dd>${fmtE(minimoNow.val)}</dd>
-        <dt>Mensilità</dt><dd>${res.edileOp?"Cassa Edile":(res.agg.n===2?`13ª e ${esc(res.agg.nome14)} (pagata a ${MESI_L[res.agg.p14-1]})`:"13ª")}</dd>
+        <dt>Mensilità</dt><dd>${res.edileOp?"Cassa Edile":k.rMens?`${res.agg.n===2?`13ª e ${esc(res.agg.nome14)}`:"13ª"} a ratei mensili in busta`:(res.agg.n===2?`13ª e ${esc(res.agg.nome14)} (pagata a ${MESI_L[res.agg.p14-1]})`:"13ª")}</dd>
         <dt>Divisore giornaliero</dt><dd>${R.divGiorno||26}</dd>
         <dt>Ferie e permessi (tempo pieno)</dt><dd>${fmtN(res.feriSett,2)} settimane · ${fmtN(k.permOre,0)} ore</dd>
         <dt>INPS azienda / lavoratore</dt><dd>${fmtN(k.az,2)}% / ${fmtN(k.lav,2)}%</dd>
@@ -4517,7 +4534,7 @@ function xlBuild(ExcelJS, res, k){
     ["Livello e qualifica", `${k.liv} · ${k.qual}${k.app?(k.apppFisso?` · apprendista ${fmtN(k.appp,0)}%`:!appFin(k)?" · apprendista (minimo pieno del livello)":k.appAss&&k.appFine?" · apprendista (progressione del CCNL)":(x=>x?` · apprendista (livello finale, primo periodo: ${APP_RET[k.cc].t==="liv"?`livello ${x.liv}`:`${fmtN(x.p,0)}%`})`:" · apprendista")(appPrimo(k.cc,k.liv))):""}`],
     ["Periodo", `${mesiTxt} ${k.anno} (${res.nAtt} mesi)${k.prima?"":" · assunzione nell'anno"}`],
     ["Orario", `${k.pt<100?`part-time ${fmtN(k.pt,2)}% · `:"tempo pieno · "}${fmtN(k.orario*k.pt/100,1)} ore settimanali su ${k.gg} giorni`],
-    ["Mensilità", res.edileOp ? "Ferie e gratifica tramite Cassa Edile (18,5%)" : (res.agg.n===2 ? `13ª e ${res.agg.nome14} (pagata a ${MESI_L[res.agg.p14-1]})` : "13ª")],
+    ["Mensilità", res.edileOp ? "Ferie e gratifica tramite Cassa Edile (18,5%)" : k.rMens ? `${res.agg.n===2 ? `13ª e ${res.agg.nome14}` : "13ª"} a ratei mensili in busta` : (res.agg.n===2 ? `13ª e ${res.agg.nome14} (pagata a ${MESI_L[res.agg.p14-1]})` : "13ª")],
     ["Contributi", `INPS ${fmtN(k.az,2)}% azienda · ${fmtN(k.lav,2)}% lavoratore · INAIL ${fmtN(k.inail,2)}%`],
     ["Enti", `${k.ader?"Azienda aderente agli enti":"Azienda non aderente: elementi sostitutivi"} · ${k.fondo?"iscritto al fondo pensione":"non iscritto al fondo"} · ${k.II?"con":"senza"} II livello`],
     ["Criterio", k.crit==="competenza" ? "Per competenza (ratei maturati nell'anno)" : "Per cassa (importi pagati nel mese)"]
@@ -4714,6 +4731,7 @@ const APP_DUR = {
   "agenzie-viaggio":{max:36, liv:{"6":24}, fonte:"artt. 58-70: 36 mesi, 24 per il 6° livello"},
   "pubblici-esercizi":{max:36, liv:{"6":24}, art:48, fonte:"artt. 60-74: 36 mesi, 24 per il 6° livello, 48 per le figure omologhe artigiane"},
   "turismo-confesercenti":{max:36, liv:{"6":24}, art:48, fonte:"artt. 53-67: 36 mesi, 24 per il 6° livello, 48 per le figure artigiane"},
+  "pe-confesercenti":{max:36, liv:{"6":24}, art:48, fonte:"tabelle apprendisti: 36 mesi (24 per il 6° livello); figure artigiane 48 mesi, 42 per il 4° livello"},
   "turismo-catene":{max:36, liv:{"D1":30}, art:48, fonte:"artt. 40-42: 36 mesi, 30 per D1, 48 per le figure omologhe artigiane"},
   "turismo-cifa":{max:36, liv:{"7°":24}, art:60, fonte:"art. 19.1: massimo 3 anni per i livelli dal 2° al 7°, 2 anni per il 7°, 5 anni per i profili artigiani"},
   "ced":{max:36, liv:{"V":24}, fonte:"artt. 15-37: 36 mesi, 24 per il V livello"},
@@ -6623,6 +6641,7 @@ const DSC_R = {
   "pubblici-esercizi":{d:5, i:10, acc:true, nota:"da comunicare con raccomandata"},
   "turismo-catene":{d:5, i:10, acc:true, nota:"da comunicare con raccomandata e motivato"},
   "turismo-confesercenti":{d:5, i:10},
+  "pe-confesercenti":{d:5, i:10},
   "metalmeccanica":{d:5, i:6, base:"giust", acc:true},
   "oreficeria-industria":{d:5, i:6, base:"giust", acc:true},
   "metalmeccanica-anpit":{d:5, i:20, lav:true},

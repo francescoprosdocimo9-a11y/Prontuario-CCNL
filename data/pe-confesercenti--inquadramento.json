@@ -1,0 +1,964 @@
+{
+ "aggiornatoDa": "",
+ "aggiornatoIl": "2026-10-27T12:00:00+01:00",
+ "articoli": "Artt. 48-52, 201, 244, 274, 334, 350, 368",
+ "attenzione": "",
+ "capitolo": "3. L'assunzione",
+ "ccnl": "pe-confesercenti",
+ "ordine": 153,
+ "origine": "Copiata dal Turismo Confesercenti e aggiornata con le tabelle TeleConsul dei pubblici esercizi: da verificare",
+ "punti": [
+  "Esempi pubblici esercizi: barista, cuoco, cameriere qualificati di norma al 4° o 5°; commis al 6°; addetti alle pulizie al 7°.",
+  "Nei pubblici esercizi i commis di bar non possono superare 1 ogni 2 baristi (da 2 a 5 baristi) o 1 ogni 3 (6 o più).",
+  "La qualifica di «capo» presuppone dipendenti di livello inferiore.",
+  "Mansioni promiscue: si inquadra nel livello della mansione prevalente o superiore."
+ ],
+ "sintesi": "10 livelli: Quadri A e B, 1°, 2°, 3°, 4°, 5°, 6° super, 6° e 7°. La tabella riporta il mansionario dei pubblici esercizi, della ristorazione e del catering.",
+ "tag": [
+  "livelli",
+  "classificazione",
+  "qualifiche",
+  "inquadramento"
+ ],
+ "verificata": false,
+ "voce": "Livelli di inquadramento e declaratorie",
+ "voce_id": "inquadramento",
+ "tabella": {
+  "intest": [
+   "Livello",
+   "Mansione"
+  ],
+  "righe": [
+   {
+    "c": [
+     "6S",
+     "Addetto ai servizi mensa (almeno 15 anni di servizio)"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Addetto ai servizi mensa con meno di un anno di anzianità"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Addetto al caricamento dei distributori di cibo e bevande"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Addetto al confezionamento di buffet stazione e pasticceria"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Addetto al controllo accessi di sede o filiale"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Addetto al prelievo o versamento denaro distributori cibi e bevande"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Addetto alla movimentazione, allestimento e disallestimento (banqueting e catering)"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Addetto alla sicurezza"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Addetto alla sicurezza nei locali notturni, sale da ballo e simili"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Addetto alla stiratura"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Addetto all'attività di movimentazione, allestimento e disallestimento (banqueting e catering)"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Addetto all'attività di produzione di pasti (banqueting e catering)"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Addetto amministrazione e controllo"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Addetto consegne con o senza mezzi di locomozione"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Addetto di lavanderia"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Addetto servizi mensa (meno di 15 mesi di anzianità nel settore)"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Aiutante pista catering"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Allestitore catering"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Analista programmatore CED"
+    ]
+   },
+   {
+    "c": [
+     "1",
+     "Analista sistemista"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Assistente di direzione"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Assistente o vice o aiuto supervisore catering"
+    ]
+   },
+   {
+    "c": [
+     "1",
+     "Assistente senior di direzione"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Autista di pista catering"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Banconiere di gelateria, pasticceria"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Banconiere di tavola calda, chiosco di stazione"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Barista"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Barman"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Barman unico"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Caffettiere non barista"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Cameriere (banqueting e catering)"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Cameriere ai vini, antipasti, trinciatore"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Cameriere bar, tavola calda, self-service"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Cameriere di ristorante"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Cantiniere"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Cantiniere e caffettiere"
+    ]
+   },
+   {
+    "c": [
+     "Quadro A",
+     "Capo area di catena di esercizi"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Capo banconiere di pasticceria"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Capo barista - responsabile banco bar"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Capo CED"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Capo contabile"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Capo cuoco p.e. e ristorazione collettiva"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Capo del personale"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Capo gruppo mensa"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Capo laboratorio"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Capo laboratorio gelateria (ex capo gelatiere)"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Capo laboratorio pasticceria"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Capo mensa surgelati e/o precotti"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Capo operaio"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Capo reparto catering"
+    ]
+   },
+   {
+    "c": [
+     "Quadro A",
+     "Capo servizi amministrativi catering"
+    ]
+   },
+   {
+    "c": [
+     "1",
+     "Capo servizio catering"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Capo ufficio catering"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Caricatore catering"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Carrellista di stazione o addetto vendita alle banchine"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Cassiera mensa aziendale con funzioni di esazione"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Cassiere centrale catering"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Cassiere risto-bar, self-service, tavola calda, pasticceria, gelateria"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Cellista surgelati o precotti"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Centralinista"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Centralinista con conoscenza di lingua estera"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Chef de rang di ristorante"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Commis di bar (ex aiuto barista)"
+    ]
+   },
+   {
+    "c": [
+     "6S",
+     "Commis di cucina, sala e piani, bar, diplomato"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Commis di cucina, sala, bar, tavola calda, self service (ex aiuti in genere)"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Commis di cucina, sala, tavola calda, self service"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Conducente automezzi leggeri"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Conducente automezzi leggeri (banqueting e catering)"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Conducente automezzi pesanti"
+    ]
+   },
+   {
+    "c": [
+     "7",
+     "Conducente di motocicli"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Conducente mezzi leggeri (banqueting e catering)"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Confezionatrice di buffet stazione e pasticceria"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Controllo amministrativo"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Controllo merci"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Cuoco capo partita"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Cuoco di cucina non organizzata in partite"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Cuoco unico"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Dattilografo"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Demi chef de rang dove il servizio di sala è organizzato in ranghi"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Dietologo"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Dietologo"
+    ]
+   },
+   {
+    "c": [
+     "Quadro A",
+     "Direttore"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Direttore servizio mensa o capo impianto mensa"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Dispensiere"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Economo responsabile del settore acquisti"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Gastronomo"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Gelatiere"
+    ]
+   },
+   {
+    "c": [
+     "Quadro A",
+     "Gerente"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Guardarobiera clienti (vestiarista)"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Guardarobiera non consegnataria"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Guardia giurata"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Guardiano notturno"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Impiegato d'ordine"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Impiegato d'ordine con autonomia esecutiva"
+    ]
+   },
+   {
+    "c": [
+     "1",
+     "Ispettore amministrativo catena d'esercizi"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Ispettore mensa"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Lavandaia"
+    ]
+   },
+   {
+    "c": [
+     "7",
+     "Lavoratore catering"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Magazziniere comune"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Magazziniere consegnatario o economo"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Maitre"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Operaio specializzato alla riparazione di distributori di cibi e bevande"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Operaio qualificato"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Operaio specializzato"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Operaio specializzato provetto"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Operatore CED - consollista"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Operatore della ristorazione commerciale in catena"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Operatore macchine perforatrici e/o verificatrici"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Operatore o procuratore doganale catering"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Operatore pizza"
+    ]
+   },
+   {
+    "c": [
+     "7",
+     "Personale di fatica e/o pulizia addetto alla sala, cucina, office, magazzino"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Pizzaiolo"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Portiere (ex secondo portiere ed ex turnante)"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Preparatore catering"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Primo barman p.e."
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Primo maitre o capo servizio sala"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Primo pasticciere"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Programmatore CED"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Referente di magazzino"
+    ]
+   },
+   {
+    "c": [
+     "Quadro A",
+     "Responsabile acquisti"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Responsabile acquisti"
+    ]
+   },
+   {
+    "c": [
+     "Quadro A",
+     "Responsabile amministrazione e controllo"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Responsabile amministrazione e controllo"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Responsabile area mense"
+    ]
+   },
+   {
+    "c": [
+     "Quadro A",
+     "Responsabile commerciale"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Responsabile commerciale"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Responsabile della manutenzione"
+    ]
+   },
+   {
+    "c": [
+     "Quadro A",
+     "Responsabile della manutenzione, responsabile tecnico"
+    ]
+   },
+   {
+    "c": [
+     "1",
+     "Responsabile delle procedure"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Responsabile di amministrazione"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Responsabile di funzione"
+    ]
+   },
+   {
+    "c": [
+     "Quadro A",
+     "Responsabile di funzione in strutture organizzative complesse"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Responsabile di magazzino"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Responsabile impianti tecnici"
+    ]
+   },
+   {
+    "c": [
+     "Quadro A",
+     "Responsabile marketing"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Responsabile marketing"
+    ]
+   },
+   {
+    "c": [
+     "Quadro A",
+     "Responsabile personale e formazione"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Responsabile personale e formazione"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Responsabile punto vendita"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Responsabile servizio ristorazione commerciale a catena"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Responsabile tecnico"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Secondo banconiere pasticceria"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Secondo cuoco mensa aziendale"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Secondo pasticciere"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Segretario"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Sfoglina"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Sommelier"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "Sotto capo cuoco"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "Stenodattilografa con funzioni di segreteria"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "Stiratrice"
+    ]
+   },
+   {
+    "c": [
+     "1",
+     "Superintendente catering"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "Supervisore catering"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Telescriventista"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "Terzo pasticciere"
+    ]
+   },
+   {
+    "c": [
+     "Quadro B",
+     "Vice direttore"
+    ]
+   }
+  ]
+ }
+}

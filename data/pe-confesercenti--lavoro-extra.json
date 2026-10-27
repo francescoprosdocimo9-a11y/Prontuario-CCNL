@@ -1,0 +1,63 @@
+{
+ "aggiornatoDa": "",
+ "aggiornatoIl": "2026-10-27T12:00:00+01:00",
+ "articoli": "Artt. 93, 155",
+ "attenzione": "",
+ "capitolo": "4. Le tipologie contrattuali",
+ "ccnl": "pe-confesercenti",
+ "ordine": 281,
+ "origine": "Copiata dal Turismo Confesercenti e aggiornata con le tabelle TeleConsul dei pubblici esercizi: da verificare",
+ "punti": [
+  "Paga oraria dal 1/6/2026: 4° 16,74 €, 5° 15,93 €, 6S 15,26 €, 6° 15,07 €, 7° 14,10 €.",
+  "Comunicazione quadrimestrale dei nominativi all'Ente bilaterale."
+ ],
+ "sintesi": "Lavoro extra e di surroga: compenso orario omnicomprensivo per un servizio minimo di 4 ore, per massimo 3 giorni (banchetti, eventi, fine settimana e festività).",
+ "tabella": {
+  "intest": [
+   "Livello",
+   "Paga oraria da giugno 2026"
+  ],
+  "righe": [
+   {
+    "c": [
+     "4",
+     "16,74"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "15,93"
+    ]
+   },
+   {
+    "c": [
+     "6S",
+     "15,26"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "15,07"
+    ]
+   },
+   {
+    "c": [
+     "7",
+     "14,10"
+    ]
+   }
+  ]
+ },
+ "tag": [
+  "extra",
+  "surroga",
+  "banqueting",
+  "eventi",
+  "compenso orario"
+ ],
+ "verificata": false,
+ "voce": "Lavoro extra e di surroga",
+ "voce_id": "lavoro-extra"
+}

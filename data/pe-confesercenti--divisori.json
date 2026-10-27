@@ -1,0 +1,24 @@
+{
+ "aggiornatoDa": "",
+ "aggiornatoIl": "2026-10-27T12:00:00+01:00",
+ "articoli": "Artt. 150-151",
+ "attenzione": "",
+ "capitolo": "6. La retribuzione",
+ "ccnl": "pe-confesercenti",
+ "ordine": 425,
+ "origine": "Copiata dal Turismo Confesercenti e aggiornata con le tabelle TeleConsul dei pubblici esercizi: da verificare",
+ "punti": [
+  "Si applicano a straordinari, maggiorazioni, assenze e trattenute."
+ ],
+ "sintesi": "Retribuzione giornaliera = mensile ÷ 26; oraria = mensile ÷ 172 con orario di 40 ore (190 per 44 ore, 192 per 45 ore).",
+ "tag": [
+  "divisore",
+  "26",
+  "172",
+  "retribuzione oraria",
+  "giornaliera"
+ ],
+ "verificata": false,
+ "voce": "Divisori, retribuzione normale e di fatto",
+ "voce_id": "divisori"
+}

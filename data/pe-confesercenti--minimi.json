@@ -1,0 +1,127 @@
+{
+ "aggiornatoDa": "",
+ "aggiornatoIl": "2026-10-27T12:00:00+01:00",
+ "articoli": "Artt. 152, 157, 291, 345, 380",
+ "attenzione": "",
+ "capitolo": "6. La retribuzione",
+ "ccnl": "pe-confesercenti",
+ "ordine": 424,
+ "origine": "Copiata dal Turismo Confesercenti e aggiornata con le tabelle TeleConsul dei pubblici esercizi: da verificare",
+ "punti": [
+  "Da giugno 2027 (1.722,69 € al 4°) e da dicembre 2027 (1.762,69 €) le tranche del rinnovo 22/7/2024.",
+  "EDR di 16 € per 14 mensilità se l'azienda non versa al Fondo ASTER.",
+  "Divisore orario 172 (40 ore), giornaliero 26."
+ ],
+ "sintesi": "Paga base più contingenza dal 1/6/2026 al 31/5/2027: 4° livello 1.692,69 €, 5° 1.580,09 €, 6° 1.491,57 €, 7° 1.390,20 €. Quadri più indennità di funzione (75 € A, 70 € B).",
+ "tabella": {
+  "intest": [
+   "Livello",
+   "Minimo",
+   "Contingenza",
+   "Ind. funzione",
+   "Totale"
+  ],
+  "righe": [
+   {
+    "c": [
+     "A",
+     "1.920,26",
+     "542,70",
+     "75,00",
+     "2.537,96"
+    ]
+   },
+   {
+    "c": [
+     "B",
+     "1.734,02",
+     "537,59",
+     "70,00",
+     "2.341,61"
+    ]
+   },
+   {
+    "c": [
+     "1",
+     "1.570,97",
+     "536,71",
+     "—",
+     "2.107,68"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "1.384,76",
+     "531,59",
+     "—",
+     "1.916,35"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "1.272,47",
+     "528,26",
+     "—",
+     "1.800,73"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "1.167,75",
+     "524,94",
+     "—",
+     "1.692,69"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "1.057,72",
+     "522,37",
+     "—",
+     "1.580,09"
+    ]
+   },
+   {
+    "c": [
+     "6S",
+     "994,19",
+     "520,64",
+     "—",
+     "1.514,83"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "971,06",
+     "520,51",
+     "—",
+     "1.491,57"
+    ]
+   },
+   {
+    "c": [
+     "7",
+     "871,75",
+     "518,45",
+     "—",
+     "1.390,20"
+    ]
+   }
+  ]
+ },
+ "tag": [
+  "minimi",
+  "paga base",
+  "contingenza",
+  "tabelle",
+  "aumenti"
+ ],
+ "verificata": false,
+ "voce": "Minimi tabellari (paga base, contingenza)",
+ "voce_id": "minimi"
+}

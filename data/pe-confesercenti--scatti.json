@@ -1,0 +1,94 @@
+{
+ "aggiornatoDa": "",
+ "aggiornatoIl": "2026-10-27T12:00:00+01:00",
+ "articoli": "Artt. 158-159, 226, 384",
+ "attenzione": "",
+ "capitolo": "6. La retribuzione",
+ "ccnl": "pe-confesercenti",
+ "ordine": 427,
+ "origine": "Copiata dal Turismo Confesercenti e aggiornata con le tabelle TeleConsul dei pubblici esercizi: da verificare",
+ "punti": [
+  "Importi: A 40,80; B 39,25; 1° 37,70; 2° 36,15; 3° 34,86; 4° 33,05; 5° 32,54; 6S 31,25; 6° 30,99; 7° 30,47.",
+  "Agenzie di viaggio e porti turistici: regole speciali (artt. 238, 384-387).",
+  "Ristorazione collettiva: regole del capo XII.",
+  "Norme transitorie per gli alberghi (art. 226)."
+ ],
+ "sintesi": "6 scatti in cifra fissa per livello (4° livello 33,05 €): ogni 4 anni per gli assunti dal 1/1/2018, ogni 3 anni per gli assunti fino al 31/12/2017. Alla maturazione di ogni scatto i precedenti si ricalcolano sul valore del livello attuale.",
+ "tabella": {
+  "intest": [
+   "Livello",
+   "Importo scatto"
+  ],
+  "righe": [
+   {
+    "c": [
+     "A",
+     "40,80"
+    ]
+   },
+   {
+    "c": [
+     "B",
+     "39,25"
+    ]
+   },
+   {
+    "c": [
+     "1",
+     "37,70"
+    ]
+   },
+   {
+    "c": [
+     "2",
+     "36,15"
+    ]
+   },
+   {
+    "c": [
+     "3",
+     "34,86"
+    ]
+   },
+   {
+    "c": [
+     "4",
+     "33,05"
+    ]
+   },
+   {
+    "c": [
+     "5",
+     "32,54"
+    ]
+   },
+   {
+    "c": [
+     "6S",
+     "31,25"
+    ]
+   },
+   {
+    "c": [
+     "6",
+     "30,99"
+    ]
+   },
+   {
+    "c": [
+     "7",
+     "30,47"
+    ]
+   }
+  ]
+ },
+ "tag": [
+  "scatti",
+  "anzianità",
+  "triennali",
+  "importi"
+ ],
+ "verificata": false,
+ "voce": "Scatti di anzianità",
+ "voce_id": "scatti"
+}

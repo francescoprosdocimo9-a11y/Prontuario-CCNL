@@ -1,0 +1,75 @@
+{
+ "aggiornatoDa": "",
+ "aggiornatoIl": "2026-10-27T12:00:00+01:00",
+ "articoli": "Art. 107",
+ "attenzione": "",
+ "capitolo": "3. L'assunzione",
+ "ccnl": "pe-confesercenti",
+ "ordine": 101,
+ "origine": "Copiata dal Turismo Confesercenti e aggiornata con le tabelle TeleConsul dei pubblici esercizi: da verificare",
+ "punti": [
+  "La durata va indicata nella lettera di assunzione; durante e al termine della prova si recede senza preavviso, con TFR.",
+  "Retribuzione non inferiore al minimo del livello.",
+  "Chi è riassunto entro 2 anni con la stessa qualifica nella stessa azienda, avendo già superato la prova, ne è esente.",
+  "Assunto fuori provincia e licenziato in prova: rimborso del viaggio di andata e ritorno."
+ ],
+ "sintesi": "Prova in giorni di effettiva prestazione: Quadri A e B 180, 1° livello 150, 2° 75, 3° 45, 4° e 5° 30, 6° super 20, 6° e 7° 15. Resta il limite di legge di 6 mesi.",
+ "tabella": {
+  "intest": [
+   "Livello",
+   "Prova (giorni di effettiva prestazione)"
+  ],
+  "righe": [
+   {
+    "c": [
+     "Quadri A e B",
+     "180"
+    ]
+   },
+   {
+    "c": [
+     "1°",
+     "150"
+    ]
+   },
+   {
+    "c": [
+     "2°",
+     "75"
+    ]
+   },
+   {
+    "c": [
+     "3°",
+     "45"
+    ]
+   },
+   {
+    "c": [
+     "4° e 5°",
+     "30"
+    ]
+   },
+   {
+    "c": [
+     "6° super",
+     "20"
+    ]
+   },
+   {
+    "c": [
+     "6° e 7°",
+     "15"
+    ]
+   }
+  ]
+ },
+ "tag": [
+  "prova",
+  "periodo di prova",
+  "giorni effettivi"
+ ],
+ "verificata": false,
+ "voce": "Periodo di prova",
+ "voce_id": "prova"
+}
