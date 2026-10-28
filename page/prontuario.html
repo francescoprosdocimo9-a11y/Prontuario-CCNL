@@ -724,6 +724,7 @@ table.cl tr[data-clsheet]:hover td{background:var(--accent-soft)}
 .tr-tbl .sc-date .sc-st{display:inline-block;margin-top:6px}
 .tr-tbl .tr-per{min-width:150px}.tr-tbl .tr-dd{white-space:nowrap}
 .tr-tbl .ct-tag{white-space:normal;display:inline-block;margin:0 4px 4px 0;line-height:1.3}
+.tr-presall{display:flex;flex-direction:column;gap:2px;margin-top:4px}.tr-presall .btn{padding:2px 6px;font-size:11.5px;text-transform:none;letter-spacing:0;font-weight:600}
 .tr-tbl td:nth-child(8){min-width:180px;max-width:300px}
 .tr-tbl .rowact{flex-direction:column;align-items:stretch;gap:4px}
 @media (max-width:1300px){.og-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -7536,6 +7537,18 @@ function renderTR(){
       else if(t.dataset.tred){ openTREditor(find(t.dataset.tred)); }
       else if(t.dataset.trcl){ kshOpen(t.dataset.trcl); }
     });
+    /* spunta o toglie le presenze del mese per tutti i tirocini mostrati */
+    root.addEventListener("click", async e=>{
+      const b = e.target.closest("[data-trpresall]"); if(!b || !state.canWrite) return;
+      const on = b.dataset.trpresall==="1", ym = trPrevYm();
+      const todo = (TR.shown||[]).filter(x=>x.I.presDue && trPresOk((x.t.presenze||{})[ym])!==on);
+      if(!todo.length){ P.toast(on ? "Presenze già tutte segnate" : "Nessuna spunta da togliere"); return; }
+      b.closest(".tr-presall").querySelectorAll("button").forEach(x=>x.disabled = true);
+      let n = 0;
+      try{ for(const {t} of todo){ const pres = {...(t.presenze||{})}; if(on) pres[ym] = "OK"; else delete pres[ym]; await trSave(t._id, {...trClean(t), presenze:pres}, "", true); n++; }
+        P.toast(on ? `Presenze segnate per ${n} ${n===1?"tirocinio":"tirocini"}` : `Spunta tolta a ${n} ${n===1?"tirocinio":"tirocini"}`); }
+      catch(err){ P.toast(`Aggiornati ${n} tirocini, poi errore: ${P.errMsg(err)}`); }
+    });
     root.addEventListener("change", e=>{
       const t = e.target.closest("[data-trpres]"); if(!t) return;
       const x = TR.list.find(z=>z._id===t.dataset.trpres); if(!x) return;
@@ -7571,7 +7584,7 @@ function renderTR(){
   const cnt = f => base.filter(x=>trPass(x.t, x.I, f)).length;
   const ymP = trPrevYm();
   const chip = (k,l,col) => `<button class="chip" type="button" data-trf="${k}" aria-pressed="${TR.f===k}"><span class="dot" style="--cc:${col}"></span>${l} <span class="n">${cnt(k)}</span></button>`;
-  $("#trChips").innerHTML = chip("attivi","In corso","var(--ink)") + chip("scaduti","Terminati da chiudere","var(--danger)") + chip("30","In scadenza entro 15 giorni","var(--warn)") + chip("presenze",`Presenze di ${trMese(ymP)} da ricevere`,"var(--c2)") + chip("avvisi","Con avvisi","var(--warn)") + chip("chiusi","Cessati e assunti","var(--muted)") + chip("tutti","Tutti","var(--muted)");
+  $("#trChips").innerHTML = chip("attivi","In corso","var(--ink)") + chip("scaduti","Terminati da chiudere","var(--danger)") + chip("30","In scadenza entro 15 giorni","var(--warn)") + chip("presenze","Presenze da ricevere","var(--c2)") + chip("avvisi","Con avvisi","var(--warn)") + chip("chiusi","Cessati e assunti","var(--muted)") + chip("tutti","Tutti","var(--muted)");
   const rows = base.filter(x=>trPass(x.t, x.I)).sort((a,b)=> (a.I.chiuso?1:0)-(b.I.chiuso?1:0) || (a.I.chiuso ? (b.I.last||0)-(a.I.last||0) : (a.I.last||0)-(b.I.last||0)) || (a.t.tirocinante||"").localeCompare(b.t.tirocinante||""));
   TR.shown = rows;
   const att = rows.filter(x=>!x.I.chiuso), sumC = att.reduce((s,x)=>s+(+x.t.compenso||0),0), sumR = att.reduce((s,x)=>s+(+x.t.rimborso||0),0);
@@ -7581,13 +7594,13 @@ function renderTR(){
   if(!TR.list.length){ body.innerHTML = `<div class="empty"><h3>Nessun tirocinio</h3><p>${state.canWrite?"Aggiungi il primo con «Nuovo tirocinio».":"Qui compariranno i tirocini dei clienti."}</p></div>`; return; }
   if(!rows.length){ body.innerHTML = `<div class="empty"><h3>Nessun tirocinio con questi filtri</h3><p>${TR.f==="presenze"?`Tutte le presenze di ${ymLabel(ymP)} risultano ricevute.`:"Cambia azienda, regione o stato, oppure usa «Azzera filtri»."}</p></div>`; return; }
   const one = TR.az!=="tutte";
-  body.innerHTML = `<div class="tblwrap"><table class="cl tr-tbl"><thead><tr><th>Scadenza</th><th>Tirocinante</th>${one?"<th>Sede</th>":"<th>Azienda</th>"}<th>Periodo e durata</th><th class="num">Indennità</th><th class="as-pgh">Presenze<br>${esc(trMese(ymP))}</th><th>Avvisi e note</th><th></th></tr></thead><tbody>
+  body.innerHTML = `<div class="tblwrap"><table class="cl tr-tbl"><thead><tr><th>Scadenza</th><th>Tirocinante</th>${one?"<th>Sede</th>":"<th>Azienda</th>"}<th>Periodo e durata</th><th class="num">Indennità</th><th class="as-pgh tr-presh" title="Presenze del mese di ${esc(ymLabel(ymP))}">Presenze${state.canWrite && rows.some(x=>x.I.presDue) ? `<span class="tr-presall"><button class="btn ghost sm" type="button" data-trpresall="1">Seleziona tutto</button><button class="btn ghost sm" type="button" data-trpresall="0">Deseleziona tutto</button></span>` : ""}</th><th>Avvisi e note</th><th></th></tr></thead><tbody>
     ${rows.map(({t,I})=>{
       const [cls,lbl] = TR_ST[I.st];
       const pr = (t.proroghe||[]).filter(Boolean);
       const tags = [I.reg!=="Campania"?`<span class="ct-tag">${esc(I.reg)}</span>`:"", t.finanziato?`<span class="ct-tag ok">Finanziato Regione</span>`:"", t.promotore?`<span class="ct-tag">${esc(t.promotore)}</span>`:""].join("");
       const esitoTxt = t.stato==="assunto" ? "assunto dall'azienda" : "cessato";
-      const presCell = I.presDue ? `<input type="checkbox" data-trpres="${esc(t._id)}" ${trPresOk(I.pres)?"checked":""} ${state.canWrite?"":"disabled"} aria-label="Presenze di ${esc(ymLabel(ymP))} ricevute: ${esc(t.tirocinante||"")}">${I.pres && !trPresOk(I.pres)?`<span class="sc-sub">${esc(I.pres)}</span>`:""}` : `<span class="sc-sub">${I.chiuso?"—":"non dovute"}</span>`;
+      const presCell = I.presDue ? `<input type="checkbox" data-trpres="${esc(t._id)}" ${trPresOk(I.pres)?"checked":""} ${state.canWrite?"":"disabled"} aria-label="Presenze ricevute: ${esc(t.tirocinante||"")}" title="Presenze di ${esc(ymLabel(ymP))}">${I.pres && !trPresOk(I.pres)?`<span class="sc-sub">${esc(I.pres)}</span>`:""}` : `<span class="sc-sub">${I.chiuso?"—":"non dovute"}</span>`;
       return `<tr>
         <td class="sc-date">${I.last?fmtD(I.last):"—"}<span class="sc-sub">${I.chiuso?esc(esitoTxt)+(t.dataCessazione?` il ${fmtD(parseD(t.dataCessazione))}`:""):esc(ggTxt(I.gg))}</span><span class="sc-st ${cls}">${lbl}</span></td>
         <td class="az">${esc(t.tirocinante||"")}<br>${tags}${t.tutor?`<span class="sc-sub">Tutor: ${esc(t.tutor)}</span>`:""}</td>
