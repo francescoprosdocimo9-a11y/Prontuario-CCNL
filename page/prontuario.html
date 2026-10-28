@@ -1074,6 +1074,34 @@ table.cl tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offs
 @media (max-width:820px){.ct-bar.rk-bar,.ct-bar.cp-bar{grid-template-columns:1fr}}
 @media (max-width:640px){.rk-nav-g>span{min-width:0;flex-basis:100%}.rk-pod{grid-template-columns:1fr}.rk-p.p1,.rk-p.p2,.rk-p.p3{order:0;padding:12px}.rk-vb{min-width:130px}.rk-vb b{min-width:0}}
 
+/* Calcolo disabili */
+.di-bar{grid-template-columns:minmax(240px,2fr) minmax(150px,190px) auto}
+.di-lay{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:16px;align-items:start}
+.di-out{position:sticky;top:12px}
+.di-lay>*{min-width:0}
+.di-sec{margin:0 0 14px}.di-sec h3{font-size:15.5px;margin:0 0 8px}
+.di-tbl td{vertical-align:top}.di-tbl td .sc-sub{display:block;max-width:560px}
+.di-tbl td.num{width:170px}
+.di-in{width:110px;padding:6px 8px;border-radius:7px;border:1px solid var(--line-strong);background:var(--surface-2);font-size:14px;text-align:right;margin-top:4px}
+.di-in.di-date{width:150px;text-align:left}
+.di-tbl select{margin-top:6px;max-width:100%;padding:6px 8px;border-radius:7px;border:1px solid var(--line-strong);background:var(--surface-2);font-size:13.5px}
+.di-tbl tr.di-off td{opacity:.6}
+.di-tg{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:500;margin-left:6px;color:var(--muted)}
+.di-who summary{cursor:pointer;font-size:12px;color:var(--accent);margin-top:2px;width:max-content}.di-who p{margin:4px 0 0;font-size:12.5px;color:var(--muted)}
+.di-opt{margin:8px 0 0}
+.di-res{border:1px solid var(--line);border-top:4px solid var(--ok);border-radius:12px;background:var(--surface);padding:14px 16px}
+.di-res.bad{border-top-color:var(--danger)}.di-res.warn{border-top-color:var(--warn)}
+.di-res h4{margin:14px 0 6px;font-size:14px}
+.di-k{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:10px}
+.di-k .big.bad .val{color:var(--danger)}
+.di-steps{margin:0;padding-left:18px;font-size:13.5px;display:flex;flex-direction:column;gap:4px}
+.di-res .notice{margin:10px 0 0}
+.di-norm{margin-top:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:10px 16px}
+.di-norm summary{cursor:pointer;font-weight:600}.di-norm ul{margin:10px 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+@media (max-width:1000px){.di-lay{grid-template-columns:1fr}.di-out{position:static}}
+@media (max-width:820px){.ct-bar.di-bar{grid-template-columns:1fr}}
+@media (max-width:640px){.di-tbl td.num{width:auto}.di-in{width:100%}}
+
 /* Costo del personale e scadenziario minimi */
 .cp-bar{grid-template-columns:minmax(240px,2fr) minmax(120px,160px) 1fr auto}
 .cp-tbl td{vertical-align:middle}
@@ -1202,6 +1230,7 @@ table.cl tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offs
   <div id="viewPersonale" hidden></div>
   <div id="viewMinimi" hidden></div>
   <div id="viewClassifiche" hidden></div>
+  <div id="viewDisabili" hidden></div>
 </div>
 </div><!-- /app -->
 
@@ -1712,6 +1741,7 @@ function setView(v){
   $("#viewPersonale").hidden = v!=="personale";
   $("#viewMinimi").hidden = v!=="minimi";
   $("#viewClassifiche").hidden = v!=="classifiche";
+  $("#viewDisabili").hidden = v!=="disabili";
   const ta = $("#topActions"); if(ta) ta.hidden = !state.canWrite || v!=="prontuario";
   if(v==="clienti") renderClienti();
   if(v==="calcolatori") renderCalc();
@@ -1738,6 +1768,7 @@ function setView(v){
   if(v==="personale") renderCP();
   if(v==="minimi") renderMN();
   if(v==="classifiche") renderRK();
+  if(v==="disabili") renderDI();
   try{ opBar(); }catch(e){}
   try{ localStorage.setItem("prontuario.view", v); }catch(e){}
   try{ uxOnView(v); }catch(e){}
@@ -1766,7 +1797,7 @@ function opMap(){ if(_opmSrc!==CL.list){ _opmSrc = CL.list; _opm = new Map(CL.li
 function opOk(clId){ return !OPF.op || (!!clId && opMap().get(clId)===OPF.op); }
 function opL(list, k){ k = k || "cliente"; return OPF.op ? list.filter(x=>opOk(x[k])) : list; }
 function opNames(){ return [...new Set(CL.list.map(c=>(c.operatore||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); }
-const OP_VIEWS = ["oggi","clienti","personale","classifiche","sicurezza","storico","dipendenti","contatori","assunzioni","ratei","dati","agevolazioni","lettere","controlli","disciplinari","mesepaghe","termine","tirocini","apprendisti","durc"];
+const OP_VIEWS = ["oggi","clienti","personale","classifiche","disabili","sicurezza","storico","dipendenti","contatori","assunzioni","ratei","dati","agevolazioni","lettere","controlli","disciplinari","mesepaghe","termine","tirocini","apprendisti","durc"];
 function opBar(){
   const el = document.getElementById("opBar"); if(!el) return;
   if(!OPF.op || !OP_VIEWS.includes(view)){ el.innerHTML = ""; return; }
@@ -5755,7 +5786,7 @@ function ogGo(g){
 
 /* ================= NAVIGAZIONE, RICERCA GLOBALE, SCHEDA CLIENTE ================= */
 const cnelOf = c => P.cnelOf(c);
-const UX_LABEL = { oggi:"Oggi", prontuario:"Prontuario CCNL", clienti:"Clienti", calcolatori:"Calcolatori", costo:"Costo del lavoro", termine:"Contratti a termine", apprendisti:"Apprendistato", durc:"DURC", agevolazioni:"Agevolazioni", scadenziario:"Scadenziario CCNL", lettere:"Lettere", controlli:"Controlli", mesepaghe:"Mese paghe", disciplinari:"Disciplinari", assunzioni:"Assunzioni", tirocini:"Tirocini", ratei:"Ratei dipendenti", dati:"Aggiorna dati e backup", dipendenti:"Dipendenti", contatori:"Contatori", sicurezza:"Sicurezza", simulatore:"Simula assunzione", storico:"Storico modifiche", personale:"Costo del personale", classifiche:"Classifiche", minimi:"Scadenziario minimi" };
+const UX_LABEL = { oggi:"Oggi", prontuario:"Prontuario CCNL", clienti:"Clienti", calcolatori:"Calcolatori", costo:"Costo del lavoro", termine:"Contratti a termine", apprendisti:"Apprendistato", durc:"DURC", agevolazioni:"Agevolazioni", scadenziario:"Scadenziario CCNL", lettere:"Lettere", controlli:"Controlli", mesepaghe:"Mese paghe", disciplinari:"Disciplinari", assunzioni:"Assunzioni", tirocini:"Tirocini", ratei:"Ratei dipendenti", dati:"Aggiorna dati e backup", dipendenti:"Dipendenti", contatori:"Contatori", sicurezza:"Sicurezza", simulatore:"Simula assunzione", storico:"Storico modifiche", personale:"Costo del personale", classifiche:"Classifiche", disabili:"Disabili L. 68", minimi:"Scadenziario minimi" };
 function uxDrawer(open){
   const side = document.getElementById("side"), scrim = document.getElementById("sideScrim"), btn = document.getElementById("menuBtn");
   if(!side) return;
@@ -5921,6 +5952,7 @@ function kshAct(k, arg){
   else if(k==="cn"){ CN.az = c._id; setView("contatori"); }
   else if(k==="sic"){ setView("sicurezza"); sicOpen(c._id); }
   else if(k==="cp"){ CP.cl = c._id; cpSaveLocal(); setView("personale"); }
+  else if(k==="di"){ diOpen(c._id); }
   else if(k==="rk"){ RK.cat = "pagella"; RK.hl = c._id; RK.q = ""; const q = document.getElementById("rkQ"); if(q) q.value = ""; setView("classifiche"); }
   else if(k==="sim"){ SIM.v["sim-cl"] = c._id; simFromClient(); simSave(); setView("simulatore"); }
   else if(k==="hist"){ HS.cl = c._id; HS.per = "tutto"; setView("storico"); }
@@ -6025,7 +6057,7 @@ function kshRender(){
       ${state.canWrite?`<button class="btn sm" type="button" data-ksh="newpm">+ Promemoria</button><button class="btn sm" type="button" data-ksh="edit">Modifica dati</button>`:""}
       <details class="ksh-more"><summary class="btn sm">Altro</summary><div class="ksh-menu" role="menu">
         ${cc?`<button type="button" role="menuitem" data-ksh="prontuario">Regole del CCNL</button>`:""}
-        ${c.ccnl && rulesOf(c.ccnl)?`<button type="button" role="menuitem" data-ksh="calc">Calcolatori</button><button type="button" role="menuitem" data-ksh="costo">Costo del lavoro</button><button type="button" role="menuitem" data-ksh="sim">Simula un'assunzione</button>`:""}${typeof DP!=="undefined" && DP.docs[c._id] ? `<button type="button" role="menuitem" data-ksh="cp">Costo del personale</button><button type="button" role="menuitem" data-ksh="rep">Report annuale per il cliente (PDF)</button>` : ""}
+        ${c.ccnl && rulesOf(c.ccnl)?`<button type="button" role="menuitem" data-ksh="calc">Calcolatori</button><button type="button" role="menuitem" data-ksh="costo">Costo del lavoro</button><button type="button" role="menuitem" data-ksh="sim">Simula un'assunzione</button>`:""}${typeof DP!=="undefined" && DP.docs[c._id] ? `<button type="button" role="menuitem" data-ksh="cp">Costo del personale</button><button type="button" role="menuitem" data-ksh="rep">Report annuale per il cliente (PDF)</button><button type="button" role="menuitem" data-ksh="di">Calcolo disabili (L. 68)</button>` : ""}
         ${DP.loaded && DP.docs[c._id]?`<button type="button" role="menuitem" data-ksh="va">Verifica prima di assumere</button><button type="button" role="menuitem" data-ksh="cn">Contatori</button>`:""}
         ${state.canWrite?`<button type="button" role="menuitem" data-ksh="newdsc">+ Procedimento disciplinare</button>`:""}
         <button type="button" role="menuitem" data-ksh="hist">Storico modifiche</button>
@@ -8372,7 +8404,7 @@ function subscribeDP(){
   if(!DP.unsub) DP.unsub = state.db.collection("dipendenti").onSnapshot(snap=>{ const m = {}; snap.docs.forEach(d=>{ m[d.id] = {...d.data(), _id:d.id}; }); DP.docs = m; DP.loaded = true; DP.cache = null; dpRefresh(); }, ()=>{ DP.loaded = true; dpRefresh(); });
   if(!DP.unsubM) DP.unsubM = state.db.collection("dipendenti_meta").onSnapshot(snap=>{ const d = snap.docs.find(x=>x.id==="ultimo"); DP.meta = d ? d.data() : null; if(view==="dipendenti") renderDP(); }, ()=>{});
 }
-function dpRefresh(){ if(view==="dipendenti") renderDP(); if(view==="contatori") renderCN(); if(view==="assunzioni" && typeof AS!=="undefined" && AS.loaded) renderAS(); if(view==="dati") renderAGG(); navBadgesSoon(); if(KSH.id) kshRender(); }
+function dpRefresh(){ if(view==="disabili") renderDI(); if(view==="dipendenti") renderDP(); if(view==="contatori") renderCN(); if(view==="assunzioni" && typeof AS!=="undefined" && AS.loaded) renderAS(); if(view==="dati") renderAGG(); navBadgesSoon(); if(KSH.id) kshRender(); }
 (window.__hooks = window.__hooks||[]).push(ev=>{ if(ev==="db") setTimeout(subscribeDP, 2000); });
 if(state.db) setTimeout(subscribeDP, 2000);
 const dpName = d => `${d.cog||""} ${d.nom||""}`.trim();
@@ -8755,11 +8787,15 @@ function sgCalc(cliente, at, extra){
   const c = CL.list.find(x=>x._id===cliente) || {};
   const all = (DP.byCl.get(cliente)||[]).filter(o=>sgIn(o, at)), L = extra ? [...all, extra] : all;
   const nonApp = L.filter(o=>!o.app), dir = nonApp.filter(o=>o.d.qi==="3"), brevi = nonApp.filter(o=>o.d.qi!=="3" && sgBreve(o.d));
-  const l68L = nonApp.filter(o=>o.d.qi!=="3" && !sgBreve(o.d));
+  const l68L = nonApp.filter(o=>o.d.qi!=="3" && !sgBreve(o.d) && o.d.t!=="A");   /* i sostituti di lavoratori assenti non si computano */
   const dis = Math.max(0, parseInt(c.disabili,10)||0), cp = Math.max(0, parseInt(c.l68_cp,10)||0);
-  const l68 = Math.max(0, sgPt(l68L) - dis - cp), q = sgQuota(l68), q18 = sgQuota18(l68);
+  /* esclusioni e coperture inserite nel calcolo disabili salvato per il cliente */
+  const lc = (c.l68_calc && c.l68_calc.v) || {}, mn = k => Math.max(0, parseFloat(String(lc[k]??"").replace(",", "."))||0);
+  const manEsc = ["inab","cantiere","viagg","fune","soci","estero","domicilio","altro"].reduce((s,k)=>s + mn(k), 0) - (parseFloat(String(lc.corr??"").replace(",", "."))||0);
+  const covX = mn("inab") + mn("somm") + mn("conv") + mn("esonero");
+  const l68 = sgRound(Math.max(0, l68L.reduce((s,o)=>s + sgPtv(o)/100, 0) - dis - cp - manEsc)), q = sgQuota(l68), q18 = sgQuota18(l68);
   return { c, at, list:L, head:L.length, app:L.length-nonApp.length, dir:dir.length, brevi:brevi.length, pt:nonApp.filter(o=>sgPtv(o)<100).length,
-    comp:sgPt(nonApp), lordo:sgPt(l68L), l68, q, q18, dis, cp, scop:Math.max(0, q-dis), scop18:Math.max(0, q18-cp), edile:/EDIL/i.test(`${c.ccnl||""} ${c.ccnl_testo||""} ${c.settore||""}`) };
+    comp:sgPt(nonApp), lordo:sgPt(l68L), l68, q, q18, dis, cp, scop:Math.max(0, Math.round(q - dis - covX)), scop18:Math.max(0, q18-cp), edile:/EDIL/i.test(`${c.ccnl||""} ${c.ccnl_testo||""} ${c.settore||""}`) };
 }
 /* limite del 20% dei contratti a termine (art. 23 D.Lgs. 81/2015) alla data `at` */
 function sgTd(cliente, at){
@@ -8999,9 +9035,10 @@ function sgOpen(id){
       <div class="field full"><label for="sg-nt">Esonero, convenzione o sospensione</label><input id="sg-nt" value="${esc(c.l68_nota||"")}" placeholder="Es. convenzione art. 11 fino al 31/12/2027"></div>
     </fieldset><div class="err full" id="sg-err" style="grid-column:1/-1"></div></form>
     <p class="sc-sub" style="margin:0">Il prospetto informativo va inviato entro il 31 gennaio solo se la situazione è cambiata rispetto all'ultimo invio in modo da modificare l'obbligo o la quota.</p>
-    <div class="modal-actions"><button class="btn ghost" type="button" id="sg-va">Verifica un'assunzione</button><div class="r"><button class="btn" type="button" id="sg-x">${ro?"Chiudi":"Annulla"}</button>${ro?"":`<button class="btn primary" type="button" id="sg-s">Salva</button>`}</div></div>`);
+    <div class="modal-actions"><div class="rowact"><button class="btn ghost" type="button" id="sg-va">Verifica un'assunzione</button><button class="btn ghost" type="button" id="sg-di">Calcolo disabili dettagliato</button></div><div class="r"><button class="btn" type="button" id="sg-x">${ro?"Chiudi":"Annulla"}</button>${ro?"":`<button class="btn primary" type="button" id="sg-s">Salva</button>`}</div></div>`);
   $("#sg-x").onclick = P.closeModal;
   $("#sg-va").onclick = ()=>{ P.closeModal(); vaOpen({ cliente:id }); };
+  $("#sg-di").onclick = ()=>{ P.closeModal(); diOpen(id); };
   if(ro) return;
   $("#sg-s").onclick = async ()=>{
     const n = s => { const v = $(s).value.trim(); if(v==="") return null; const x = parseInt(v,10); return Number.isFinite(x) && x >= 0 ? x : NaN; };
@@ -9535,12 +9572,12 @@ const NAV_G = [
   {id:"oggi", l:"Oggi", v:["oggi"]},
   {id:"clienti", l:"Clienti", v:["clienti","dipendenti","contatori","personale","classifiche"]},
   {id:"rapporti", l:"Rapporti di lavoro", v:["assunzioni","termine","apprendisti","tirocini","ratei"]},
-  {id:"adempimenti", l:"Adempimenti", v:["durc","mesepaghe","controlli","sicurezza","disciplinari"]},
+  {id:"adempimenti", l:"Adempimenti", v:["durc","mesepaghe","controlli","sicurezza","disabili","disciplinari"]},
   {id:"strumenti", l:"Strumenti", v:["prontuario","calcolatori","costo","lettere","scadenziario","minimi"]},
   {id:"agevolazioni", l:"Agevolazioni", v:["agevolazioni","simulatore"]},
   {id:"studio", l:"Studio", v:["storico","dati"]}
 ];
-const NAV_SHORT = { clienti:"Anagrafica", dipendenti:"Dipendenti", contatori:"Contatori", personale:"Costo del personale", classifiche:"Classifiche", minimi:"Scadenze minimi", assunzioni:"Assunzioni", termine:"Contratti a termine", apprendisti:"Apprendistato", tirocini:"Tirocini", ratei:"Ferie e permessi", durc:"DURC", mesepaghe:"Mese paghe", controlli:"Controlli", sicurezza:"Sicurezza", disciplinari:"Disciplinari", prontuario:"Prontuario CCNL", calcolatori:"Calcolatori", costo:"Costo del lavoro", lettere:"Lettere", scadenziario:"Scadenze CCNL", agevolazioni:"Verifica e pratiche", simulatore:"Simula assunzione", storico:"Storico modifiche", dati:"Aggiorna dati e backup" };
+const NAV_SHORT = { clienti:"Anagrafica", dipendenti:"Dipendenti", contatori:"Contatori", personale:"Costo del personale", classifiche:"Classifiche", disabili:"Disabili L. 68", minimi:"Scadenze minimi", assunzioni:"Assunzioni", termine:"Contratti a termine", apprendisti:"Apprendistato", tirocini:"Tirocini", ratei:"Ferie e permessi", durc:"DURC", mesepaghe:"Mese paghe", controlli:"Controlli", sicurezza:"Sicurezza", disciplinari:"Disciplinari", prontuario:"Prontuario CCNL", calcolatori:"Calcolatori", costo:"Costo del lavoro", lettere:"Lettere", scadenziario:"Scadenze CCNL", agevolazioni:"Verifica e pratiche", simulatore:"Simula assunzione", storico:"Storico modifiche", dati:"Aggiorna dati e backup" };
 const NBV = {};
 let NAV_LAST = {};
 try{ NAV_LAST = JSON.parse(localStorage.getItem("bussola.navLast")||"{}") || {}; }catch(e){}
@@ -10569,10 +10606,195 @@ async function rpPdf(c, btn){
   await savePdf(rpHTML(c), RP_CSS, `Report del personale ${today.getFullYear()} - ${c.azienda.replace(/[\\/:*?"<>|]+/g," ")}.pdf`, btn, {light:true, width:"190mm", margin:[10,10,12,10]});
 }
 
+/* ================= CALCOLO DISABILI E CATEGORIE PROTETTE (L. 68/1999) ================= */
+var DI = { cl:"", at:"", v:{}, opt:{}, bound:false };
+try{ const x = JSON.parse(localStorage.getItem("bussola.di")||"{}"); if(x.cl) DI.cl = x.cl; }catch(e){}
+/* contributo esonerativo per giorno lavorativo e lavoratore non occupato (art. 5 c. 3 L. 68/1999): DM 193/2021, poi DM 100/2026 dal 1° gennaio 2027 */
+const DI_CONTR = [["2027-01-01", 44.32, "DM n. 100 del 3 agosto 2026"], ["2022-01-01", 39.21, "DM n. 193 del 30 settembre 2021"]];
+const diContr = at => DI_CONTR.find(x=>at >= x[0]) || DI_CONTR[DI_CONTR.length-1];
+/* voci che riducono la base di computo; auto = ricavata da TeamSystem e anagrafica */
+const DI_ESC = [
+  { k:"app", l:"Apprendisti", n:"Art. 47, c. 3, D.Lgs. 81/2015 e art. 3 DPR 333/2000. La Cassazione li ha ritenuti invece computabili: se l'ufficio provinciale segue quella linea, togli la spunta.", auto:true, opt:true },
+  { k:"dir", l:"Dirigenti", n:"Art. 4, c. 1, L. 68/1999.", auto:true },
+  { k:"brevi", l:"Contratti a termine fino a 6 mesi", n:"Art. 4, c. 1. Contano anche le proroghe: il lavoratore diventa computabile dalla proroga che supera i 6 mesi.", auto:true },
+  { k:"sost", l:"Sostituti di lavoratori assenti con diritto alla conservazione del posto", n:"Prassi ministeriale: si computa il lavoratore sostituito, non il sostituto.", auto:true },
+  { k:"dis", l:"Disabili già in forza computati nella quota", n:"Art. 4, c. 1 e c. 3-bis: assunti tramite collocamento mirato, oppure già disabili all'assunzione con riduzione della capacità lavorativa pari o superiore al 60% (oltre il 45% se intellettiva o psichica).", auto:true, cov:true },
+  { k:"inab", l:"Lavoratori divenuti inabili durante il rapporto (riduzione pari o superiore al 60%)", n:"Art. 4, c. 4: si computano nella quota, salvo che l'inabilità derivi da inadempimento del datore in materia di sicurezza.", cov:true },
+  { k:"cp", l:"Categorie protette già in forza (art. 18)", n:"Orfani e coniugi superstiti di vittime del lavoro, di guerra o di servizio, profughi, vittime del terrorismo e della criminalità organizzata e categorie equiparate.", auto:true },
+  { k:"cantiere", l:"Edilizia: personale di cantiere e addetti al trasporto", n:"Art. 5, c. 2, L. 68/1999 (come modificato dalla L. 247/2007). Non vale per il personale non edile, come il direttore dei lavori (interpello n. 11/2015).", edile:true },
+  { k:"viagg", l:"Trasporti: personale viaggiante e navigante", n:"Art. 5, c. 2: datori del trasporto aereo, marittimo e terrestre, limitatamente al personale viaggiante e navigante." },
+  { k:"fune", l:"Impianti a fune: personale addetto all'esercizio", n:"Art. 5, c. 2: personale direttamente adibito alle aree operative di esercizio e regolarità del trasporto. Da verificare con l'ufficio." },
+  { k:"soci", l:"Soci di cooperative di produzione e lavoro", n:"Art. 4, c. 1." },
+  { k:"estero", l:"Assunti per attività da svolgere all'estero", n:"Art. 4, c. 1: per la durata dell'attività all'estero." },
+  { k:"domicilio", l:"Lavoratori a domicilio, LSU ed emersione", n:"Art. 4, c. 1: lavoratori a domicilio, impegnati in lavori socialmente utili, aderenti ai programmi di emersione." },
+  { k:"altro", l:"Altre esclusioni previste da discipline di settore", n:"Per esempio vigilanza privata o, per partiti, sindacati e organizzazioni sociali, il personale diverso da quello tecnico-esecutivo e amministrativo (art. 3, c. 3)." }
+];
+const DI_COV = [
+  { k:"somm", l:"Disabili in somministrazione con missione di almeno 12 mesi", n:"Art. 34, c. 3, D.Lgs. 81/2015: si computano nella quota dell'utilizzatore." },
+  { k:"conv", l:"Inserimenti tramite convenzione", n:"Convenzioni art. 11 e 12-bis L. 68/1999 e art. 14 D.Lgs. 276/2003 (commesse a cooperative sociali): coprono la quota per i lavoratori indicati nella convenzione." },
+  { k:"esonero", l:"Esonero parziale autorizzato (posti)", n:"Art. 5, c. 3: per particolari condizioni di attività, fino al 60% della quota (80% in alcuni settori), con versamento del contributo esonerativo." }
+];
+const diN = v => { const s = String(v==null?"":v).trim().replace(",", "."); if(s==="") return null; const x = parseFloat(s); return isFinite(x) ? x : null; };
+const diF = v => fmtN(v, Math.abs(v % 1) > 0.004 ? 2 : 0);
+/* valori ricavati da TeamSystem: teste ed equivalenti a tempo pieno (part-time in proporzione all'orario) */
+function diAuto(cl, at){
+  const c = CL.list.find(x=>x._id===cl); if(!c || typeof DP==="undefined" || !DP.loaded || !DP.docs[cl]) return null;
+  dpAll(); const L = (DP.byCl.get(cl)||[]).filter(o=>sgIn(o, at));
+  const fte = arr => arr.reduce((s,o)=>s + sgPtv(o)/100, 0), pick = (arr, k) => ({ k, n:arr.length, fte:fte(arr), list:arr });
+  const app = L.filter(o=>o.app), rest = L.filter(o=>!o.app), dir = rest.filter(o=>o.d.qi==="3"), r2 = rest.filter(o=>o.d.qi!=="3");
+  const brevi = r2.filter(o=>sgBreve(o.d)), sost = r2.filter(o=>!sgBreve(o.d) && o.d.t==="A");
+  return { c, tot:pick(L,"tot"), app:pick(app,"app"), dir:pick(dir,"dir"), brevi:pick(brevi,"brevi"), sost:pick(sost,"sost"), pt:L.filter(o=>sgPtv(o)<100).length,
+    dis:{ k:"dis", n:Math.max(0, parseInt(c.disabili,10)||0) }, cp:{ k:"cp", n:Math.max(0, parseInt(c.l68_cp,10)||0) } };
+}
+/* il calcolo: tutti i valori sono in equivalenti a tempo pieno */
+function diRun(){
+  const at = DI.at || isoD(today), A = DI.cl ? diAuto(DI.cl, at) : null, v = DI.v, o = DI.opt;
+  const val = k => { const m = diN(v[k]); if(m!=null) return { x:m, man:true }; if(!A) return { x:0, man:false }; const a = A[k]; return { x: a ? (a.fte!=null ? a.fte : a.n) : 0, man:false }; };
+  const tot = val("tot");
+  const E = DI_ESC.map(e=>({ ...e, ...val(e.k), on: e.k==="app" ? o.app!==false : true }));
+  const esc = E.filter(e=>e.on).reduce((s,e)=>s + e.x, 0), corr = diN(v.corr) || 0;
+  const raw = Math.max(0, tot.x - esc + corr), base = sgRound(raw);
+  const q = sgQuota(base), q18 = sgQuota18(base);
+  const g = k => E.find(e=>e.k===k).x, cov = Math.round(g("dis") + g("inab")), C = Object.fromEntries(DI_COV.map(e=>[e.k, diN(v[e.k]) || 0]));
+  const add60 = diN(v.add60) || 0, es60 = add60 > 0 && base > 0 ? Math.min(q, sgRound(q * Math.min(add60, base) / base)) : 0;
+  let esPosti = Math.min(Math.max(0, q - cov - C.somm - C.conv), Math.round(C.esonero) + es60);
+  const copTot = cov + C.somm + C.conv;
+  let scop = Math.max(0, q - copTot - esPosti), sospPosti = 0;
+  if(o.sosp==="cigs"){ const pct = Math.min(100, Math.max(0, diN(o.sospPct) || 0)); sospPosti = Math.min(scop, sgRound(q * pct / 100)); }
+  if(o.sosp==="licenz") sospPosti = scop;
+  const scopEff = scop - sospPosti, scop18 = Math.max(0, q18 - Math.round(g("cp")));
+  const y = +at.slice(0,4); let gl = 0; for(let d = new Date(y,0,1); d.getFullYear()===y; d = addDays(d,1)){ const w = d.getDay(); if(w && w!==6 && !feste(y).has(isoD(d))) gl++; }
+  const [, ce, ceNorm] = diContr(at), sanz = ce * 5;
+  let next = null; for(let k=1; k<=400; k++){ if(sgQuota(base + k) > q){ next = { k, q:sgQuota(base + k) }; break; } }
+  let next18 = null; for(let k=1; k<=400; k++){ if(sgQuota18(base + k) > q18){ next18 = { k, q:sgQuota18(base + k) }; break; } }
+  const scad = v.obbDal && parseD(v.obbDal) ? addDays(parseD(v.obbDal), 60) : null;
+  return { at, A, tot, E, esc, corr, raw, base, q, q18, cov, C, add60, es60, esPosti, copTot, scop, sospPosti, scopEff, scop18, gl, ce, ceNorm, sanz, next, next18, scad, partito:!!o.partito };
+}
+function renderDI(){
+  const root = $("#viewDisabili");
+  if(!root.dataset.built){
+    root.dataset.built = "1";
+    root.innerHTML = `<div class="toolbar"><div style="flex:1;min-width:240px"><h2 style="margin:0 0 2px;font-size:20px">Collocamento obbligatorio: disabili e categorie protette</h2>
+        <p class="sc-sub" style="margin:0">Quanti lavoratori disabili (art. 3) e appartenenti alle categorie protette (art. 18) servono per essere in regola con la L. 68/1999, con tutte le esclusioni dalla base di computo.</p></div>
+        <button class="btn" type="button" id="diSave" hidden>Salva nella scheda del cliente</button></div>
+      <div class="ct-bar di-bar"><div class="az"><label for="diCl">Cliente</label><select id="diCl"></select></div><div><label for="diAt">Situazione al</label><input id="diAt" type="date"></div><button class="btn ghost" type="button" id="diReset">Azzera le modifiche</button></div>
+      <div class="di-lay" data-noact1><div id="diForm"></div><aside class="di-out" id="diOut" aria-live="polite"></aside></div>
+      <details class="di-norm"><summary>La normativa in breve</summary><div>
+        <ul>
+          <li><b>Quote (art. 3 L. 68/1999).</b> Da 15 a 35 dipendenti computabili: 1 lavoratore disabile; da 36 a 50: 2; oltre 50: il 7%. Dal 1° gennaio 2018 l'obbligo per le aziende da 15 a 35 dipendenti scatta subito, senza attendere una nuova assunzione (D.Lgs. 151/2015).</li>
+          <li><b>Categorie protette (art. 18, c. 2).</b> Oltre 50 dipendenti: 1 lavoratore fino a 150 dipendenti, poi l'1%.</li>
+          <li><b>Base di computo (art. 4).</b> Tutti i lavoratori subordinati, esclusi: disabili e categorie protette già occupati, contratti a termine fino a 6 mesi, soci di cooperative di produzione e lavoro, dirigenti, somministrati (contano per l'agenzia), lavoratori all'estero, LSU, lavoratori a domicilio ed emersione. Gli apprendisti sono esclusi dall'art. 47 del D.Lgs. 81/2015. Part-time e intermittenti contano in proporzione all'orario (gli intermittenti per le ore del semestre); le frazioni superiori a 0,50 valgono un'unità.</li>
+          <li><b>Esclusioni di settore (art. 5, c. 2).</b> Personale di cantiere e addetti al trasporto in edilizia; personale viaggiante e navigante nei trasporti; personale degli impianti a fune.</li>
+          <li><b>Coperture.</b> Disabili assunti tramite collocamento o già disabili con riduzione ≥ 60% (≥ 45% psichica o intellettiva); lavoratori divenuti inabili ≥ 60%; somministrati disabili con missione di almeno 12 mesi; convenzioni (artt. 11 e 12-bis L. 68/1999, art. 14 D.Lgs. 276/2003).</li>
+          <li><b>Esoneri.</b> Esonero parziale autorizzato (art. 5, c. 3) o autocertificato per gli addetti a lavorazioni con tasso INAIL pari o superiore al 60 per mille (art. 5, c. 3-bis), con contributo esonerativo di 39,21 € per giorno lavorativo e lavoratore non occupato, 44,32 € dal 1° gennaio 2027 (DM 100/2026).</li>
+          <li><b>Sospensione (art. 3, c. 5).</b> Durante CIGS, contratti di solidarietà e fondi di solidarietà, in proporzione all'attività sospesa e solo per l'ambito provinciale interessato; durante la procedura di licenziamento collettivo, a livello nazionale. La cassa integrazione ordinaria non sospende gli obblighi.</li>
+          <li><b>Tempi e sanzioni.</b> Assunzione o richiesta di avviamento entro 60 giorni dall'insorgere dell'obbligo. Per ogni giorno lavorativo di scopertura la sanzione è pari a 5 volte il contributo esonerativo per ogni lavoratore non occupato (196,05 €, 221,60 € dal 2027). Prospetto informativo entro il 31 gennaio, se la situazione al 31 dicembre è cambiata rispetto all'ultimo invio.</li>
+          <li><b>Partiti, sindacati e organizzazioni sociali (art. 3, c. 3).</b> Si conta solo il personale tecnico-esecutivo e amministrativo e l'obbligo sorge solo con una nuova assunzione.</li>
+        </ul>
+        <p class="sc-sub">Aggiornato a ottobre 2026. Restano da verificare caso per caso con il servizio di collocamento mirato: computo degli apprendisti (orientamento non uniforme), esclusioni di settore e durata della sospensione dopo un licenziamento collettivo.</p></div></details>`;
+    $("#diCl").addEventListener("change", e=>{ DI.cl = e.target.value; diLoad(); try{ localStorage.setItem("bussola.di", JSON.stringify({cl:DI.cl})); }catch(x){} renderDI(); });
+    $("#diAt").addEventListener("change", e=>{ DI.at = e.target.value || isoD(today); renderDI(); });
+    $("#diReset").addEventListener("click", ()=>{ DI.v = {}; DI.opt = {}; renderDI(); });
+    $("#diSave").addEventListener("click", e=>diSave(e.currentTarget));
+    const onEdit = e => { const t = e.target; if(t.dataset.div!==undefined){ DI.v[t.dataset.div] = t.value; diOut(); } else if(t.dataset.dio!==undefined){ DI.opt[t.dataset.dio] = t.type==="checkbox" ? t.checked : t.value; if(t.tagName==="SELECT" || t.type==="checkbox") diForm(); diOut(); } };
+    root.addEventListener("input", onEdit); root.addEventListener("change", e=>{ if(e.target.type==="checkbox" || e.target.tagName==="SELECT") onEdit(e); });
+    root.addEventListener("click", e=>{ const t = e.target.closest("[data-dicl]"); if(t) kshOpen(t.dataset.dicl); });
+  }
+  if(!DI.at) DI.at = isoD(today);
+  if(typeof DP!=="undefined" && !DP.unsub) subscribeDP();
+  const cls = opL(CL.list, "_id").sort((a,b)=>a.azienda.localeCompare(b.azienda));
+  if(DI.cl && !cls.some(c=>c._id===DI.cl)) DI.cl = "";
+  if(DI.cl && !DI.loaded) diLoad();
+  $("#diCl").innerHTML = `<option value="">Calcolo libero (senza cliente)</option>` + cls.map(c=>`<option value="${esc(c._id)}" ${c._id===DI.cl?"selected":""}>${esc(c.azienda)}${c.n!=null?` · n. ${c.n}`:""}${typeof DP!=="undefined" && DP.docs[c._id]?"":" (senza dati TeamSystem)"}</option>`).join("");
+  $("#diAt").value = DI.at;
+  $("#diSave").hidden = !DI.cl || !state.canWrite;
+  if(DI.cl && (typeof DP==="undefined" || !DP.loaded)){ $("#diForm").innerHTML = `<div class="empty"><h3>Caricamento dei dipendenti…</h3></div>`; $("#diOut").innerHTML = ""; clearTimeout(DI.t); DI.t = setTimeout(()=>{ if(view==="disabili") renderDI(); }, 800); return; }
+  diForm(); diOut();
+}
+/* riprende i dati salvati nella scheda del cliente */
+function diLoad(){
+  DI.loaded = true; const c = CL.list.find(x=>x._id===DI.cl); const s = c && c.l68_calc;
+  DI.v = s && s.v ? {...s.v} : {}; DI.opt = s && s.opt ? {...s.opt} : {};
+}
+function diForm(){
+  const R = diRun(), A = R.A, o = DI.opt;
+  const inp = (k, ph, hint) => `<input class="di-in" inputmode="decimal" data-div="${k}" value="${esc(DI.v[k]??"")}" placeholder="${esc(ph)}" aria-label="${esc(hint)}">`;
+  const autoTxt = k => { if(!A || !A[k]) return ""; const a = A[k]; return a.fte!=null ? `${a.n} ${a.n===1?"persona":"persone"}${Math.abs(a.fte - a.n) > 0.004 ? ` = ${diF(a.fte)} a tempo pieno` : ""}` : `${a.n} in anagrafica`; };
+  const who = k => A && A[k] && A[k].list && A[k].list.length ? `<details class="di-who"><summary>Chi sono</summary><p>${A[k].list.map(x=>`${esc(dpCap(x.nome))}${sgPtv(x)<100?` (${sgPtv(x)}%)`:""}${x.d.fine && x.d.t!=="I"?` fino al ${fmtD(parseD(x.d.fine))}`:""}`).join(" · ")}</p></details>` : "";
+  const row = (e, sub) => `<tr class="${e.k==="app" && o.app===false ? "di-off" : ""}"><td><b>${esc(e.l)}</b>${e.opt?` <label class="di-tg"><input type="checkbox" data-dio="app" ${o.app!==false?"checked":""}> escludi</label>`:""}<span class="sc-sub">${esc(e.n)}</span>${who(e.k)}</td>
+    <td class="num">${e.auto && A ? `<span class="sc-sub">${esc(autoTxt(e.k)) || "—"}</span>` : ""}${inp(e.k, e.auto && A ? diF(A[e.k] ? (A[e.k].fte!=null ? A[e.k].fte : A[e.k].n) : 0) : "0", e.l)}</td></tr>`;
+  $("#diForm").innerHTML = `
+    <section class="di-sec"><h3>1. Organico</h3>
+      <div class="tblwrap"><table class="cl di-tbl"><thead><tr><th>Voce</th><th class="num">Valore (tempo pieno)</th></tr></thead><tbody>
+        <tr><td><b>Dipendenti in forza</b><span class="sc-sub">Tutti i lavoratori subordinati alla data scelta, esclusi tirocinanti, collaboratori e amministratori. Part-time in proporzione all'orario.</span>${who("tot")}</td>
+          <td class="num">${A ? `<span class="sc-sub">${esc(autoTxt("tot"))}${A.pt?`, ${A.pt} part-time`:""}</span>` : ""}${inp("tot", A ? diF(A.tot.fte) : "es. 48", "Dipendenti in forza")}</td></tr>
+      </tbody></table></div>
+      ${A ? `<p class="sc-sub">Valori da TeamSystem${DP.meta && DP.meta.importatoIl ? ` del ${fmtD(parseD(DP.meta.importatoIl.slice(0,10)))}` : ""}: scrivi un numero nella casella per correggerli.</p>` : `<p class="sc-sub">${DI.cl ? "Il cliente non ha l'anagrafica dipendenti di TeamSystem: inserisci i numeri a mano." : "Calcolo libero: inserisci i numeri dell'azienda."}</p>`}
+    </section>
+    <section class="di-sec"><h3>2. Esclusioni dalla base di computo</h3>
+      <div class="tblwrap"><table class="cl di-tbl"><thead><tr><th>Voce</th><th class="num">Valore (tempo pieno)</th></tr></thead><tbody>
+        ${DI_ESC.map(e=>row(e)).join("")}
+        <tr><td><b>Correzione manuale (+ o −)</b><span class="sc-sub">Per esempio gli intermittenti, che contano per le ore lavorate nel semestre, o lavoratori non presenti in TeamSystem.</span></td><td class="num">${inp("corr", "0", "Correzione manuale")}</td></tr>
+      </tbody></table></div>
+      <label class="check di-opt"><input type="checkbox" data-dio="partito" ${o.partito?"checked":""}> Partito, sindacato o organizzazione sociale (art. 3, c. 3)</label>
+    </section>
+    <section class="di-sec"><h3>3. Coperture, esoneri e sospensioni</h3>
+      <div class="tblwrap"><table class="cl di-tbl"><thead><tr><th>Voce</th><th class="num">Posti</th></tr></thead><tbody>
+        ${DI_COV.map(e=>`<tr><td><b>${esc(e.l)}</b><span class="sc-sub">${esc(e.n)}</span></td><td class="num">${inp(e.k, "0", e.l)}</td></tr>`).join("")}
+        <tr><td><b>Addetti a lavorazioni con tasso INAIL pari o superiore al 60 per mille</b><span class="sc-sub">Art. 5, c. 3-bis: esonero autocertificato per la quota relativa a questi addetti, con versamento del contributo esonerativo.</span></td><td class="num">${inp("add60", "0", "Addetti a lavorazioni al 60 per mille")}</td></tr>
+        <tr><td><b>Sospensione degli obblighi</b><span class="sc-sub">Art. 3, c. 5: va chiesta al servizio di collocamento mirato. La cassa integrazione ordinaria non sospende gli obblighi.</span>
+          <select data-dio="sosp" aria-label="Sospensione degli obblighi"><option value="">Nessuna</option><option value="cigs" ${o.sosp==="cigs"?"selected":""}>CIGS, contratto di solidarietà o fondo di solidarietà</option><option value="licenz" ${o.sosp==="licenz"?"selected":""}>Procedura di licenziamento collettivo</option></select></td>
+          <td class="num">${o.sosp==="cigs" ? `<span class="sc-sub">% di attività sospesa</span>${`<input class="di-in" inputmode="decimal" data-dio="sospPct" value="${esc(o.sospPct??"")}" placeholder="es. 40" aria-label="Percentuale di attività sospesa">`}` : ""}</td></tr>
+        <tr><td><b>Data in cui è sorto l'obbligo</b><span class="sc-sub">Per esempio il giorno in cui l'azienda ha superato la soglia: da lì decorrono i 60 giorni per assumere o chiedere l'avviamento.</span></td><td class="num"><input class="di-in di-date" type="date" data-div="obbDal" value="${esc(DI.v.obbDal||"")}" aria-label="Data in cui è sorto l'obbligo"></td></tr>
+      </tbody></table></div>
+    </section>`;
+}
+function diOut(){
+  const R = diRun(), el = $("#diOut"); if(!el) return;
+  const k = (v, l, s, cls) => `<div class="big ${cls||""}"><div class="lbl">${l}</div><div class="val">${v}</div>${s?`<div class="sub">${s}</div>`:""}</div>`;
+  const st = R.base < 15 ? ["ok", "Nessun obbligo"] : R.scopEff > 0 ? ["bad", `${R.scopEff} ${R.scopEff===1?"lavoratore disabile da assumere":"lavoratori disabili da assumere"}`] : R.sospPosti ? ["warn", "Obbligo sospeso"] : ["ok", "Quota disabili coperta"];
+  const steps = [
+    `Dipendenti in forza: <b>${diF(R.tot.x)}</b>`,
+    `Esclusioni: <b>− ${diF(R.esc)}</b>${R.corr?` · correzione ${R.corr>0?"+":"−"} ${diF(Math.abs(R.corr))}`:""}`,
+    `Base di computo: ${diF(R.raw)} → <b>${R.base}</b> (le frazioni oltre 0,50 valgono un'unità)`,
+    `Quota disabili: <b>${R.q}</b>${R.base>50?` (7% di ${R.base} = ${fmtN(R.base*0.07,2)})`:R.base>=36?" (da 36 a 50 dipendenti)":R.base>=15?" (da 15 a 35 dipendenti)":" (sotto i 15 dipendenti)"}`,
+    R.q ? `Coperti: <b>${R.copTot}</b>${R.cov?` (${R.cov} in forza${R.C.somm?`, ${R.C.somm} somministrati`:""}${R.C.conv?`, ${R.C.conv} in convenzione`:""})`:R.C.somm||R.C.conv?` (${[R.C.somm?`${R.C.somm} somministrati`:"", R.C.conv?`${R.C.conv} in convenzione`:""].filter(Boolean).join(", ")})`:""}${R.esPosti?` · esonerati <b>${R.esPosti}</b>`:""}${R.sospPosti?` · sospesi <b>${R.sospPosti}</b>`:""}` : "",
+    `Categorie protette: quota <b>${R.q18}</b>${R.q18?`, in forza ${Math.round(R.E.find(e=>e.k==="cp").x)}`:" (servono più di 50 dipendenti computabili)"}`
+  ].filter(Boolean);
+  const nx = R.next ? `Con <b>${R.next.k}</b> ${R.next.k===1?"dipendente computabile in più":"dipendenti computabili in più"} la quota disabili sale a ${R.next.q}.` : "";
+  const nx18 = R.next18 && R.base > 35 ? ` Con ${R.next18.k} in più la quota delle categorie protette sale a ${R.next18.q}.` : "";
+  const costi = [];
+  if(R.esPosti) costi.push(`Contributo esonerativo: ${fmtE(R.ce)} × ${R.gl} giorni lavorativi × ${R.esPosti} = <b>${fmtE(R.ce * R.gl * R.esPosti)}</b> l'anno (${esc(R.ceNorm)}).`);
+  if(R.scopEff) costi.push(`Dopo i 60 giorni, sanzione di <b>${fmtE(R.sanz)}</b> per ogni giorno lavorativo e lavoratore non assunto (5 volte il contributo esonerativo): <b>${fmtE(R.sanz * R.scopEff)}</b> al giorno, circa ${fmtE(R.sanz * R.scopEff * 21)} al mese.`);
+  if(R.at < "2027-01-01" && (R.esPosti || R.scopEff)) costi.push(`Dal 1° gennaio 2027 il contributo sale a 44,32 € e la sanzione a 221,60 € al giorno (DM 100/2026).`);
+  el.innerHTML = `<div class="di-res ${st[0]}"><span class="sc-st ${st[0]}">${esc(st[1])}</span>
+      <div class="cs-kpis di-k">${k(R.base, "Base di computo", `al ${fmtD(parseD(R.at))}`)}${k(R.q, "Disabili richiesti", R.q?`coperti ${R.copTot}${R.esPosti?`, esonerati ${R.esPosti}`:""}`:"sotto i 15 computabili", R.scopEff?"bad":"")}${k(R.scopEff, "Disabili da assumere", R.sospPosti?`${R.sospPosti} sospesi`:R.scop?"":"in regola", R.scopEff?"bad":"ok")}${k(R.scop18, "Categorie protette da assumere", `quota ${R.q18}`, R.scop18?"bad":"ok")}</div>
+      ${R.partito ? `<p class="notice">Partito, sindacato o organizzazione sociale: l'obbligo sorge solo in caso di nuova assunzione e la base comprende solo il personale tecnico-esecutivo e amministrativo (indica gli altri tra le esclusioni).</p>` : ""}
+      ${R.scad ? `<p class="notice ${R.scad < today ? "bad" : ""}">Termine per assumere o chiedere l'avviamento: <b>${fmtD(R.scad)}</b> (${esc(ggTxt(dayDiff(today, R.scad)))}).</p>` : ""}
+      <h4>Come si arriva al risultato</h4><ol class="di-steps">${steps.map(s=>`<li>${s}</li>`).join("")}</ol>
+      ${nx || nx18 ? `<p class="sc-sub">${nx}${nx18}</p>` : ""}
+      ${costi.length ? `<h4>Costi</h4><ul class="di-steps">${costi.map(s=>`<li>${s}</li>`).join("")}</ul>` : ""}
+      ${R.base >= 15 ? `<p class="sc-sub">Prospetto informativo entro il 31 gennaio, se la situazione al 31 dicembre è cambiata rispetto all'ultimo invio.</p>` : ""}
+      ${DI.cl ? `<button class="btn ghost sm" type="button" data-dicl="${esc(DI.cl)}">Scheda cliente</button>` : ""}</div>`;
+}
+async function diSave(btn){
+  const c = CL.list.find(x=>x._id===DI.cl); if(!c || !state.canWrite) return;
+  const R = diRun(), doc = Object.fromEntries(Object.entries(c).filter(([k])=>k!=="_id"));
+  const keep = Object.fromEntries(Object.entries(DI.v).filter(([k,v])=>v!=="" && v!=null));
+  if(diN(keep.dis)!=null) doc.disabili = Math.round(diN(keep.dis));
+  if(diN(keep.cp)!=null){ const n = Math.round(diN(keep.cp)); if(n) doc.l68_cp = n; else delete doc.l68_cp; }
+  doc.l68_calc = { v:keep, opt:{...DI.opt}, base:R.base, q:R.q, q18:R.q18, scop:R.scopEff, salvatoIl:new Date().toISOString(), salvatoDa:state.myId||"" };
+  doc.aggiornatoIl = new Date().toISOString(); doc.aggiornatoDa = state.myId||"";
+  btn.disabled = true;
+  try{ await state.db.collection("clienti").doc(c._id).set(doc); P.toast("Calcolo salvato nella scheda del cliente: lo usano anche Controlli e Soglie"); }
+  catch(e){ P.toast(P.errMsg(e)); } finally{ btn.disabled = false; }
+}
+function diOpen(cl){ DI.cl = cl || ""; DI.loaded = false; if(DI.cl) diLoad(); setView("disabili"); }
+
 let startView = "oggi";
 try{ const v = localStorage.getItem("prontuario.view"); if(v && localStorage.getItem("bussola.oggiVisto")) startView = v; localStorage.setItem("bussola.oggiVisto","1"); }catch(e){}
 const h = (location.hash||"").replace("#","");
-if(["oggi","prontuario","clienti","calcolatori","costo","scadenziario","termine","apprendisti","durc","agevolazioni","lettere","controlli","mesepaghe","disciplinari","assunzioni","tirocini","ratei","dati","dipendenti","contatori","sicurezza","simulatore","storico","personale","minimi","classifiche"].includes(h)) startView = h;
+if(["oggi","prontuario","clienti","calcolatori","costo","scadenziario","termine","apprendisti","durc","agevolazioni","lettere","controlli","mesepaghe","disciplinari","assunzioni","tirocini","ratei","dati","dipendenti","contatori","sicurezza","simulatore","storico","personale","minimi","classifiche","disabili"].includes(h)) startView = h;
 setView(startView);
 })();
 </script>
