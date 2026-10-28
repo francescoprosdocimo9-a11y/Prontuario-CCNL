@@ -181,6 +181,11 @@ table.cl .num{text-align:right}
 .ccpill.none{border-style:dashed}
 .ccraw{display:block;font-size:12px;color:var(--muted);margin-top:3px}
 .rowact{display:flex;gap:4px;flex-wrap:wrap}
+table.cl .act1{width:1%;white-space:nowrap;text-align:left}
+table.cl td.act1 .rowact{flex-wrap:nowrap}
+table.cl td.act1 .btn{margin-left:0}
+table.cl td.act1+td{padding-left:6px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .btn.sm{padding:4px 9px;font-size:12.5px}
 /* Scadenziario */
 .sc-st{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
@@ -719,7 +724,7 @@ table.cl tr[data-clsheet]:hover td{background:var(--accent-soft)}
 .tr-tbl .sc-date .sc-st{display:inline-block;margin-top:6px}
 .tr-tbl .tr-per{min-width:150px}.tr-tbl .tr-dd{white-space:nowrap}
 .tr-tbl .ct-tag{white-space:normal;display:inline-block;margin:0 4px 4px 0;line-height:1.3}
-.tr-tbl td:nth-child(7){min-width:180px;max-width:300px}
+.tr-tbl td:nth-child(8){min-width:180px;max-width:300px}
 .tr-tbl .rowact{flex-direction:column;align-items:stretch;gap:4px}
 @media (max-width:1300px){.og-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:640px){.og-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -9592,8 +9597,31 @@ document.addEventListener("click", e=>{ if(!e.target.closest("#thBtn")) return; 
 /* ================= ELENCHI LUNGHI: «MOSTRA ALTRI» ================= */
 var PG = { mem:{}, v:null, t:0 };
 function pgView(){ return document.getElementById("view" + view.charAt(0).toUpperCase() + view.slice(1)); }
+/* colonna dei pulsanti (proroga, rinnovo, modifica…) spostata in prima posizione in tutte le tabelle */
+const ACT_SKIP = "#clBody,.cs-tbl,.sim-tbl,.modal,.ksh,.pdf-page,[data-noact1]";
+const actW = tr => [...tr.cells].reduce((s,c)=>s + (c.colSpan||1), 0);
+const actHas = td => !!td && !!td.querySelector("button,select,input,a.btn,.rowact");
+function actFirst(root){
+  root.querySelectorAll("table.cl").forEach(t=>{
+    if(t.closest(ACT_SKIP)) return;
+    const hr = t.tHead && t.tHead.rows[0]; if(!hr || !hr.cells.length) return;
+    if(t.dataset.act1===undefined){
+      const lh = hr.cells[hr.cells.length-1];
+      t.dataset.act1 = !hr.dataset.a1 && /^(azioni)?$/i.test(lh.textContent.trim()) && [...t.tBodies].some(b=>[...b.rows].some(r=>r.cells.length>1 && actHas(r.cells[r.cells.length-1]))) ? "1" : "0";
+    }
+    if(t.dataset.act1!=="1") return;
+    const W = actW(hr);
+    [hr, ...[...t.tBodies].flatMap(b=>[...b.rows]), ...(t.tFoot ? [...t.tFoot.rows] : [])].forEach(tr=>{
+      if(tr.dataset.a1 || tr.cells.length < 2 || actW(tr)!==W) return;
+      const last = tr.cells[tr.cells.length-1]; if(last.colSpan > 1) return;
+      tr.dataset.a1 = "1"; last.classList.add("act1"); tr.insertBefore(last, tr.cells[0]);
+      if(tr===hr && !last.textContent.trim()){ last.innerHTML = `<span class="sr-only">Azioni</span>`; }
+    });
+  });
+}
 function pgScan(){
   const root = pgView(); if(!root) return;
+  try{ actFirst(root); }catch(e){ console.error(e); }
   const mob = window.matchMedia("(max-width:640px)").matches;
   root.querySelectorAll("table.cl > tbody").forEach((tb,i)=>pgApply(tb, "t"+i, 50, 60));
   root.querySelectorAll("ul.og-list").forEach((ul,i)=>pgApply(ul, "o"+i, mob?10:20, mob?12:25));
