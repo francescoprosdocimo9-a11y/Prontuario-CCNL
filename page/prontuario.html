@@ -6680,7 +6680,9 @@ function renderMP(){
         if(!rows.length){ P.toast("Nessun cliente da segnare"); return; }
         if(t.dataset.armed!=="1"){ t.dataset.armed="1"; t.textContent=`Conferma ${rows.length}`; setTimeout(()=>{ if(document.contains(t)){ t.dataset.armed=""; t.textContent="Tutti"; } }, 4000); return; }
         t.disabled = true; const now = new Date().toISOString();
-        try{ for(const r of rows){ await mpSave(MP.ym, r.c, {s:{...((r.d&&r.d.s)||{}), [k]:now}}); } P.toast(`${MP_STEPS.find(s=>s.k===k).l}: ${rows.length} clienti segnati`); }catch(err){ P.toast(P.errMsg(err)); } return; }
+        let n = 0; const ko = [];
+        for(const r of rows){ const d = mpDoc(MP.ym, r.c._id); const res = await dbRetry(()=>mpSave(MP.ym, r.c, {s:{...((d&&d.s)||{}), [k]:now}})); if(res.ok) n++; else ko.push(r.c.azienda); await new Promise(z=>setTimeout(z, 200)); }
+        P.toast(`${MP_STEPS.find(s=>s.k===k).l}: ${n} clienti segnati${ko.length?`; non salvati ${ko.length} (${ko.slice(0,3).join(", ")}${ko.length>3?"…":""}): riprova`:""}`); return; }
       if(t.dataset.mpnote){ openMPNote(CL.list.find(x=>x._id===t.dataset.mpnote)); return; }
       if(t.dataset.mpesc){ const c = CL.list.find(x=>x._id===t.dataset.mpesc); const d = mpDoc(MP.ym, c._id); try{ await mpSave(MP.ym, c, {escluso: !(d && d.escluso)}); P.toast(d && d.escluso ? "Cliente incluso nel mese" : "Cliente escluso da questo mese"); }catch(err){ P.toast(P.errMsg(err)); } return; }
       if(t.dataset.mpadd!==undefined){ openMPAdd(); return; }
@@ -7544,10 +7546,21 @@ function renderTR(){
       const todo = (TR.shown||[]).filter(x=>x.I.presDue && trPresOk((x.t.presenze||{})[ym])!==on);
       if(!todo.length){ P.toast(on ? "Presenze già tutte segnate" : "Nessuna spunta da togliere"); return; }
       b.closest(".tr-presall").querySelectorAll("button").forEach(x=>x.disabled = true);
-      let n = 0;
-      try{ for(const {t} of todo){ const pres = {...(t.presenze||{})}; if(on) pres[ym] = "OK"; else delete pres[ym]; await trSave(t._id, {...trClean(t), presenze:pres}, "", true); n++; }
-        P.toast(on ? `Presenze segnate per ${n} ${n===1?"tirocinio":"tirocini"}` : `Spunta tolta a ${n} ${n===1?"tirocinio":"tirocini"}`); }
-      catch(err){ P.toast(`Aggiornati ${n} tirocini, poi errore: ${P.errMsg(err)}`); }
+      /* spunta subito le caselle, poi salva uno per uno: un errore su un tirocinio non ferma gli altri */
+      const ids = new Set(todo.map(x=>x.t._id));
+      document.querySelectorAll("#viewTirocini [data-trpres]").forEach(c=>{ if(ids.has(c.dataset.trpres)) c.checked = on; });
+      let n = 0; const ko = [];
+      for(const {t} of todo){
+        const cur = TR.list.find(z=>z._id===t._id) || t, pres = {...(cur.presenze||{})};
+        if(on) pres[ym] = "OK"; else delete pres[ym];
+        const res = await dbRetry(()=>trSave(cur._id, {...trClean(cur), presenze:pres}, "", true));
+        if(res.ok) n++; else ko.push(`${cur.tirocinante||cur._id} (${P.errMsg(res.err)})`);
+        await new Promise(r=>setTimeout(r, 250));
+      }
+      if(ko.length){ document.querySelectorAll("#viewTirocini [data-trpres]").forEach(c=>{ const x = TR.list.find(z=>z._id===c.dataset.trpres); if(x) c.checked = trPresOk((x.presenze||{})[ym]); });
+        P.toast(`${on?"Segnate":"Tolte"} ${n} presenze; non salvate ${ko.length}: ${ko.slice(0,3).join(", ")}${ko.length>3?"…":""}. Riprova per quelle.`); }
+      else P.toast(on ? `Presenze segnate per ${n} ${n===1?"tirocinio":"tirocini"}` : `Spunta tolta a ${n} ${n===1?"tirocinio":"tirocini"}`);
+      if(view==="tirocini") renderTR();
     });
     root.addEventListener("change", e=>{
       const t = e.target.closest("[data-trpres]"); if(!t) return;
@@ -7611,6 +7624,15 @@ function renderTR(){
         <td>${I.avv.map(a=>`<span class="ct-tag ${/proroghe|mesi|sotto|Terminato/.test(a)?"bad":"warn"}">${esc(a)}</span>`).join("")}${I.ver.map(v=>`<span class="ct-tag warn" title="Differenza tra i due prospetti Excel">Da verificare: ${esc(v)}</span>`).join("")}${t.note?`<span class="ccraw">${esc(t.note)}</span>`:""}${t.azioni?`<span class="ccraw">${esc(t.azioni)}</span>`:""}</td>
         <td><div class="rowact">${state.canWrite&&!I.chiuso?`${I.puoProrogare?`<button class="btn sm" type="button" data-trpr="${esc(t._id)}">Proroga</button>`:""}<button class="btn sm" type="button" data-tres="${esc(t._id)}">Esito</button>`:""}<button class="btn ghost sm" type="button" data-tred="${esc(t._id)}">${state.canWrite?"Modifica":"Dettagli"}</button></div></td></tr>`;
     }).join("")}</tbody></table></div>`;
+}
+/* scrittura con nuovi tentativi: le scritture in serie possono superare il limite di chiamate del database (resource_exhausted) o incontrare un errore temporaneo */
+async function dbRetry(fn, tries){
+  tries = tries || 4; let err = null;
+  for(let k=0; k<tries; k++){
+    try{ await fn(); return { ok:true }; }
+    catch(e){ err = e; const c = e && e.code; if(c==="invalid_argument" || c==="quota_exceeded" || c==="revoked") break; await new Promise(r=>setTimeout(r, 900 * (k+1) * (k+1) + Math.random()*300)); }
+  }
+  return { ok:false, err };
 }
 function trClean(t){ return Object.fromEntries(Object.entries(t).filter(([k])=>k!=="_id")); }
 async function trSave(id, doc, msg, keepModal){
