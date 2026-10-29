@@ -957,7 +957,7 @@ table.cl tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offs
 .cl-cols>summary::-webkit-details-marker{display:none}
 .cl-cols-pop{position:absolute;right:0;top:calc(100% + 6px);z-index:30;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lift);padding:10px 12px;display:flex;flex-direction:column;gap:6px;min-width:220px}
 .cl-cols-pop p{margin:0 0 2px;font-size:12px;color:var(--muted)}
-#clBody.hc3 table.cl tr>*:nth-child(3),#clBody.hc4 table.cl tr>*:nth-child(4),#clBody.hc5 table.cl tr>*:nth-child(5),#clBody.hc6 table.cl tr>*:nth-child(6),#clBody.hc7 table.cl tr>*:nth-child(7),#clBody.hc8 table.cl tr>*:nth-child(8),#clBody.hc9 table.cl tr>*:nth-child(9),#clBody.hc10 table.cl tr>*:nth-child(10){display:none}
+#clBody.hc3 table.cl tr>*:nth-child(3),#clBody.hc4 table.cl tr>*:nth-child(4),#clBody.hc5 table.cl tr>*:nth-child(5),#clBody.hc6 table.cl tr>*:nth-child(6),#clBody.hc7 table.cl tr>*:nth-child(7),#clBody.hc8 table.cl tr>*:nth-child(8),#clBody.hc9 table.cl tr>*:nth-child(9),#clBody.hc10 table.cl tr>*:nth-child(10),#clBody.hc11 table.cl tr>*:nth-child(11){display:none}
 #clBody table.cl tr>:nth-child(1){position:sticky;left:0;z-index:1;width:52px;min-width:52px;max-width:52px;background:var(--surface)}
 #clBody table.cl tr>:nth-child(2){position:sticky;left:52px;z-index:1;background:var(--surface);box-shadow:1px 0 0 var(--line)}
 #clBody table.cl tbody tr:nth-child(even)>:nth-child(-n+2){background:color-mix(in srgb,var(--surface-2) 60%,var(--surface))}
@@ -1845,6 +1845,7 @@ const CL_AD = [
   {k:"forfettario", l:"Forfettario", s:"Forfettario"}, {k:"ivs_lr", l:"IVS L.R.", s:"IVS L.R."}, {k:"inail_lr", l:"Iscrizione INAIL L.R.", s:"INAIL L.R."}
 ];
 const CL_AD_MAIN = ["dlgs81","visite_mediche","rls","federdat","sisma"];
+const CL_AD_TAG_SKIP = ["federdat","forfettario"]; /* federdat ha una colonna propria nell'anagrafica */
 function clAdCat(v){ v = String(v||"").trim().toUpperCase(); if(!v) return "vuoto"; if(/^(SI|OK)\b/.test(v)) return /NON ABBIAMO|NON PI[UÙ]|\/\s*NO\b/.test(v) ? "altro" : "si"; if(/^NO\b/.test(v)) return /PASSATO|CONTATTO/.test(v) ? "altro" : "no"; return "altro"; }
 function clAdTone(f, v){ const c = clAdCat(v); if(c==="vuoto") return "none"; if(c==="si") return "ok"; if(c==="no"){ const d = CL_AD.find(x=>x.k===f); return d && d.neg ? "bad" : "none"; } return /NON CHIAMARE/i.test(v) ? "none" : "warn"; }
 const CL_AD_CAT = { si:"Sì", no:"No", altro:"Da aggiornare / in corso", vuoto:"Non indicato" };
@@ -1921,20 +1922,20 @@ function renderClienti(){
   if(!list.length){ body.innerHTML = `<div class="empty"><h3>Nessun cliente in elenco</h3><p>Qui compariranno i clienti dello studio con il CCNL applicato.${state.canWrite?" Aggiungi il primo con «Nuovo cliente».":""}</p></div>`; return; }
   if(!rows.length){ body.innerHTML = `<div class="empty"><h3>Nessun cliente trovato</h3><p>Prova un'altra parola o togli il filtro.</p></div>`; return; }
   body.innerHTML = `<div class="tblwrap"><table class="cl"><thead><tr>
-      <th>N.</th><th>Azienda</th><th>CCNL</th><th>Settore</th><th class="num">T.I.</th><th class="num">T.D.</th><th>Ente bilaterale</th><th>Sanità integr.</th><th>Sicurezza e servizi</th><th>Altro</th><th></th></tr></thead><tbody>
+      <th>N.</th><th>Azienda</th><th>CCNL</th><th>Settore</th><th class="num">T.I.</th><th class="num">T.D.</th><th>Ente bilaterale</th><th>Federdat</th><th>Sanità integr.</th><th>Sicurezza e servizi</th><th>Altro</th><th></th></tr></thead><tbody>
     ${rows.map(c=>{
       const pill = c.ccnl ? `<span class="ccpill" style="--cc:${P.ccColor(c.ccnl)}">${esc(P.ccName(c.ccnl))}${c.abbinamento==="da confermare"?" ?":""}</span>` : `<span class="ccpill none">Non nel prontuario</span>`;
       const altro = [c.accordo_ii==="SI"?"Accordo II livello":"", c.forfettario&&clAdCat(c.forfettario)==="si"?"Forfettario":"", c.buoni_pasto==="SI"?"Buoni pasto":"", c.tfr_inps==="SI"?"TFR Fondo Tesoreria":"", c.disabili?`Disabili: ${c.disabili}`:"", c.note?esc(c.note):""].filter(Boolean).join(" · ");
       return `<tr data-clsheet="${esc(c._id)}"><td class="num">${c.n??""}</td><td class="az">${esc(c.azienda)}${typeof durcBadge==="function"?durcBadge(c._id):""}</td>
         <td>${pill}<span class="ccraw">${esc(c.ccnl_testo||"—")}</span></td><td>${esc(c.settore||"")}</td>
         <td class="num">${c.ti||""}</td><td class="num">${c.td||""}${c.td_note?`<span class="ccraw">${esc(c.td_note)}</span>`:""}</td>
-        <td>${esc(c.ente_bilaterale||"")}</td><td>${esc(c.sanita||"")}</td><td class="cl-ad">${clAdTags(c)}</td><td>${altro}</td>
+        <td>${esc(c.ente_bilaterale||"")}</td><td>${esc(c.federdat||"")}</td><td>${esc(c.sanita||"")}</td><td class="cl-ad">${clAdTags(c)}</td><td>${altro}</td>
         <td class="cl-go"><button class="btn ghost sm" type="button" data-clsheet="${esc(c._id)}" aria-label="Apri la scheda di ${esc(c.azienda)}" title="Apri la scheda"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></td></tr>`;
     }).join("")}</tbody></table></div>`;
 }
 function clAdTags(c){
-  const main = CL_AD_MAIN.map(k=>{ const d = CL_AD.find(x=>x.k===k), v = c[k]; if(!v) return ""; const t = clAdTone(k, v); if(k==="sisma" && t==="none") return ""; const cat = clAdCat(v); return `<span class="ct-tag ${t}" title="${esc(d.l)}: ${esc(v)}">${esc(d.s)}${cat==="no"?" no":t==="warn"?" ?":""}</span>`; }).join("");
-  const extra = CL_AD.filter(d=>!CL_AD_MAIN.includes(d.k) && d.k!=="forfettario" && c[d.k] && clAdCat(c[d.k])!=="no").map(d=>`<span class="ct-tag ${clAdTone(d.k,c[d.k])}" title="${esc(d.l)}: ${esc(c[d.k])}">${esc(d.s)}</span>`).join("");
+  const main = CL_AD_MAIN.filter(k=>!CL_AD_TAG_SKIP.includes(k)).map(k=>{ const d = CL_AD.find(x=>x.k===k), v = c[k]; if(!v) return ""; const t = clAdTone(k, v); if(k==="sisma" && t==="none") return ""; const cat = clAdCat(v); return `<span class="ct-tag ${t}" title="${esc(d.l)}: ${esc(v)}">${esc(d.s)}${cat==="no"?" no":t==="warn"?" ?":""}</span>`; }).join("");
+  const extra = CL_AD.filter(d=>!CL_AD_MAIN.includes(d.k) && !CL_AD_TAG_SKIP.includes(d.k) && c[d.k] && clAdCat(c[d.k])!=="no").map(d=>`<span class="ct-tag ${clAdTone(d.k,c[d.k])}" title="${esc(d.l)}: ${esc(c[d.k])}">${esc(d.s)}</span>`).join("");
   return main + extra;
 }
 function openClientEditor(c){
@@ -9489,7 +9490,7 @@ function sicClienti(body, all){
   SIC.shown = rows;
   $("#sicKpi").innerHTML = `<span><b>${rows.length}</b> clienti mostrati</span><span><b>${fmtN(rows.reduce((s,x)=>s+x.n,0))}</b> lavoratori</span>`;
   if(!rows.length){ $("#sicTbl").innerHTML = `<div class="empty"><h3>Nessun cliente con questi filtri</h3><p>Cambia filtro o usa «Azzera filtri».</p></div>`; return; }
-  $("#sicTbl").innerHTML = `<div class="tblwrap"><table class="cl sic-tbl"><thead><tr><th>Cliente</th><th class="num">Dip.</th><th>Indice</th><th>DVR 81/08</th><th>Visite</th><th>RLS</th><th>Telecamere</th><th>Sisma</th><th></th></tr></thead><tbody>
+  $("#sicTbl").innerHTML = `<div class="tblwrap"><table class="cl sic-tbl"><thead><tr><th>Cliente</th><th class="num">Dip.</th><th>Indice</th><th>DVR 81/08</th><th>Visite</th><th>RLS</th><th>Telecamere</th><th>Enti di formazione/sicurezza</th><th></th></tr></thead><tbody>
     ${rows.map(x=>{ const c = x.c, sis = SIS_ST[x.sis];
       return `<tr data-sicd="${esc(c._id)}" title="Apri il dettaglio"><td class="az">${esc(c.azienda)}<span class="sc-sub">${c.n!=null?`n. ${esc(String(c.n))}`:""}${c.operatore?` · ${esc(c.operatore)}`:""}</span></td>
         <td class="num">${x.n||"—"}</td>
@@ -9588,7 +9589,7 @@ async function sicExcel(btn){
   try{
     const ExcelJS = await xlLoad(), wb = new ExcelJS.Workbook(); wb.creator = "Bussola Lavoro";
     const ws = wb.addWorksheet("Sicurezza", {views:[{state:"frozen", ySplit:3, xSplit:2}], pageSetup:{paperSize:9, orientation:"landscape", fitToPage:true, fitToWidth:1, fitToHeight:0}});
-    const cols = [["N.",6],["Azienda",34],["Operatore",14],["Dipendenti",10],["Indice",9],["Stato",16],["D.Lgs. 81/08",18],["Visite mediche",18],["RLS",34],["Telecamere",22],["Sisma",20],["Nota Sisma",30],["Da sistemare",60]];
+    const cols = [["N.",6],["Azienda",34],["Operatore",14],["Dipendenti",10],["Indice",9],["Stato",16],["D.Lgs. 81/08",18],["Visite mediche",18],["RLS",34],["Telecamere",22],["Enti di formazione/sicurezza",26],["Nota enti formazione/sicurezza",34],["Da sistemare",60]];
     ws.columns = cols.map(([,w])=>({width:w}));
     ws.mergeCells(1,1,1,cols.length); const t = ws.getCell(1,1); t.value = `Sicurezza sul lavoro dei clienti · ${fmtD(today)}`; t.font = {bold:true, size:15, color:{argb:"FFFFFFFF"}}; t.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FF8B1A14"}}; ws.getRow(1).height = 24;
     const hr = ws.getRow(3); cols.forEach(([h],i)=>{ const c = hr.getCell(i+1); c.value = h; c.font = {bold:true}; c.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FFE9EDF1"}}; c.border = {bottom:{style:"medium", color:{argb:"FF8B1A14"}}}; });
@@ -9732,16 +9733,16 @@ document.addEventListener("keydown", e=>{
 });
 
 /* ================= ANAGRAFICA: COLONNE VISIBILI ================= */
-const CL_COLS = [[3,"CCNL"],[4,"Settore"],[5,"T.I."],[6,"T.D."],[7,"Ente bilaterale"],[8,"Sanità integrativa"],[9,"Sicurezza e servizi"],[10,"Altro"]];
-let CL_HIDE = [4,10];
-try{ const s = JSON.parse(localStorage.getItem("bussola.clcols")||"null"); if(Array.isArray(s)) CL_HIDE = s; }catch(e){}
+const CL_COLS = [[3,"CCNL"],[4,"Settore"],[5,"T.I."],[6,"T.D."],[7,"Ente bilaterale"],[8,"Federdat"],[9,"Sanità integrativa"],[10,"Sicurezza e servizi"],[11,"Altro"]];
+let CL_HIDE = [4,11];
+try{ const s = JSON.parse(localStorage.getItem("bussola.clcols2")||"null"); if(Array.isArray(s)) CL_HIDE = s; else { const o = JSON.parse(localStorage.getItem("bussola.clcols")||"null"); if(Array.isArray(o)) CL_HIDE = o.map(i=>i>=8?i+1:i); } }catch(e){}
 function clColsUi(){
   const tb = document.querySelector("#viewClienti .toolbar"); if(!tb) return;
   if(!tb.querySelector(".cl-cols")){
     const d = document.createElement("details"); d.className = "cl-cols";
     d.innerHTML = `<summary class="btn" aria-label="Scegli le colonne della tabella">Colonne</summary><div class="cl-cols-pop" role="group" aria-label="Colonne visibili"><p>Colonne da mostrare</p>${CL_COLS.map(([i,l])=>`<label class="check"><input type="checkbox" data-clcol="${i}"> ${esc(l)}</label>`).join("")}</div>`;
     tb.insertBefore(d, tb.querySelector("#clImp"));
-    d.addEventListener("change", e=>{ const t = e.target.closest("[data-clcol]"); if(!t) return; const i = +t.dataset.clcol; CL_HIDE = t.checked ? CL_HIDE.filter(x=>x!==i) : [...new Set([...CL_HIDE, i])]; try{ localStorage.setItem("bussola.clcols", JSON.stringify(CL_HIDE)); }catch(x){} clColsApply(); });
+    d.addEventListener("change", e=>{ const t = e.target.closest("[data-clcol]"); if(!t) return; const i = +t.dataset.clcol; CL_HIDE = t.checked ? CL_HIDE.filter(x=>x!==i) : [...new Set([...CL_HIDE, i])]; try{ localStorage.setItem("bussola.clcols2", JSON.stringify(CL_HIDE)); }catch(x){} clColsApply(); });
     document.addEventListener("click", e=>{ if(d.open && !d.contains(e.target)) d.open = false; });
   }
   clColsApply();
