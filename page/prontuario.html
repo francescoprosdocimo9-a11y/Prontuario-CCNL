@@ -7949,7 +7949,7 @@ function renderRT(){
   const body = $("#rtBody");
   if(!RT.loaded){ body.innerHTML = `<div class="empty"><h3>Caricamento dei ratei…</h3></div>`; return; }
   if(RT.f==="cessazione"){ body.innerHTML = rtCessHTML(); const c = RT.cess||[]; $("#rtKpi").innerHTML = `<span><b>${c.length}</b> rapporti in chiusura</span><span><b>${c.filter(x=>x.res.some(r=>r.fin>0.004)).length}</b> con residui da far godere o liquidare</span><span><b>${c.filter(x=>x.stretto).length}</b> senza tempo per smaltire le ferie</span><span><b>${c.filter(x=>x.m.st!=="ok").length}</b> da verificare</span>`; return; }
-  if(!Object.keys(RT.docs).length){ body.innerHTML = `<div class="empty"><h3>Nessun dato</h3><p>${state.canWrite?"Usa «Importa file TeamSystem» per caricare l'estrazione della situazione ferie.":"Qui compariranno i residui dei dipendenti."}</p></div>`; return; }
+  if(!Object.keys(RT.docs).length){ body.innerHTML = `<div class="empty"><h3>Nessun dato</h3><p>${state.canWrite?"Usa «Importa file TeamSystem» per caricare i PDF «Prospetto analitico» della situazione ferie.":"Qui compariranno i residui dei dipendenti."}</p></div>`; return; }
   if(!rows.length){ body.innerHTML = `<div class="empty"><h3>Nessun dipendente con questi filtri</h3><p>${RT.f==="segnalare"?"Nessun residuo oltre le soglie per la selezione fatta.":"Cambia filtro o usa «Azzera filtri»."}</p></div>`; return; }
   // raggruppo per azienda: un blocco per cliente da avvisare
   const groups = new Map(); rows.forEach(o=>{ if(!groups.has(o.doc._id)) groups.set(o.doc._id, []); groups.get(o.doc._id).push(o); });
@@ -7983,7 +7983,42 @@ async function rtIgnoraNonAnag(){
     P.toast(`${non.length} aziende escluse dai prossimi import`);
   }catch(e){ P.toast(P.errMsg(e)); }
 }
-/* ---- import del CSV TeamSystem (situazione ferie, SITFER) ---- */
+/* ---- import TeamSystem della situazione ferie: PDF «Prospetto analitico Ferie/Permessi/ROL…» (o il vecchio CSV SITFER) ---- */
+const PJ_SRC = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js", PJ_WK = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+let pjLoading = null;
+function pjLoad(){
+  if(window.pdfjsLib && window.pdfjsWorker) return Promise.resolve(window.pdfjsLib);
+  const ld = src => new Promise((res, rej)=>{ const sc = document.createElement("script"); sc.src = src; sc.onload = res; sc.onerror = ()=>rej(new Error("load")); document.head.appendChild(sc); });
+  // il worker caricato come script gira nella pagina: dentro l'artifact un Worker da un altro dominio non parte
+  if(!pjLoading) pjLoading = (async()=>{ if(!window.pdfjsLib) await ld(PJ_SRC); if(!window.pdfjsWorker) await ld(PJ_WK); window.pdfjsLib.GlobalWorkerOptions.workerSrc = PJ_WK; return window.pdfjsLib; })().catch(e=>{ pjLoading = null; throw e; });
+  return pjLoading;
+}
+async function pdfLines(buf){
+  const lib = await pjLoad(), doc = await lib.getDocument({data:new Uint8Array(buf), isEvalSupported:false}).promise, out = [];
+  for(let i=1; i<=doc.numPages; i++){
+    const tc = await (await doc.getPage(i)).getTextContent();
+    const it = tc.items.filter(x=>x.str && x.str.trim()).map(x=>({s:x.str, x:x.transform[4], y:x.transform[5]})).sort((a,b)=>b.y-a.y || a.x-b.x);
+    let cur = null;
+    it.forEach(x=>{ if(!cur || Math.abs(cur.y - x.y) > 3){ cur = {y:x.y, a:[]}; out.push(cur); } cur.a.push(x); });
+  }
+  return out.map(l=>l.a.sort((a,b)=>a.x-b.x).map(x=>x.s).join(" ").replace(/\s+/g," ").trim());
+}
+function rtPdfRows(lines){
+  const N = "(-?[\\d.]*\\d,\\d+-?)", re = new RegExp(`^(?:(\\d+)\\s+(.+?)\\s+)?(ferie|permessi|rol|ex\\s*festivit[aà]\\s*'?|flessibilit[aà]\\s*'?|banca\\s*ore)\\s+${N}\\s+${N}\\s+${N}\\s+${N}\\s+${N}$`, "i");
+  const rows = [["Azienda","Ragione sociale","Filiale","Descr.filiale","Matricola","Cognome e nome","Rateo","Arretrato","Maturato","Goduto","Residuo ore","Residuo giorni"]];
+  let az = "", rs = "", mat = "", nome = "", data = null;
+  const sgn = v => /-$/.test(v) ? "-" + v.slice(0,-1) : v;
+  lines.forEach(l=>{
+    let m = l.match(/^(\d{2}\/\d{2}\/\d{4})\s+Prospetto analitico/i); if(m){ data = data || m[1]; return; }
+    m = l.match(/^Azienda\s+(\d+)\s+(.+)$/i); if(m){ if(m[1]!==az){ mat = ""; nome = ""; } az = m[1]; rs = m[2].trim(); return; }
+    m = l.match(re); if(!m || !az) return;
+    if(m[1]){ mat = m[1]; nome = m[2].trim(); } if(!mat) return;
+    const t = m[3].toLowerCase().replace(/\s+/g," ").replace(/à/g,"a").replace(/\s*'?$/,"").replace(/^ex ?festivita$/,"ex festivita'").replace(/^flessibilita$/,"flessibilita'");
+    rows.push([az, rs, "", "", mat, nome, t, ...m.slice(4,9).map(sgn)]);
+  });
+  if(rows.length < 2) throw new Error("Il PDF non sembra il «Prospetto analitico Ferie/Permessi/ROL/Festività/Flessibilità/Banca Ore» di TeamSystem.");
+  return { rows, data };
+}
 function rtParseCsv(text){
   const out = []; let row = [], f = "", q = false;
   for(let i=0; i<text.length; i++){
@@ -8031,22 +8066,32 @@ function openRTImport(){
   const prev = ymOf(addMonths(new Date(today.getFullYear(), today.getMonth(), 1), -1));
   const opts = Array.from({length:14}, (_,i)=>ymOf(addMonths(new Date(today.getFullYear(), today.getMonth(), 1), -i)));
   P.modal(`<h2>Importa la situazione ferie</h2>
-    <p class="sc-sub">Estrazione CSV di TeamSystem con le colonne Azienda, Matricola, Cognome e nome, Rateo, Arretrato, Maturato, Goduto, Residuo ore e Residuo giorni. I dati sostituiscono l'import precedente; le aziende non presenti in anagrafica vengono elencate ma non importate.</p>
-    <form class="fg" novalidate><div class="field full"><label for="ri-f">File CSV</label><input id="ri-f" type="file" accept=".csv,text/csv"></div>
+    <p class="sc-sub">Stampa in PDF di TeamSystem «Prospetto analitico Ferie/Permessi/ROL/Festività/Flessibilità/Banca Ore»: puoi selezionare più file insieme (uno per azienda o più aziende nello stesso PDF). Vengono aggiornate solo le aziende contenute nei file, le altre restano come sono; le aziende non presenti in anagrafica vengono elencate ma non importate.</p>
+    <form class="fg" novalidate><div class="field full"><label for="ri-f">File PDF</label><input id="ri-f" type="file" accept=".pdf,application/pdf,.csv,text/csv" multiple></div>
       <div class="field"><label for="ri-ym">Dati aggiornati alla fine di</label><select id="ri-ym">${opts.map(m=>`<option value="${m}" ${m===prev?"selected":""}>${esc(ymLabel(m))}</option>`).join("")}</select></div>
       <div class="full" id="ri-prev" style="grid-column:1/-1"></div><div class="err full" id="ri-err" style="grid-column:1/-1"></div></form>
     <div class="modal-actions"><div class="r"><button class="btn" type="button" id="ri-x">Annulla</button><button class="btn primary" type="button" id="ri-s" disabled>Importa</button></div></div>`);
-  let built = null, fname = "";
+  let built = null, fname = "", merge = true;
   $("#ri-x").onclick = P.closeModal;
+  const csvRows = buf => { try{ return rtParseCsv(new TextDecoder("utf-8", {fatal:true}).decode(buf)); }catch(e){ return rtParseCsv(new TextDecoder("windows-1252").decode(buf)); } };
   $("#ri-f").onchange = async e=>{
-    const file = e.target.files[0]; built = null; $("#ri-s").disabled = true; $("#ri-err").textContent = ""; $("#ri-prev").innerHTML = ""; if(!file) return; fname = file.name;
-    try{
-      const buf = await file.arrayBuffer(); let text = new TextDecoder("utf-8", {fatal:true}).decode(buf);
-      built = rtBuild(rtParseCsv(text));
-    }catch(err){
-      try{ const buf = await file.arrayBuffer(); built = rtBuild(rtParseCsv(new TextDecoder("windows-1252").decode(buf))); }catch(err2){ $("#ri-err").textContent = err2.message || "File non leggibile."; return; }
+    const files = [...e.target.files]; built = null; $("#ri-s").disabled = true; $("#ri-err").textContent = ""; $("#ri-prev").innerHTML = ""; if(!files.length) return;
+    fname = files.length===1 ? files[0].name : `${files.length} file PDF`; merge = files.some(f=>!/\.csv$/i.test(f.name));
+    $("#ri-prev").innerHTML = `<p class="sc-sub">Leggo ${files.length===1?"il file":`${files.length} file`}…</p>`;
+    let rows = null, data = null; const bad = [];
+    for(const f of files){
+      try{
+        const buf = await f.arrayBuffer(), pdf = /%PDF/.test(new TextDecoder("latin1").decode(buf.slice(0,1024)));
+        if(pdf){ const R = rtPdfRows(await pdfLines(buf)); rows = rows ? rows.concat(R.rows.slice(1)) : R.rows; if(R.data && (!data || R.data.split("/").reverse().join("") > data.split("/").reverse().join(""))) data = R.data; }
+        else { const R = csvRows(buf); if(rows && R.length) R.shift(); rows = rows ? rows.concat(R) : R; }
+      }catch(err){ bad.push(`${f.name}: ${err && err.message==="load" ? "non riesco a caricare il lettore PDF, controlla la connessione e riprova" : err && err.message || "file non leggibile"}`); }
     }
-    $("#ri-prev").innerHTML = `<div class="as-plan-b"><b>Anteprima</b><ul><li>${Object.keys(built.docs).length} aziende in anagrafica con ${built.nDip} dipendenti con ratei</li><li>${built.non.length} aziende del file non sono in anagrafica e verranno solo elencate</li>${built.nIgn?`<li>${built.nIgn} aziende non più gestite vengono ignorate</li>`:""}<li>${built.nAz} aziende in tutto nel file</li></ul></div>`;
+    $("#ri-prev").innerHTML = "";
+    if(bad.length) $("#ri-err").innerHTML = bad.map(esc).join("<br>");
+    if(!rows) return;
+    try{ built = rtBuild(rows); }catch(err){ $("#ri-err").textContent = err.message || "File non leggibile."; return; }
+    if(data){ const [g,m,a] = data.split("/"), ym = `${a}-${m}`, sel = $("#ri-ym"); if(![...sel.options].some(o=>o.value===ym)) sel.insertAdjacentHTML("afterbegin", `<option value="${ym}">${esc(ymLabel(ym))}</option>`); sel.value = ym; }
+    $("#ri-prev").innerHTML = `<div class="as-plan-b"><b>Anteprima</b><ul><li>${Object.keys(built.docs).length} ${Object.keys(built.docs).length===1?"azienda":"aziende"} in anagrafica con ${built.nDip} dipendenti con ratei${data?` (dati al ${esc(data)})`:""}</li>${built.non.length?`<li>${built.non.length} ${built.non.length===1?"azienda del file non è":"aziende del file non sono"} in anagrafica e ${built.non.length===1?"verrà":"verranno"} solo ${built.non.length===1?"elencata":"elencate"}</li>`:""}${built.nIgn?`<li>${built.nIgn} aziende non più gestite vengono ignorate</li>`:""}<li>${merge?"Le altre aziende già importate restano invariate":"Il file sostituisce l'import precedente"}</li></ul></div>`;
     $("#ri-s").disabled = !Object.keys(built.docs).length;
   };
   $("#ri-s").onclick = async ()=>{
@@ -8054,9 +8099,15 @@ function openRTImport(){
     try{
       const ids = Object.keys(built.docs), now = new Date().toISOString();
       for(let i=0; i<ids.length; i+=10) await Promise.all(ids.slice(i,i+10).map(id=>state.db.collection("ratei").doc(id).set({...built.docs[id], ym, importatoIl:now})));
-      const old = Object.keys(RT.docs).filter(id=>!built.docs[id]);
-      for(let i=0; i<old.length; i+=10) await Promise.all(old.slice(i,i+10).map(id=>state.db.collection("ratei").doc(id).delete()));
-      await state.db.collection("ratei_meta").doc("ultimo").set({ ym, fonte:fname, importatoIl:now, importatoDa:state.myId||"", aziende:ids.length, dipendenti:built.nDip, nonAnag:built.non, ignorate:built.nIgn });
+      if(merge){
+        const all = {...RT.docs, ...built.docs}, M = RT.meta || {}, nn = new Set(built.non.map(x=>String(x.n))), inFile = new Set(Object.values(built.docs).map(d=>String(d.n)));
+        const non = [...(M.nonAnag||[]).filter(x=>!nn.has(String(x.n)) && !inFile.has(String(x.n))), ...built.non].sort((a,b)=>String(a.n).localeCompare(String(b.n), undefined, {numeric:true}));
+        await state.db.collection("ratei_meta").doc("ultimo").set({ ym: M.ym && M.ym > ym ? M.ym : ym, fonte:fname, importatoIl:now, importatoDa:state.myId||"", aziende:Object.keys(all).length, dipendenti:Object.values(all).reduce((s,d)=>s+(d.dip||[]).length,0), nonAnag:non, ignorate:(M.ignorate||0)+built.nIgn });
+      } else {
+        const old = Object.keys(RT.docs).filter(id=>!built.docs[id]);
+        for(let i=0; i<old.length; i+=10) await Promise.all(old.slice(i,i+10).map(id=>state.db.collection("ratei").doc(id).delete()));
+        await state.db.collection("ratei_meta").doc("ultimo").set({ ym, fonte:fname, importatoIl:now, importatoDa:state.myId||"", aziende:ids.length, dipendenti:built.nDip, nonAnag:built.non, ignorate:built.nIgn });
+      }
       P.closeModal(); P.toast(`Importati i ratei di ${ids.length} aziende`);
     }catch(e){ $("#ri-err").textContent = P.errMsg(e); btn.disabled = false; btn.textContent = "Importa"; }
   };
@@ -8184,7 +8235,7 @@ function aggVoci(ym){
   const add = o => V.push(o);
   // ratei TeamSystem
   { const m = typeof RT!=="undefined" ? RT.meta : null, ok = !!(m && m.ym >= ym);
-    add({ k:"ratei", t:"Situazione ferie da TeamSystem", src:"Estrazione CSV «situazione ferie» (SITFER)", last: m && m.importatoIl ? parseD(m.importatoIl.slice(0,10)) : null,
+    add({ k:"ratei", t:"Situazione ferie da TeamSystem", src:"PDF «Prospetto analitico Ferie/Permessi/ROL…»", last: m && m.importatoIl ? parseD(m.importatoIl.slice(0,10)) : null,
       st: ok ? "ok" : "warn", txt: m ? (ok ? `Dati di ${ymLabel(m.ym)} importati` : `Ultimi dati: ${ymLabel(m.ym)}. Importa quelli di ${M}.`) : "Nessun file importato",
       btns:[["Importa il file", ()=>{ setView("ratei"); openRTImport(); }], ["Apri i ratei", ()=>setView("ratei")]] }); }
   // anagrafica dipendenti TeamSystem
