@@ -8410,6 +8410,36 @@ async function bkReadAll(msg){
   }
   return { out, n };
 }
+/* backup in Excel: un foglio leggibile per archivio, più il foglio «_ripristino» con tutti i dati (JSON a pezzi da 30.000 caratteri) per «Ripristina da un backup» */
+const BK_RIP = "_ripristino";
+async function bkXlsx(out, n, now){
+  const ExcelJS = await xlLoad(), wb = new ExcelJS.Workbook(); wb.creator = "Bussola Lavoro";
+  const cellV = v => v==null ? "" : typeof v==="object" ? JSON.stringify(v).slice(0, 32000) : typeof v==="string" ? (/^\d{4}-\d{2}-\d{2}$/.test(v) && parseD(v) && !isNaN(parseD(v)) ? parseD(v) : v.slice(0, 32000)) : v;
+  const sheet = (name, rows) => { const ws = wb.addWorksheet(name.slice(0,31), {views:[{state:"frozen", ySplit:1}]}); const keys = []; rows.forEach(r=>Object.keys(r).forEach(k=>{ if(!keys.includes(k)) keys.push(k); }));
+    ws.columns = keys.map(k=>({header:k, key:k, width:Math.min(40, Math.max(10, k.length+2))})); ws.getRow(1).font = {bold:true};
+    rows.forEach(r=>ws.addRow(Object.fromEntries(keys.map(k=>[k, cellV(r[k])])))); if(keys.length) ws.autoFilter = {from:{row:1,column:1}, to:{row:1,column:keys.length}}; };
+  const info = wb.addWorksheet("Indice"); info.columns = [{header:"Archivio", width:28},{header:"Nome tecnico", width:24},{header:"Documenti", width:12}]; info.getRow(1).font = {bold:true};
+  BK_COLL.forEach(c=>info.addRow([BK_LABEL[c]||c, c, out[c].length])); info.addRow([]); info.addRow([`Backup del ${fmtD(now)} ore ${now.toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"})}`]);
+  BK_COLL.forEach(c=>{
+    if(c==="assunzioni") sheet("assunzioni", out[c].flatMap(d=>(d.data.righe||[]).map(r=>({mese:d.id, ...r}))));
+    else if(c==="ratei") sheet("ratei", out[c].flatMap(d=>(d.data.dip||[]).map(x=>({cliente:d.data.cliente, azienda:d.data.azienda, mese:d.data.ym, matricola:x.m, nome:x.nome, filiale:x.fil||"", ...Object.fromEntries(Object.entries(x.t||{}).map(([t,v])=>[t, v.join(" / ")])), unita:JSON.stringify(x.u||{}), banca_ore:x.bo||""}))));
+    else sheet(c, out[c].map(d=>({ _id:d.id, ...d.data })));
+  });
+  const rip = wb.addWorksheet(BK_RIP), js = JSON.stringify({ app:"Bussola Lavoro", tipo:"backup", versione:1, creatoIl:now.toISOString(), creatoDa:state.myId||"", documenti:n, collezioni:out });
+  rip.getColumn(1).width = 100; rip.addRow(["Dati completi del backup: non modificare. Servono a «Ripristina da un backup» in Bussola Lavoro."]);
+  for(let i=0; i<js.length; i+=30000) rip.addRow([js.slice(i, i+30000)]);
+  return wb;
+}
+/* legge un backup .json oppure .xlsx (foglio «_ripristino») */
+async function bkParse(f){
+  if(/\.xlsx$/i.test(f.name)){
+    const ExcelJS = await xlLoad(), wb = new ExcelJS.Workbook(); await wb.xlsx.load(await f.arrayBuffer());
+    const ws = wb.getWorksheet(BK_RIP); if(!ws) throw new Error("Il file Excel non contiene i dati per il ripristino: usa un backup creato da «Salva ora su Google Drive».");
+    let js = ""; ws.eachRow((row, r)=>{ if(r > 1) js += String(row.getCell(1).value || ""); });
+    return JSON.parse(js);
+  }
+  return JSON.parse(await f.text());
+}
 async function bkDownload(kind, btn){
   if(AGG.busy) return;
   const downloads = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
@@ -8424,18 +8454,7 @@ async function bkDownload(kind, btn){
       await downloads.save({ filename:`Backup Bussola Lavoro ${stamp}.json`, data:new Blob([JSON.stringify(body)], {type:"application/json"}) });
     } else {
       say("Preparo il file Excel…");
-      const ExcelJS = await xlLoad(), wb = new ExcelJS.Workbook(); wb.creator = "Bussola Lavoro";
-      const cellV = v => v==null ? "" : typeof v==="object" ? JSON.stringify(v).slice(0, 32000) : typeof v==="string" ? (/^\d{4}-\d{2}-\d{2}$/.test(v) && parseD(v) && !isNaN(parseD(v)) ? parseD(v) : v.slice(0, 32000)) : v;
-      const sheet = (name, rows) => { const ws = wb.addWorksheet(name.slice(0,31), {views:[{state:"frozen", ySplit:1}]}); const keys = []; rows.forEach(r=>Object.keys(r).forEach(k=>{ if(!keys.includes(k)) keys.push(k); }));
-        ws.columns = keys.map(k=>({header:k, key:k, width:Math.min(40, Math.max(10, k.length+2))})); ws.getRow(1).font = {bold:true};
-        rows.forEach(r=>ws.addRow(Object.fromEntries(keys.map(k=>[k, cellV(r[k])])))); if(keys.length) ws.autoFilter = {from:{row:1,column:1}, to:{row:1,column:keys.length}}; };
-      const info = wb.addWorksheet("Indice"); info.columns = [{header:"Archivio", width:28},{header:"Nome tecnico", width:24},{header:"Documenti", width:12}]; info.getRow(1).font = {bold:true};
-      BK_COLL.forEach(c=>info.addRow([BK_LABEL[c]||c, c, out[c].length])); info.addRow([]); info.addRow([`Backup del ${fmtD(now)} ore ${now.toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"})}`]);
-      BK_COLL.forEach(c=>{
-        if(c==="assunzioni") sheet("assunzioni", out[c].flatMap(d=>(d.data.righe||[]).map(r=>({mese:d.id, ...r}))));
-        else if(c==="ratei") sheet("ratei", out[c].flatMap(d=>(d.data.dip||[]).map(x=>({cliente:d.data.cliente, azienda:d.data.azienda, mese:d.data.ym, matricola:x.m, nome:x.nome, filiale:x.fil||"", ...Object.fromEntries(Object.entries(x.t||{}).map(([t,v])=>[t, v.join(" / ")])), unita:JSON.stringify(x.u||{}), banca_ore:x.bo||""}))));
-        else sheet(c, out[c].map(d=>({ _id:d.id, ...d.data })));
-      });
+      const wb = await bkXlsx(out, n, now);
       const buf = await xlBuf(wb, {noWrap:true});
       await downloads.save({ filename:`Backup Bussola Lavoro ${stamp}.xlsx`, data:new Blob([buf]) });
     }
@@ -8449,6 +8468,7 @@ const BKD_SRV = "Google Drive";
 function bkdStato(){
   const b = AGG.bk || {}, dr = b.drive, gg = dr && dr.il ? dayDiff(parseD(dr.il.slice(0,10)), today) : null, ogni = b.driveGiorni || 1;
   const freq = ogni===1 ? "Ogni giorno" : `Ogni ${ogni} giorni`;
+  const er = b.driveErr; if(er && er.il && (!dr || !dr.il || er.il > dr.il)) return { cls:"bad", txt:`L'ultimo tentativo di backup su Drive (${fmtD(new Date(er.il))} ore ${new Date(er.il).toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"})}) non è riuscito: ${er.msg||"errore sconosciuto"}. Riprova con «Salva ora su Google Drive».` };
   if(!dr) return { cls:"warn", txt:`Nessun backup su Drive finora. ${freq} Bussola salva da sola una copia completa nella cartella dello studio, quando la apre chi ha collegato Google Drive: la prima volta premi «Salva ora su Google Drive» per autorizzarla.` };
   return { cls: gg > ogni*2 ? "bad" : gg > ogni ? "warn" : "ok", txt:`Ultimo backup su Drive ${gg===0?"oggi":gg===1?"ieri":`${gg} giorni fa`}${dr.documenti?` (${fmtN(dr.documenti)} documenti)`:""}${dr.file?`: «${dr.file}»`:""}. Il prossimo parte da solo ${ogni===1?"domani alla prima apertura":`dopo ${ogni} giorni`}.` };
 }
@@ -8476,16 +8496,18 @@ async function bkDrive(manual, btn){
   try{
     try{ await state.db.collection("impostazioni").doc("backup").set({ ...cur, driveLock:{ il:new Date().toISOString(), da:state.myId||"" } }); }catch(e){}
     const { out, n } = await bkReadAll(manual ? say : null), now = new Date();
-    const stamp = isoD(now) + "_" + String(now.getHours()).padStart(2,"0") + String(now.getMinutes()).padStart(2,"0"), title = `Backup Bussola Lavoro ${stamp}.json`;
-    const blob = new Blob([JSON.stringify({ app:"Bussola Lavoro", tipo:"backup", versione:1, creatoIl:now.toISOString(), creatoDa:state.myId||"", documenti:n, collezioni:out })], {type:"application/json"});
+    /* il passaggio dei file verso i connettori accetta solo Word, Excel e PowerPoint: il backup va su Drive in Excel, con i dati completi nel foglio «_ripristino» */
+    const stamp = isoD(now) + "_" + String(now.getHours()).padStart(2,"0") + String(now.getMinutes()).padStart(2,"0"), title = `Backup Bussola Lavoro ${stamp}.xlsx`, XT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    if(manual) say("Preparo il file Excel…");
+    const blob = new Blob([await xlBuf(await bkXlsx(out, n, now), {noWrap:true})], {type:XT});
     if(manual) say("Carico il file su Google Drive…");
-    const inp = { title, base64Content:{ $file:{ data:blob, name:"backup.json", type:"application/json" } }, contentMimeType:"application/json", disableConversionToGoogleType:true };
+    const inp = { title, base64Content:{ $file:{ data:blob, name:"backup.xlsx", type:XT } }, contentMimeType:XT, disableConversionToGoogleType:true };
     let res;
     try{ res = await mcp.callTool(BKD_SRV, "create_file", cur.driveFolder ? { ...inp, parentId:cur.driveFolder } : inp); }
     catch(e){ if(e && e.code==="tool_error" && cur.driveFolder) res = await mcp.callTool(BKD_SRV, "create_file", inp); else throw e; }   /* cartella non condivisa con chi fa il backup: salvo nel suo Drive */
     const f = (res && res.payload) || {};
     const nb = { ...(AGG.bk||cur), drive:{ il:now.toISOString(), da:state.myId||"", documenti:n, file:title, id:f.id||"", url:f.viewUrl||"", auto:!manual } };
-    delete nb.driveLock;
+    delete nb.driveLock; delete nb.driveErr;
     await state.db.collection("impostazioni").doc("backup").set(nb);
     say(`Backup salvato su Google Drive: ${fmtN(n)} documenti.`); if(manual) P.toast("Backup salvato su Google Drive"); else P.toast("Backup giornaliero salvato su Google Drive");
   }catch(e){
@@ -8508,8 +8530,8 @@ setTimeout(()=>{ try{ if(!AGG.unsub) subscribeAGG(); }catch(e){} setTimeout(()=>
 function openBKRestore(){
   if(!state.canWrite) return;
   P.modal(`<h2>Ripristina da un backup</h2>
-    <p class="sc-sub">Scegli un file «Backup Bussola Lavoro … .json». Prima di ripristinare conviene scaricare un backup dello stato attuale.</p>
-    <form class="fg" novalidate><div class="field full"><label for="br-f">File di backup</label><input id="br-f" type="file" accept=".json,application/json"></div>
+    <p class="sc-sub">Scegli un file «Backup Bussola Lavoro …» in formato .json o .xlsx (quelli salvati su Google Drive). Prima di ripristinare conviene scaricare un backup dello stato attuale.</p>
+    <form class="fg" novalidate><div class="field full"><label for="br-f">File di backup</label><input id="br-f" type="file" accept=".json,application/json,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
       <div class="full" id="br-prev" style="grid-column:1/-1"></div>
       <div class="field full" id="br-modew" hidden><label for="br-mode">Come ripristinare</label><select id="br-mode"><option value="mancanti">Solo i documenti che mancano (non tocca quelli esistenti)</option><option value="sovrascrivi">Riporta i documenti al contenuto del backup (quelli creati dopo restano)</option></select></div>
       <div class="field full" id="br-okw" hidden><label for="br-ok">Per confermare scrivi RIPRISTINA</label><input id="br-ok" autocomplete="off"></div>
@@ -8519,7 +8541,7 @@ function openBKRestore(){
   $("#br-x").onclick = P.closeModal;
   $("#br-f").onchange = async e=>{
     const f = e.target.files[0]; bk = null; $("#br-s").disabled = true; $("#br-err").textContent = ""; $("#br-prev").innerHTML = ""; $("#br-modew").hidden = $("#br-okw").hidden = true; if(!f) return;
-    try{ const j = JSON.parse(await f.text()); if(!j || j.app!=="Bussola Lavoro" || !j.collezioni) throw new Error("Il file non è un backup di Bussola Lavoro."); bk = j; }
+    try{ const j = await bkParse(f); if(!j || j.app!=="Bussola Lavoro" || !j.collezioni) throw new Error("Il file non è un backup di Bussola Lavoro."); bk = j; }
     catch(err){ $("#br-err").textContent = err.message || "File non leggibile."; return; }
     const cs = Object.keys(bk.collezioni).filter(c=>BK_COLL.includes(c)); sel = new Set(cs.filter(c=>c!=="impostazioni"));
     $("#br-prev").innerHTML = `<div class="as-plan-b"><b>Backup del ${esc(fmtD(new Date(bk.creatoIl)))}: ${fmtN(bk.documenti||0)} documenti</b><p class="sc-sub" style="margin:4px 0 6px">Scegli gli archivi da ripristinare.</p><div class="br-list">${cs.map(c=>`<label class="ag-chk"><input type="checkbox" data-brc="${c}" ${sel.has(c)?"checked":""}> ${esc(BK_LABEL[c]||c)} (${bk.collezioni[c].length})</label>`).join("")}</div></div>`;
