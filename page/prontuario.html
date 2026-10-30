@@ -8444,12 +8444,13 @@ async function bkDownload(kind, btn){
   }catch(e){ if(e && e.code==="declined") say("Salvataggio annullato."); else { say("Backup non riuscito: " + (P.errMsg ? P.errMsg(e) : (e && e.message) || "")); P.toast("Backup non riuscito"); } }
   finally{ AGG.busy = false; if(btn){ btn.disabled = false; btn.textContent = lbl; } }
 }
-/* ---- backup automatico su Google Drive: ogni 7 giorni, alla prima apertura di Bussola da parte di chi ha Google Drive collegato ---- */
+/* ---- backup automatico su Google Drive: ogni giorno, alla prima apertura di Bussola da parte di chi ha Google Drive collegato (e ogni ora se la pagina resta aperta) ---- */
 const BKD_SRV = "Google Drive";
 function bkdStato(){
-  const b = AGG.bk || {}, dr = b.drive, gg = dr && dr.il ? dayDiff(parseD(dr.il.slice(0,10)), today) : null, ogni = b.driveGiorni || 7;
-  if(!dr) return { cls:"warn", txt:`Nessun backup su Drive finora. Ogni ${ogni} giorni Bussola salva da sola una copia completa nella cartella dello studio, quando la apre chi ha collegato Google Drive.` };
-  return { cls: gg > ogni*2 ? "bad" : gg > ogni ? "warn" : "ok", txt:`Ultimo backup su Drive ${gg===0?"oggi":gg===1?"ieri":`${gg} giorni fa`}${dr.documenti?` (${fmtN(dr.documenti)} documenti)`:""}${dr.file?`: «${dr.file}»`:""}. Il prossimo parte da solo dopo ${ogni} giorni.` };
+  const b = AGG.bk || {}, dr = b.drive, gg = dr && dr.il ? dayDiff(parseD(dr.il.slice(0,10)), today) : null, ogni = b.driveGiorni || 1;
+  const freq = ogni===1 ? "Ogni giorno" : `Ogni ${ogni} giorni`;
+  if(!dr) return { cls:"warn", txt:`Nessun backup su Drive finora. ${freq} Bussola salva da sola una copia completa nella cartella dello studio, quando la apre chi ha collegato Google Drive: la prima volta premi «Salva ora su Google Drive» per autorizzarla.` };
+  return { cls: gg > ogni*2 ? "bad" : gg > ogni ? "warn" : "ok", txt:`Ultimo backup su Drive ${gg===0?"oggi":gg===1?"ieri":`${gg} giorni fa`}${dr.documenti?` (${fmtN(dr.documenti)} documenti)`:""}${dr.file?`: «${dr.file}»`:""}. Il prossimo parte da solo ${ogni===1?"domani alla prima apertura":`dopo ${ogni} giorni`}.` };
 }
 function bkdErr(e){
   const c = e && e.code;
@@ -8486,7 +8487,7 @@ async function bkDrive(manual, btn){
     const nb = { ...(AGG.bk||cur), drive:{ il:now.toISOString(), da:state.myId||"", documenti:n, file:title, id:f.id||"", url:f.viewUrl||"", auto:!manual } };
     delete nb.driveLock;
     await state.db.collection("impostazioni").doc("backup").set(nb);
-    say(`Backup salvato su Google Drive: ${fmtN(n)} documenti.`); if(manual) P.toast("Backup salvato su Google Drive"); else P.toast("Backup settimanale salvato su Google Drive");
+    say(`Backup salvato su Google Drive: ${fmtN(n)} documenti.`); if(manual) P.toast("Backup salvato su Google Drive"); else P.toast("Backup giornaliero salvato su Google Drive");
   }catch(e){
     const msg = bkdErr(e); say(msg); if(manual) P.toast(msg);
     try{ const b = { ...(AGG.bk||cur) }; delete b.driveLock; b.driveErr = { il:new Date().toISOString(), code:(e&&e.code)||"", msg }; await state.db.collection("impostazioni").doc("backup").set(b); }catch(x){}
@@ -8495,12 +8496,13 @@ async function bkDrive(manual, btn){
 /* controllo all'apertura: parte da solo solo se Google Drive è già autorizzato per la pagina (nessuna richiesta di consenso a sorpresa) */
 async function bkdAuto(){
   if(!state.canWrite || !AGG.bk) return;
-  const b = AGG.bk, dr = b.drive, ogni = b.driveGiorni || 7;
-  if(dr && dr.il && dayDiff(parseD(dr.il.slice(0,10)), today) < ogni) return;
+  const b = AGG.bk, dr = b.drive, ogni = b.driveGiorni || 1;
+  const oggi = new Date(); oggi.setHours(0,0,0,0);   /* non `today`: la pagina può restare aperta oltre la mezzanotte */
+  if(dr && dr.il && dayDiff(parseD(isoD(new Date(dr.il))), oggi) < ogni) return;
   try{ const perm = await window.claude.use("permissions"); const st = perm ? await perm.state("mcp:" + BKD_SRV).catch(()=>"unavailable") : "unavailable"; if(st!=="granted") return; }catch(e){ return; }
   bkDrive(false);
 }
-setTimeout(()=>{ try{ if(!AGG.unsub) subscribeAGG(); }catch(e){} setTimeout(()=>{ bkdAuto().catch(()=>{}); }, 4000); }, 20000);
+setTimeout(()=>{ try{ if(!AGG.unsub) subscribeAGG(); }catch(e){} setTimeout(()=>{ bkdAuto().catch(()=>{}); }, 4000); setInterval(()=>{ bkdAuto().catch(()=>{}); }, 60*60*1000); }, 20000);
 
 /* ---- ripristino da un file di backup (.json) ---- */
 function openBKRestore(){
