@@ -2794,7 +2794,7 @@ async function prExcel(btn){
       [10,12].forEach(k=>{ r.getCell(k).fill = {type:"pattern", pattern:"solid", fgColor:{argb:FILL[cls]}}; }); r.getCell(12).font = {bold:true};
       r.eachCell({includeEmpty:true}, cell=>{ cell.border = {bottom:{style:"thin", color:{argb:"FFE0E5EA"}}}; cell.alignment = {vertical:"top", wrapText:true}; });
     });
-    const buf = await wb.xlsx.writeBuffer();
+    const buf = await xlBuf(wb);
     await downloads.save({filename:`Scadenziario agevolazioni al ${fmtD(today).replace(/\//g,".")}.xlsx`, data:new Blob([buf])});
     P.toast("File Excel salvato");
   }catch(e){
@@ -4647,6 +4647,64 @@ function xlLoad(){
   if(!xlLoading) xlLoading = new Promise((res, rej)=>{ const s=document.createElement("script"); s.src=XL_SRC; s.onload=()=>res(window.ExcelJS); s.onerror=()=>{ xlLoading=null; rej(new Error("load")); }; document.head.appendChild(s); });
   return xlLoading;
 }
+/* rifinitura comune di tutti i file Excel, subito prima del salvataggio:
+   - le date create nella pagina sono a mezzanotte dell'ora italiana; ExcelJS le scrive in UTC e Excel le mostrerebbe un giorno indietro
+   - i decimali senza formato ricevono un formato a 1 o 2 cifre, uguale per tutta la colonna
+   - nelle tabelle (riga di intestazione = filtro o riquadro bloccato) le colonne si allargano al contenuto; i testi molto lunghi vanno a capo */
+function xlLen(c){
+  let v = c.value; if(v==null) return 0;
+  if(v instanceof Date) return 10;
+  if(typeof v==="object"){ if(v.richText) v = v.richText.map(x=>x.text).join(""); else if("result" in v && v.result!=null) v = v.result; else if(v.formula) return 14; else return 0; }
+  if(typeof v==="number"){
+    const f = String(c.numFmt||"General").split(";")[0], pct = f.includes("%"), dm = f.match(/\.(0+)/), dec = dm ? dm[1].length : (f==="General" && Math.abs(v%1)>1e-9 ? 2 : 0);
+    const x = Math.abs(pct ? v*100 : v), ip = Math.floor(x).toString().length, sep = f.includes("#,##") ? Math.floor((ip-1)/3) : 0;
+    const lit = (f.match(/"[^"]*"/g)||[]).reduce((a,q)=>a+q.length-2, 0) + (f.includes("€") && !/"[^"]*€/.test(f) ? 2 : 0);
+    return ip + sep + (dec ? dec+1 : 0) + (v<0 ? 1 : 0) + (pct ? 1 : 0) + lit;
+  }
+  return Math.max(...String(v).split("\n").map(x=>x.length));
+}
+function xlPolish(wb, o){
+  o = o || {}; const maxW = o.maxW || 50;
+  wb.eachSheet(ws=>{
+    const af = ws.autoFilter, vw = (ws.views||[])[0] || {}, hdr = af && af.from && typeof af.from==="object" ? af.from.row : (vw.state==="frozen" && vw.ySplit) || 0;
+    const C = {};
+    ws.eachRow({includeEmpty:false}, (row, r)=>row.eachCell({includeEmpty:false}, (c, k)=>{
+      const v = c.value;
+      if(v instanceof Date){
+        if(!v.getHours() && !v.getMinutes() && !v.getSeconds() && !v.getMilliseconds()) c.value = new Date(Date.UTC(v.getFullYear(), v.getMonth(), v.getDate()));
+        if(!c.numFmt || c.numFmt==="General") c.numFmt = "dd/mm/yyyy";
+      }
+      if(r <= hdr || c.isMerged) return;
+      const s = C[k] = C[k] || {dec:0, num:[], txt:[]};
+      if(typeof v==="number"){ s.num.push(c); if(Math.abs(v - Math.round(v)) > 1e-9) s.dec = Math.max(s.dec, Math.abs(v*10 - Math.round(v*10)) < 1e-6 ? 1 : 2); }
+      else if(typeof v==="string") s.txt.push(c);
+    }));
+    Object.values(C).forEach(s=>{ if(s.dec) s.num.forEach(c=>{ if(!c.numFmt || c.numFmt==="General") c.numFmt = s.dec===1 ? "#,##0.0" : "#,##0.00"; }); });
+    if(!hdr) return;
+    Object.entries(C).forEach(([k, s])=>{
+      const col = ws.getColumn(+k), w = col.width || 9, cells = [...s.num, ...s.txt];
+      let need = 0; ws.getColumn(+k).eachCell({includeEmpty:false}, (c, r)=>{ if(r > hdr && !c.isMerged) need = Math.max(need, xlLen(c) + 2); });
+      if(need <= w) return;
+      const nNeed = Math.max(0, ...s.num.map(c=>xlLen(c)+2));
+      if(need <= maxW || o.noWrap){ col.width = Math.min(need, maxW); return; }
+      col.width = Math.max(w, Math.min(maxW, Math.max(nNeed, 30)));
+      s.txt.forEach(c=>{ if(xlLen(c) + 2 > col.width) c.alignment = {...(c.alignment||{}), wrapText:true, vertical:"top"}; });
+    });
+    // intestazioni più lunghe della colonna: a capo, con l'altezza della riga adeguata
+    const hr = ws.getRow(hdr); let lines = 1;
+    hr.eachCell({includeEmpty:false}, (c, k)=>{ if(c.isMerged || typeof c.value!=="string") return;
+      const col = ws.getColumn(k), words = c.value.split(/\s+/), long = Math.max(...words.map(x=>x.length));
+      if(long + 2 > (col.width || 9)) col.width = long + 2;   // nessuna parola spezzata a metà
+      const cap = (col.width || 9) - 1; let n = 1, cur = 0;
+      words.forEach(x=>{ if(cur && cur + 1 + x.length > cap){ n++; cur = x.length; } else cur += (cur ? 1 : 0) + x.length; });
+      if(n > 1){ c.alignment = {...(c.alignment||{}), wrapText:true, vertical:"middle"}; lines = Math.max(lines, Math.min(n, 4)); } });
+    if(lines > 1 && (hr.height || 15) < lines * 14 + 4) hr.height = lines * 14 + 4;
+  });
+  return wb;
+}
+const xlBuf = (wb, o) => xlPolish(wb, o).xlsx.writeBuffer();
+/* matricola TeamSystem: numero se è solo cifre (Excel non segnala «numero memorizzato come testo»), altrimenti testo */
+const xlMatr = m => /^[1-9]\d{0,8}$/.test(String(m||"")) ? +m : (m||"");
 const XC = { accent:"FF8B1A14", accentSoft:"FFF6E9E7", ink:"FF14202B", muted:"FF566371", band:"FFEEF1F4", total:"FFF7F9FA", line:"FFDCE2E8", zebra:"FFFBFCFD", white:"FFFFFFFF", warnBg:"FFFBF1DF", warn:"FF8F5300" };
 const XF = { money:'#,##0.00;-#,##0.00;"–"', hours:'#,##0.0;-#,##0.0;"–"', pct:'0.0%', eur:'#,##0.00 "€"' };
 function xlBuild(ExcelJS, res, k){
@@ -4802,7 +4860,7 @@ function xlBuild(ExcelJS, res, k){
   // parametri
   head(q,1,"Parametri usati",6); q++;
   const minimoNow = minimoInfo(k.cc, k.liv, new Date(k.anno, k.dal-1, 1));
-  [["Minimo tabellare del livello (tempo pieno)", minimoNow.val],["Divisore giornaliero", R.divGiorno||26],["Ferie (settimane, tempo pieno)", res.feriSett],["Permessi annui (ore, tempo pieno)", k.permOre],["Prima fascia pensionabile mensile", res.par.fasciaMese],["Fonte", res.par.fonte]].forEach(([l,v],i)=>{ line(q,1,l,v, i===0||i===4 ? XF.eur : '#,##0.##'); q++; });
+  [["Minimo tabellare del livello (tempo pieno)", minimoNow.val],["Divisore giornaliero", R.divGiorno||26],["Ferie (settimane, tempo pieno)", res.feriSett],["Permessi annui (ore, tempo pieno)", k.permOre],["Prima fascia pensionabile mensile", res.par.fasciaMese],["Fonte", res.par.fonte]].forEach(([l,v],i)=>{ line(q,1,l,v, i===0||i===4 ? XF.eur : typeof v==="number" && v%1 ? '#,##0.0#' : '#,##0'); q++; });
   return wb;
 }
 async function csExcel(btn){
@@ -4814,7 +4872,7 @@ async function csExcel(btn){
     const ExcelJS = await xlLoad();
     const {res, k} = CS.last;
     const wb = xlBuild(ExcelJS, res, k);
-    const buf = await wb.xlsx.writeBuffer();
+    const buf = await xlBuf(wb);
     const cl = activeClient && activeClient.ccnl===k.cc ? activeClient.azienda : "";
     const name = ["Costo lavoro", cl, P.ccName(k.cc), k.liv, k.anno].filter(Boolean).join(" - ").replace(/[\\/:*?"<>|]+/g," ").replace(/\s+/g," ").trim() + ".xlsx";
     await downloads.save({filename:name, data:new Blob([buf])});
@@ -5595,7 +5653,7 @@ async function duExcel(btn){
       if(d.controllo==="insoluti") r.getCell(9).font = {bold:true, color:{argb:"FFB42318"}};
       r.eachCell({includeEmpty:true}, cell=>{ cell.border = {bottom:{style:"thin", color:{argb:"FFE0E5EA"}}}; cell.alignment = {vertical:"top", wrapText:true}; });
     });
-    const buf = await wb.xlsx.writeBuffer();
+    const buf = await xlBuf(wb);
     const name = `Scadenziario DURC al ${fmtD(today).replace(/\//g,".")}.xlsx`;
     await downloads.save({filename:name, data:new Blob([buf])});
     P.toast("File Excel salvato");
@@ -6752,7 +6810,7 @@ async function mpExcel(btn){
       const row = ws.getRow(5+i); row.values = [r.c.n??"", r.c.azienda, r.c.operatore||"", (r.c.ti||0)+(r.c.td||0), ...MP_STEPS.map(x=>s[x.k]?new Date(s[x.k]):"—"), r.esc?"Escluso":late.length?`In ritardo: ${late.join(", ")}`:r.done===MP_STEPS.length?"Completato":`${r.done} di ${MP_STEPS.length}`, (r.d&&r.d.note)||""];
       MP_STEPS.forEach((x,j)=>{ const c = row.getCell(5+j); if(s[x.k]){ c.numFmt = "dd/mm"; c.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FFDDF1E3"}}; } c.alignment = {horizontal:"center"}; });
       if(late.length) row.getCell(5+MP_STEPS.length).font = {bold:true, color:{argb:"FFB42318"}}; });
-    const buf = await wb.xlsx.writeBuffer();
+    const buf = await xlBuf(wb);
     await downloads.save({filename:`Mese paghe ${ymLabel(MP.ym)}.xlsx`, data:new Blob([buf])}); P.toast("File Excel salvato");
   }catch(e){ if(!(e && e.code==="declined")) P.toast("Salvataggio non riuscito"); } finally{ btn.disabled = false; btn.textContent = lbl; }
 }
@@ -7437,7 +7495,7 @@ async function asExcel(btn){
     rows.forEach(({r,c,k},i)=>{ const row = ws.getRow(4+i);
       row.values = [r.n??"", c?c.azienda:(r.azienda||""), r.sede||"", r.dip||"", asD(r)?parseD(asD(r)):"", r.mans||"", (AS_TIPI[r.tipo||""]||AS_TIPI[""])[0], r.fine?parseD(r.fine):"", r.agev||"", r.note||"", r.prog?"Sì":"", r.ok?"OK":"", [k.ctMiss?"manca nello scadenziario contratti":"", k.trMiss?"manca nello scadenziario tirocini":"", k.apMiss?"manca nello scadenziario apprendisti":"", k.aliq?"aliquota agevolata apprendisti":""].filter(Boolean).join("; ")];
       [5,8].forEach(j=>{ row.getCell(j).numFmt = "dd/mm/yyyy"; }); });
-    const buf = await wb.xlsx.writeBuffer();
+    const buf = await xlBuf(wb);
     await downloads.save({filename:`Assunzioni ${per}.xlsx`, data:new Blob([buf])}); P.toast("File Excel salvato");
   }catch(e){ if(!(e && e.code==="declined")) P.toast("Salvataggio non riuscito"); } finally{ btn.disabled = false; btn.textContent = lbl; }
 }
@@ -7783,7 +7841,7 @@ async function trExcel(btn){
       row.values = [cl&&cl.n!=null?cl.n:"", trAzName(trAzKey(t)), t.sede||"", t.tirocinante||"", I.reg, t.promotore||"", t.tutor||"", t.inizio?parseD(t.inizio):"", t.fine?parseD(t.fine):"", (t.proroghe||[]).map(d=>fmtD(parseD(d))).join(" · "), I.last||"", I.chiuso||I.gg==null?"":I.gg, I.mesi!=null?Math.round(I.mesi*10)/10:"", t.compenso!=null&&t.compenso!==""?+t.compenso:"", t.rimborso?+t.rimborso:"", t.retrNote||"", I.presDue?(I.pres||"da ricevere"):"", I.chiuso?(TR_ESITI[t.stato]||t.stato)+(t.dataCessazione?` il ${fmtD(parseD(t.dataCessazione))}`:""):TR_ST[I.st][1], [...I.avv, ...I.ver].join("; "), [t.note, t.azioni].filter(Boolean).join(" · ")];
       [8,9,11].forEach(j=>{ row.getCell(j).numFmt = "dd/mm/yyyy"; }); [14,15].forEach(j=>{ row.getCell(j).numFmt = "#,##0.00 €"; });
       if(I.st==="scaduto"||I.st==="15") row.getCell(11).font = {bold:true, color:{argb:"FFB42318"}}; });
-    const buf = await wb.xlsx.writeBuffer();
+    const buf = await xlBuf(wb);
     await downloads.save({filename:`Scadenziario tirocini ${isoD(today)}.xlsx`, data:new Blob([buf])}); P.toast("File Excel salvato");
   }catch(e){ if(!(e && e.code==="declined")) P.toast("Salvataggio non riuscito"); } finally{ btn.disabled = false; btn.textContent = lbl; }
 }
@@ -8126,12 +8184,12 @@ async function rtExcel(btn){
     const hr = ws.getRow(4); head.forEach((h,i)=>{ const c = hr.getCell(i+1); c.value = h; c.font = {bold:true}; c.alignment = {wrapText:true, vertical:"middle"}; c.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FFE9EDF1"}}; c.border = {bottom:{style:"medium", color:{argb:"FF8E1B1B"}}}; });
     ws.autoFilter = {from:{row:4,column:1}, to:{row:4,column:head.length}};
     const fill = s => s==="bad" ? "FFFDE2E1" : s==="warn" ? "FFFFF2CC" : null;
-    rows.forEach((o,i)=>{ const row = ws.getRow(5+i), v = [o.doc.n??"", rtClName(o.doc), o.d.nome||"", o.d.m||"", o.d.fil||""];
+    rows.forEach((o,i)=>{ const row = ws.getRow(5+i), v = [o.doc.n??"", rtClName(o.doc), o.d.nome||"", xlMatr(o.d.m), o.d.fil||""];
       RT_T.forEach(([t])=>{ const x = o.c[t]; v.push(x?x.res:"", x?(x.u==="g"?"giorni":"ore"):"", x&&x.mesi!=null?Math.round(x.mesi*10)/10:"", x&&x.arrRes?x.arrRes:""); });
       v.push(o.sev==="bad"?"Critico":o.sev==="warn"?"Da segnalare":o.sev==="info"?"Da verificare":"", RT_T.flatMap(([t,l])=>o.c[t]&&o.c[t].sev!=="none"&&o.c[t].why.length?[`${l}: ${o.c[t].why.join("; ")}`]:[]).join(" | "));
       row.values = v;
-      RT_T.forEach(([t],j)=>{ const f = o.c[t] && fill(o.c[t].sev); if(f) row.getCell(6+j*4).fill = {type:"pattern", pattern:"solid", fgColor:{argb:f}}; [6,8,9].forEach(c=>{ row.getCell(c+j*4).numFmt = "#,##0.00"; }); }); });
-    const buf = await wb.xlsx.writeBuffer();
+      RT_T.forEach(([t],j)=>{ const f = o.c[t] && fill(o.c[t].sev); if(f) row.getCell(6+j*4).fill = {type:"pattern", pattern:"solid", fgColor:{argb:f}}; [6,9].forEach(c=>{ row.getCell(c+j*4).numFmt = "#,##0.00"; }); row.getCell(8+j*4).numFmt = "#,##0.0"; }); });
+    const buf = await xlBuf(wb);
     await downloads.save({filename:`Ratei dipendenti ${rtYm()}.xlsx`, data:new Blob([buf])}); P.toast("File Excel salvato");
   }catch(e){ if(!(e && e.code==="declined")) P.toast("Salvataggio non riuscito"); } finally{ btn.disabled = false; btn.textContent = lbl; }
 }
@@ -8367,7 +8425,7 @@ async function bkDownload(kind, btn){
     } else {
       say("Preparo il file Excel…");
       const ExcelJS = await xlLoad(), wb = new ExcelJS.Workbook(); wb.creator = "Bussola Lavoro";
-      const cellV = v => v==null ? "" : typeof v==="object" ? JSON.stringify(v).slice(0, 32000) : typeof v==="string" ? v.slice(0, 32000) : v;
+      const cellV = v => v==null ? "" : typeof v==="object" ? JSON.stringify(v).slice(0, 32000) : typeof v==="string" ? (/^\d{4}-\d{2}-\d{2}$/.test(v) && parseD(v) && !isNaN(parseD(v)) ? parseD(v) : v.slice(0, 32000)) : v;
       const sheet = (name, rows) => { const ws = wb.addWorksheet(name.slice(0,31), {views:[{state:"frozen", ySplit:1}]}); const keys = []; rows.forEach(r=>Object.keys(r).forEach(k=>{ if(!keys.includes(k)) keys.push(k); }));
         ws.columns = keys.map(k=>({header:k, key:k, width:Math.min(40, Math.max(10, k.length+2))})); ws.getRow(1).font = {bold:true};
         rows.forEach(r=>ws.addRow(Object.fromEntries(keys.map(k=>[k, cellV(r[k])])))); if(keys.length) ws.autoFilter = {from:{row:1,column:1}, to:{row:1,column:keys.length}}; };
@@ -8378,7 +8436,7 @@ async function bkDownload(kind, btn){
         else if(c==="ratei") sheet("ratei", out[c].flatMap(d=>(d.data.dip||[]).map(x=>({cliente:d.data.cliente, azienda:d.data.azienda, mese:d.data.ym, matricola:x.m, nome:x.nome, filiale:x.fil||"", ...Object.fromEntries(Object.entries(x.t||{}).map(([t,v])=>[t, v.join(" / ")])), unita:JSON.stringify(x.u||{}), banca_ore:x.bo||""}))));
         else sheet(c, out[c].map(d=>({ _id:d.id, ...d.data })));
       });
-      const buf = await wb.xlsx.writeBuffer();
+      const buf = await xlBuf(wb, {noWrap:true});
       await downloads.save({ filename:`Backup Bussola Lavoro ${stamp}.xlsx`, data:new Blob([buf]) });
     }
     try{ await state.db.collection("impostazioni").doc("backup").set({ ...(AGG.bk||{}), ultimo:now.toISOString(), da:state.myId||"", formato:kind, documenti:n }); }catch(e){}
@@ -9362,7 +9420,7 @@ async function cnExcel(btn){
     rows.slice().sort((a,b)=>a.c.azienda.localeCompare(b.c.azienda)).forEach(({c,S},i)=>{ const r = ws.getRow(4+i);
       r.values = [c.n??"", c.azienda, S.n, S.M, S.F, pc(S.F,S.n), S.ti, S.app, S.td, pc(S.td,S.n), S.ft, S.pt, pc(S.pt,S.n), S.op, S.imp, S.dir, S.etaMed!=null?Math.round(S.etaMed*10)/10:null, S.u30, S.o50, S.anzMed!=null?Math.round(S.anzMed*10)/10:null, S.entr, S.usc, S.tir, S.col];
       [6,10,13].forEach(k=>{ r.getCell(k).numFmt = "0.0%"; }); });
-    const buf = await wb.xlsx.writeBuffer();
+    const buf = await xlBuf(wb);
     await downloads.save({filename:`Contatori personale ${fmtD(today).replace(/\//g,".")}.xlsx`, data:new Blob([buf])}); P.toast("File Excel salvato");
   }catch(e){ if(!(e && e.code==="declined")) P.toast("Salvataggio non riuscito"); } finally{ btn.disabled = false; btn.textContent = lbl; }
 }
@@ -9651,7 +9709,7 @@ async function sicExcel(btn){
       r.getCell(5).numFmt = "0%";
       [[7,x.dvr],[8,x.vis],[9,x.rls],[10,x.tlc]].forEach(([k,it])=>{ const f = FILL[it.tone]; if(f) r.getCell(k).fill = {type:"pattern", pattern:"solid", fgColor:{argb:f}}; });
       r.eachCell({includeEmpty:true}, cell=>{ cell.alignment = {vertical:"top", wrapText:true}; }); });
-    const buf = await wb.xlsx.writeBuffer();
+    const buf = await xlBuf(wb);
     await downloads.save({filename:`Sicurezza clienti ${fmtD(today).replace(/\//g,".")}.xlsx`, data:new Blob([buf])}); P.toast("File Excel salvato");
   }catch(e){ if(!(e && e.code==="declined")) P.toast("Salvataggio non riuscito"); } finally{ btn.disabled = false; btn.textContent = lbl; }
 }
@@ -10438,7 +10496,7 @@ async function cpExcel(btn){
       ws.autoFilter = {from:{row:4,column:1}, to:{row:4,column:head.length}};
       let r = 5; ov.forEach(({c,t})=>{ const row = ws.getRow(r++); row.values = [c.azienda, c.n??"", c.operatore||"", P.ccName(c.ccnl), t.n, t.ver, t.skip, t.retr, t.contr, t.tfr, t.contratt, t.costo, t.fte?t.costo/t.fte:null]; money(row, [8,9,10,11,12,13]); });
       const tr = ws.getRow(r); tr.values = ["Totale","","","", {formula:`SUM(E5:E${r-1})`}, {formula:`SUM(F5:F${r-1})`}, {formula:`SUM(G5:G${r-1})`}, ...["H","I","J","K","L"].map(L=>({formula:`SUM(${L}5:${L}${r-1})`}))]; tr.font = {bold:true}; money(tr, [8,9,10,11,12]);
-      const buf = await wb.xlsx.writeBuffer();
+      const buf = await xlBuf(wb);
       await downloads.save({ filename:`Costo del personale ${CP.anno} - tutti i clienti.xlsx`, data:new Blob([buf]) }); P.toast("File Excel salvato"); return;
     }
     const ws = wb.addWorksheet("Costo del personale", {views:[{state:"frozen", ySplit:4, xSplit:1}], pageSetup:{paperSize:9, orientation:"landscape", fitToPage:true, fitToWidth:1, fitToHeight:0}});
@@ -10449,11 +10507,11 @@ async function cpExcel(btn){
     const hr = ws.getRow(4); head.forEach((h,i)=>{ const c = hr.getCell(i+1); c.value = h; c.font = {bold:true}; c.alignment = {wrapText:true, vertical:"middle"}; c.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FFE9EDF1"}}; });
     let r = 5;
     X.rows.forEach(x=>{ const T = x.res && !x.skip ? x.res.tot : null, M = T ? (x.res.rows.costo||[]) : [];
-      ws.getRow(r).values = [x.nome, x.d.m, dpTipoTxt(x.o), sgPtv(x.o), x.d.livD||x.d.liv||"", x.dir?"Dirigente":(x.liv||""), x.al-x.dal+1, x.sm||null, x.scatti||null, T?T.retr:null, T?T.contr:null, T?T.tfr:null, T?T.contratt:null, T?T.costo:null, x.skip||(x.dir?`Stima da RAL con contributi al ${CP_DIR_AZ}%`:x.ver?"Livello da verificare":""), ...Array.from({length:12},(_,i)=>M[i]||null)];
+      ws.getRow(r).values = [x.nome, xlMatr(x.d.m), dpTipoTxt(x.o), sgPtv(x.o), x.d.livD||x.d.liv||"", x.dir?"Dirigente":(x.liv||""), x.al-x.dal+1, x.sm||null, x.scatti||null, T?T.retr:null, T?T.contr:null, T?T.tfr:null, T?T.contratt:null, T?T.costo:null, x.skip||(x.dir?`Stima da RAL con contributi al ${CP_DIR_AZ}%`:x.ver?"Livello da verificare":""), ...Array.from({length:12},(_,i)=>M[i]||null)];
       money(ws.getRow(r), [8,10,11,12,13,14,...Array.from({length:12},(_,i)=>16+i)]); r++; });
     const tr = ws.getRow(r); tr.values = ["Totale","","","","","","","","", X.tot.retr, X.tot.contr, X.tot.tfr, X.tot.contratt, X.tot.costo, "", ...X.mesi]; tr.font = {bold:true};
     money(tr, [10,11,12,13,14,...Array.from({length:12},(_,i)=>16+i)]);
-    const buf = await wb.xlsx.writeBuffer();
+    const buf = await xlBuf(wb);
     await downloads.save({ filename:`Costo del personale ${CP.anno} - ${X.c.azienda}.xlsx`, data:new Blob([buf]) }); P.toast("File Excel salvato");
   }catch(e){ if(!(e && e.code==="declined")) P.toast("Salvataggio non riuscito"); } finally{ btn.disabled = false; btn.textContent = lbl; }
 }
@@ -10613,6 +10671,8 @@ function rkOf(clId){
   const pg = P.find(p=>p.cat.id==="pagella"), best = P.filter(p=>p.cat.id!=="pagella" && p.pos <= Math.max(3, Math.ceil(p.n * 0.1))).sort((a,b)=>a.pos/a.n - b.pos/b.n).slice(0, 3);
   return { main: pg ? `Pagella: ${pg.pos}° su ${pg.n} (${fmtN(pg.v,0)}/100)` : `In ${P.length} classifiche`, sub: best.length ? best.map(p=>`${p.pos}° per ${p.cat.l.charAt(0).toLowerCase()+p.cat.l.slice(1)}`).join("; ") : "Nessun piazzamento nelle prime posizioni" };
 }
+/* formato Excel di ogni classifica, come nella pagina */
+const RK_NF = { pagella:"0.0", organico:"0", crescita:"+0;-0;0", assunzioni:"0", stabilita:'0.0"%"', turnover:'0.0"%"', anzianita:'0.0" anni"', fulltime:'0.0"%"', parita:'0"/100"', donne:'0.0"%"', giovani:'0.0"%"', eta:'0.0" anni"', costo:'#,##0.00 "€"', costoMedio:'#,##0.00 "€"', sicurezza:'0"%"', adempimenti:'0"/100"', durc:'0"/100"', ferie:'0.0"%"', presenze:'"giorno "0.0' };
 async function rkExcel(btn){
   const rows = rkData(), min = +RK.min || 1; if(!rows.length){ P.toast("Nessun dato da esportare"); return; }
   const downloads = window.claude && window.claude.use ? await window.claude.use("downloads") : null; if(!downloads){ P.toast("Il download non è disponibile in questa vista"); return; }
@@ -10629,8 +10689,8 @@ async function rkExcel(btn){
     const hr = ws.getRow(4); head.forEach((h,i)=>{ const c = hr.getCell(i+1); c.value = h; c.font = {bold:true}; c.alignment = {wrapText:true, vertical:"middle"}; c.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FFE9EDF1"}}; }); hr.height = 44;
     ws.autoFilter = {from:{row:4,column:1}, to:{row:4,column:head.length}};
     list.forEach((x,i)=>{ const r = ws.getRow(5+i); r.values = [x.c.n??"", x.c.azienda, x.n, ...cats.flatMap(c=>{ const o = R.get(c.id).get(x); return o ? [Math.round(o.v*100)/100, o.pos] : [null, null]; })];
-      cats.forEach((c,j)=>{ const o = R.get(c.id).get(x); if(o && o.pos<=3) r.getCell(4+j*2+1).font = {bold:true, color:{argb:"FF8C6A00"}}; }); });
-    const buf = await wb.xlsx.writeBuffer();
+      cats.forEach((c,j)=>{ const o = R.get(c.id).get(x); r.getCell(4+j*2).numFmt = RK_NF[c.id] || "0.0"; r.getCell(4+j*2+1).numFmt = "0"; if(o && o.pos<=3) r.getCell(4+j*2+1).font = {bold:true, color:{argb:"FF8C6A00"}}; }); });
+    const buf = await xlBuf(wb);
     await downloads.save({filename:`Classifiche clienti ${fmtD(today).replace(/\//g,".")}.xlsx`, data:new Blob([buf])}); P.toast("File Excel salvato");
   }catch(e){ if(!(e && e.code==="declined")) P.toast("Salvataggio non riuscito"); } finally{ btn.disabled = false; btn.textContent = lbl; }
 }
