@@ -8839,7 +8839,7 @@ async function dpBuild(rows){
   const h = rows[0].map(x=>norm(x)), ix = (...names) => { for(const n of names){ const i = h.findIndex(x=>x===norm(n)); if(i>=0) return i; } return -1; }, ixp = re => h.findIndex(x=>re.test(x));
   const I = { az:ix("Azienda"), fil:ix("Filiale"), mat:ix("Matricola"), cog:ix("Cognome"), nom:ix("Nome"), nomin:ix("Nominativo"), q:ix("Qualifica"), cf:ix("Codice fiscale"), liv:ix("Livello"), livD:ixp(/^desc\.?\s*cod\.?\s*livello/), qi:ix("Qualifica inps 1"), ptT:ix("Qualifica inps 2"), pt:ix("Percentuale p.time"), t:ix("Qualifica inps 3"), fine:ix("Data termine contr."), ass:ix("Data assunzione"), ini:ix("data inizio rapporto"), dc:ixp(/cessaz|licenz|fine rapporto|data dimiss/), sc:ixp(/^stato del dipendente/), mans:ixp(/^descriz\.?\s*qualifica/) };
   /* estrazione ridotta (stato, licenziamento, mansione): aggiorna i rapporti già importati */
-  if([I.t, I.ini].some(x=>x<0) && I.az>=0 && I.mat>=0 && (I.sc>=0 || I.dc>=0)){
+  if([I.t, I.ini].some(x=>x<0) && I.az>=0 && I.mat>=0 && (I.sc>=0 || I.dc>=0 || I.mans>=0)){
     const iso0 = s => { s = String(s||"").trim(); const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/); return m && m[3]!=="0000" ? `${m[3]}-${m[2]}-${m[1]}` : ""; };
     const byCl0 = new Map(CL.list.filter(c=>c.n!=null).map(c=>[String(c.n), c])), docs = {}; let upd = 0, miss = 0;
     rows.slice(1).forEach(r=>{ const c = byCl0.get(String(r[I.az]||"").trim()); if(!c || !DP.docs[c._id]) return;
@@ -8847,7 +8847,7 @@ async function dpBuild(rows){
       const m = String(r[I.mat]||"").trim(), fil = I.fil>=0 ? String(r[I.fil]||"").trim() : "", d = doc.dip.find(x=>x.m===m && (!fil || !x.f || x.f===fil)); if(!d){ miss++; return; }
       if(I.sc>=0) d.sc = String(r[I.sc]||"").trim(); if(I.dc>=0){ const v = iso0(r[I.dc]); if(v) d.dc = v; else delete d.dc; } if(I.mans>=0){ const v = String(r[I.mans]||"").trim(); if(v) d.mans = v; } upd++; });
     if(!upd) throw new Error("Nessun rapporto da aggiornare: importa prima l'anagrafica completa.");
-    return { docs, non:[], nIgn:0, nRap:upd, dc:true, agg:true, miss };
+    return { docs, non:[], nIgn:0, nRap:upd, dc:I.dc>=0 || I.sc>=0, agg:true, miss };
   }
   if([I.az, I.mat, I.t, I.ini].some(x=>x<0)) throw new Error("Il file non sembra l'anagrafica dipendenti di TeamSystem: mancano colonne come Azienda, Matricola, Qualifica inps 3 o data inizio rapporto.");
   const iso = s => { s = String(s||"").trim(); const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/); return m && m[3]!=="0000" ? `${m[3]}-${m[2]}-${m[1]}` : ""; };
@@ -8871,7 +8871,7 @@ async function dpBuild(rows){
 }
 function openDPImport(){
   P.modal(`<h2>Importa l'anagrafica dipendenti</h2>
-    <p class="sc-sub">Estrazione CSV di TeamSystem con Azienda, Filiale, Matricola, Cognome, Nome, Codice fiscale, Livello, Qualifica INPS 1-3, Percentuale part-time, Data termine, Data assunzione e data inizio rapporto. Se aggiungi la colonna della data di cessazione, lo stato «in forza» diventa esatto. I dati sostituiscono l'import precedente; il codice fiscale non viene salvato.</p>
+    <p class="sc-sub">Estrazione CSV di TeamSystem con Azienda, Filiale, Matricola, Cognome, Nome, Codice fiscale, Livello, Qualifica INPS 1-3, Percentuale part-time, Data termine, Data assunzione e data inizio rapporto. Se aggiungi la colonna della data di cessazione, lo stato «in forza» diventa esatto. I dati sostituiscono l'import precedente; il codice fiscale non viene salvato. Puoi caricare anche un'estrazione ridotta (Azienda, Filiale, Matricola e Descriz. qualifica, stato o cessazione): aggiorna solo quei dati sui rapporti già importati, per esempio le mansioni usate per le esclusioni del calcolo disabili.</p>
     <form class="fg" novalidate><div class="field full"><label for="di-f">File CSV</label><input id="di-f" type="file" accept=".csv,text/csv"></div>
       <div class="full" id="di-prev" style="grid-column:1/-1"></div><div class="err full" id="di-err" style="grid-column:1/-1"></div></form>
     <div class="modal-actions"><div class="r"><button class="btn" type="button" id="di-x">Annulla</button><button class="btn primary" type="button" id="di-s" disabled>Importa</button></div></div>`);
@@ -8882,7 +8882,7 @@ function openDPImport(){
     try{ const buf = await file.arrayBuffer(); let text; try{ text = new TextDecoder("utf-8", {fatal:true}).decode(buf); }catch(x){ text = new TextDecoder("windows-1252").decode(buf); } built = await dpBuild(rtParseCsv(text)); }
     catch(err){ $("#di-err").textContent = err.message || "File non leggibile."; return; }
     const big = Object.values(built.docs).filter(d=>JSON.stringify(d).length > 240000).length;
-    $("#di-prev").innerHTML = `<div class="as-plan-b"><b>Anteprima</b><ul>${built.agg?`<li><b>Aggiornamento di stato, cessazioni e mansioni</b> su ${fmtN(built.nRap)} rapporti già importati${built.miss?` (${built.miss} non trovati)`:""}</li>`:`<li>${Object.keys(built.docs).length} clienti in anagrafica con ${fmtN(built.nRap)} rapporti</li>`}<li>${built.non.length} codici azienda non in anagrafica (${built.non.reduce((s,x)=>s+x.dip,0)} rapporti) verranno solo elencati</li>${built.nIgn?`<li>${built.nIgn} rapporti di aziende non più gestite ignorati</li>`:""}<li>${built.dc?"Data di cessazione presente: stato in forza esatto":"Senza data di cessazione: lo stato in forza è dedotto da termine e file ferie"}</li>${big?`<li class="err">${big} aziende superano la dimensione massima di un documento</li>`:""}</ul></div>`;
+    $("#di-prev").innerHTML = `<div class="as-plan-b"><b>Anteprima</b><ul>${built.agg?`<li><b>Aggiornamento di stato, cessazioni e mansioni</b> su ${fmtN(built.nRap)} rapporti già importati${built.miss?` (${built.miss} non trovati)`:""}</li>`:`<li>${Object.keys(built.docs).length} clienti in anagrafica con ${fmtN(built.nRap)} rapporti</li>`}<li>${built.non.length} codici azienda non in anagrafica (${built.non.reduce((s,x)=>s+x.dip,0)} rapporti) verranno solo elencati</li>${built.nIgn?`<li>${built.nIgn} rapporti di aziende non più gestite ignorati</li>`:""}${built.agg && !built.dc ? "" : `<li>${built.dc?"Data di cessazione presente: stato in forza esatto":"Senza data di cessazione: lo stato in forza è dedotto da termine e file ferie"}</li>`}${big?`<li class="err">${big} aziende superano la dimensione massima di un documento</li>`:""}</ul></div>`;
     $("#di-s").disabled = !Object.keys(built.docs).length || big>0;
   };
   $("#di-s").onclick = async ()=>{
@@ -8939,7 +8939,10 @@ function sgCalc(cliente, at, extra){
   const dis = Math.max(0, parseInt(c.disabili,10)||0), cp = Math.max(0, parseInt(c.l68_cp,10)||0);
   /* esclusioni e coperture inserite nel calcolo disabili salvato per il cliente */
   const lc = (c.l68_calc && c.l68_calc.v) || {}, mn = k => Math.max(0, parseFloat(String(lc[k]??"").replace(",", "."))||0);
-  const manEsc = ["inab","cantiere","viagg","fune","soci","estero","domicilio","altro"].reduce((s,k)=>s + mn(k), 0) - (parseFloat(String(lc.corr??"").replace(",", "."))||0);
+  /* cantiere e personale viaggiante: il valore scritto a mano nel calcolo salvato, altrimenti quello ricavato dalle qualifiche TeamSystem */
+  const X = diArt5(c, l68L), opt = (c.l68_calc && c.l68_calc.opt) || {}, has = k => String(lc[k]??"").trim()!=="", fte = arr => arr.reduce((s,o)=>s + sgPtv(o)/100, 0);
+  const aCant = has("cantiere") ? mn("cantiere") : fte(X.cant), aViagg = (opt.viagg!=null ? opt.viagg : X.tr || has("viagg")) ? (has("viagg") ? mn("viagg") : fte(X.viagg)) : 0;
+  const manEsc = aCant + aViagg + ["inab","fune","soci","estero","domicilio","altro"].reduce((s,k)=>s + mn(k), 0) - (parseFloat(String(lc.corr??"").replace(",", "."))||0);
   const covX = mn("inab") + mn("somm") + mn("conv") + mn("esonero");
   const l68 = sgRound(Math.max(0, l68L.reduce((s,o)=>s + sgPtv(o)/100, 0) - dis - cp - manEsc)), q = sgQuota(l68), q18 = sgQuota18(l68);
   return { c, at, list:L, head:L.length, app:L.length-nonApp.length, dir:dir.length, brevi:brevi.length, pt:nonApp.filter(o=>sgPtv(o)<100).length,
@@ -9174,7 +9177,7 @@ function sgOpen(id){
       ${r("Limite contratti a termine "+T.jan.slice(0,4), T.agri ? "Non applicabile (operai agricoli)" : `${T.td} su ${T.lim} consentiti (${sgNum(T.ti)} T.I. ${T.jan.endsWith("-01-01")?"al 1° gennaio":"in forza oggi"})${T.td > T.lim ? ` <span class="sc-st warn">oltre il limite</span>` : ""}${T.stag||T.sost||T.over50?`; esclusi ${[T.stag?`${T.stag} stagionali`:"", T.sost?`${T.sost} sostituzioni`:"", T.over50?`${T.over50} over 50`:""].filter(Boolean).join(", ")}`:""}`)}
       ${r("Apprendisti e qualificati", `${sgPlur(A.app, "apprendista", "apprendisti")}, ${sgPlur(A.qual, "qualificato", "qualificati")}: massimo ${A.lim}`)}
     </dl>
-    ${S.edile ? `<p class="sc-sub">Edilizia: dalla base L. 68 va escluso il personale di cantiere e gli addetti al trasporto, che qui non è distinguibile.</p>` : ""}
+    ${S.edile ? `<p class="sc-sub">Edilizia: dalla base L. 68 sono esclusi il personale di cantiere e gli addetti al trasporto, riconosciuti dalla qualifica TeamSystem (operai e autisti, non gli impiegati d'ufficio).</p>` : ""}
     <form class="fg" novalidate autocomplete="off"><fieldset ${ro?"disabled":""} style="display:contents">
       <div class="field"><label for="sg-dis">Disabili in forza (L. 68)</label><input id="sg-dis" type="number" min="0" step="1" value="${esc(String(S.dis))}"></div>
       <div class="field"><label for="sg-cp">Categorie protette in forza (art. 18)</label><input id="sg-cp" type="number" min="0" step="1" value="${esc(String(S.cp))}"></div>
@@ -10771,8 +10774,8 @@ const DI_ESC = [
   { k:"dis", l:"Disabili già in forza computati nella quota", n:"Art. 4, c. 1 e c. 3-bis: assunti tramite collocamento mirato, oppure già disabili all'assunzione con riduzione della capacità lavorativa pari o superiore al 60% (oltre il 45% se intellettiva o psichica).", auto:true, cov:true },
   { k:"inab", l:"Lavoratori divenuti inabili durante il rapporto (riduzione pari o superiore al 60%)", n:"Art. 4, c. 4: si computano nella quota, salvo che l'inabilità derivi da inadempimento del datore in materia di sicurezza.", cov:true },
   { k:"cp", l:"Categorie protette già in forza (art. 18)", n:"Orfani e coniugi superstiti di vittime del lavoro, di guerra o di servizio, profughi, vittime del terrorismo e della criminalità organizzata e categorie equiparate.", auto:true },
-  { k:"cantiere", l:"Edilizia: personale di cantiere e addetti al trasporto", n:"Art. 5, c. 2, L. 68/1999 (come modificato dalla L. 247/2007). Non vale per il personale non edile, come il direttore dei lavori (interpello n. 11/2015).", edile:true },
-  { k:"viagg", l:"Trasporti: personale viaggiante e navigante", n:"Art. 5, c. 2: datori del trasporto aereo, marittimo e terrestre, limitatamente al personale viaggiante e navigante." },
+  { k:"cantiere", l:"Edilizia: personale di cantiere e addetti al trasporto", n:"Art. 5, c. 2, L. 68/1999 (come modificato dalla L. 247/2007). Non vale per il personale non edile, come il direttore dei lavori (interpello n. 11/2015). Calcolo automatico per i CCNL edili: operai e autisti secondo la qualifica TeamSystem, esclusi gli impiegati d'ufficio.", edile:true, auto:true },
+  { k:"viagg", l:"Trasporti: personale viaggiante e navigante", n:"Art. 5, c. 2: datori del trasporto aereo, marittimo e terrestre, limitatamente al personale viaggiante e navigante. Riconosciuti dalla qualifica TeamSystem (autisti, conducenti, assistenti di bordo, accompagnatori): l'esclusione è attiva da sola per le aziende di trasporto; per le altre conta solo se l'azienda opera anche nel trasporto.", auto:true, opt:true },
   { k:"fune", l:"Impianti a fune: personale addetto all'esercizio", n:"Art. 5, c. 2: personale direttamente adibito alle aree operative di esercizio e regolarità del trasporto. Da verificare con l'ufficio." },
   { k:"soci", l:"Soci di cooperative di produzione e lavoro", n:"Art. 4, c. 1." },
   { k:"estero", l:"Assunti per attività da svolgere all'estero", n:"Art. 4, c. 1: per la durata dell'attività all'estero." },
@@ -10786,22 +10789,36 @@ const DI_COV = [
 ];
 const diN = v => { const s = String(v==null?"":v).trim().replace(",", "."); if(s==="") return null; const x = parseFloat(s); return isFinite(x) ? x : null; };
 const diF = v => fmtN(v, Math.abs(v % 1) > 0.004 ? 2 : 0);
+/* qualifiche TeamSystem («Descriz. qualifica») che valgono per le esclusioni dell'art. 5, c. 2 */
+const DI_VIAGG = /AUTIST|CAMIONIST|CONDUC|\bCOND\.?\s*(DI|AUTO)|AUTOTRASP|AUTOFERRO|ASSIST\.?\s*DI\s*BORDO|OP\.?\s*DI\s*CABINA|CAPOTRENO|PILOTA|HOSTESS|STEWARD|MARITTIM|MARINAI|NAVIGANT|ACCOMPAGNATOR|BIGLIETTAIO/i;
+const DI_UFF = /^(IMP\b|IMP\.|IMPIEG|SEGR|CONTAB|AMMIN|RESP\.?\s*(AMM|PERS|UFF|ACQ|COMM)|ADD\.?\s*(ALLA\s*|AL\s*)?(SEGRET|CONTAB|AMMIN|UFF|BACK|STIP|PAGHE)|BACK\s*OFFICE|OFFICE|GEOMETRA|INGEGN|DISEGN|PROG|GRAFIC|DIR\.?\s*(TEC|COMM|AMM)|DIRETT|DIRIGENTE|QUADRO)/i;
+const diQ = o => o.d.qi==="3" ? "dir" : ["2","Y"].includes(String(o.d.qi)) ? "imp" : "op";
+const diTrasp = c => /trasport|logistic|autoferr|autolinee|autorimess|noleggio\s+(autobus|con\s+conducente)|\bncc\b|taxi|spedizion|corrier|marittim|navigazion|aere/i.test([c.ccnl, c.ccnl ? P.ccName(c.ccnl) : "", c.ccnl_testo, c.settore].filter(Boolean).join(" ")) || /\bBUS\b|TRASPORT|AUTOLINE|AUTONOLEGG/i.test(c.azienda||"");
+const diEdile = c => !!(c.ccnl && clProfilo(c.ccnl).edile) || /edil/i.test([c.ccnl, c.ccnl_testo, c.settore].filter(Boolean).join(" "));
+/* art. 5, c. 2 sui rapporti già computabili: in edilizia personale di cantiere (operai, non impiegati d'ufficio) e addetti al trasporto, altrimenti personale viaggiante */
+function diArt5(c, L){
+  const ed = diEdile(c), mans = o => String(o.d.mans||"");
+  return { ed, tr:diTrasp(c), cant: ed ? L.filter(o=>DI_VIAGG.test(mans(o)) || (diQ(o)==="op" && !DI_UFF.test(mans(o)))) : [], viagg: ed ? [] : L.filter(o=>DI_VIAGG.test(mans(o))), senzaMans:L.filter(o=>!mans(o)).length };
+}
 /* valori ricavati da TeamSystem: teste ed equivalenti a tempo pieno (part-time in proporzione all'orario) */
 function diAuto(cl, at){
   const c = CL.list.find(x=>x._id===cl); if(!c || typeof DP==="undefined" || !DP.loaded || !DP.docs[cl]) return null;
   dpAll(); const L = (DP.byCl.get(cl)||[]).filter(o=>sgIn(o, at));
   const fte = arr => arr.reduce((s,o)=>s + sgPtv(o)/100, 0), pick = (arr, k) => ({ k, n:arr.length, fte:fte(arr), list:arr });
   const app = L.filter(o=>o.app), rest = L.filter(o=>!o.app), dir = rest.filter(o=>o.d.qi==="3"), r2 = rest.filter(o=>o.d.qi!=="3");
-  const brevi = r2.filter(o=>sgBreve(o.d)), sost = r2.filter(o=>!sgBreve(o.d) && o.d.t==="A");
-  return { c, tot:pick(L,"tot"), app:pick(app,"app"), dir:pick(dir,"dir"), brevi:pick(brevi,"brevi"), sost:pick(sost,"sost"), pt:L.filter(o=>sgPtv(o)<100).length,
+  const brevi = r2.filter(o=>sgBreve(o.d)), sost = r2.filter(o=>!sgBreve(o.d) && o.d.t==="A"), r3 = r2.filter(o=>!sgBreve(o.d) && o.d.t!=="A");
+  const X = diArt5(c, r3);
+  return { c, tot:pick(L,"tot"), app:pick(app,"app"), dir:pick(dir,"dir"), brevi:pick(brevi,"brevi"), sost:pick(sost,"sost"), cantiere:pick(X.cant,"cantiere"), viagg:pick(X.viagg,"viagg"), tr:X.tr, ed:X.ed, senzaMans:X.senzaMans, pt:L.filter(o=>sgPtv(o)<100).length,
     dis:{ k:"dis", n:Math.max(0, parseInt(c.disabili,10)||0) }, cp:{ k:"cp", n:Math.max(0, parseInt(c.l68_cp,10)||0) } };
 }
+/* esclusioni con la spunta: gli apprendisti contano come esclusi salvo scelta diversa; il personale viaggiante solo per le aziende di trasporto */
+const diOn = (k, A) => k==="viagg" ? (DI.opt.viagg!=null ? DI.opt.viagg : !!(A && A.tr) || diN(DI.v.viagg)!=null) : DI.opt[k]!==false;
 /* il calcolo: tutti i valori sono in equivalenti a tempo pieno */
 function diRun(){
   const at = DI.at || isoD(today), A = DI.cl ? diAuto(DI.cl, at) : null, v = DI.v, o = DI.opt;
   const val = k => { const m = diN(v[k]); if(m!=null) return { x:m, man:true }; if(!A) return { x:0, man:false }; const a = A[k]; return { x: a ? (a.fte!=null ? a.fte : a.n) : 0, man:false }; };
   const tot = val("tot");
-  const E = DI_ESC.map(e=>({ ...e, ...val(e.k), on: e.k==="app" ? o.app!==false : true }));
+  const E = DI_ESC.map(e=>({ ...e, ...val(e.k), on: e.k==="app" ? o.app!==false : e.k==="viagg" ? diOn(e.k, A) : true }));
   const esc = E.filter(e=>e.on).reduce((s,e)=>s + e.x, 0), corr = diN(v.corr) || 0;
   const raw = Math.max(0, tot.x - esc + corr), base = sgRound(raw);
   const q = sgQuota(base), q18 = sgQuota18(base);
@@ -10870,9 +10887,10 @@ function diForm(){
   const R = diRun(), A = R.A, o = DI.opt;
   const inp = (k, ph, hint) => `<input class="di-in" inputmode="decimal" data-div="${k}" value="${esc(DI.v[k]??"")}" placeholder="${esc(ph)}" aria-label="${esc(hint)}">`;
   const autoTxt = k => { if(!A || !A[k]) return ""; const a = A[k]; return a.fte!=null ? `${a.n} ${a.n===1?"persona":"persone"}${Math.abs(a.fte - a.n) > 0.004 ? ` = ${diF(a.fte)} a tempo pieno` : ""}` : `${a.n} in anagrafica`; };
-  const who = k => A && A[k] && A[k].list && A[k].list.length ? `<details class="di-who"><summary>Chi sono</summary><p>${A[k].list.map(x=>`${esc(dpCap(x.nome))}${sgPtv(x)<100?` (${sgPtv(x)}%)`:""}${x.d.fine && x.d.t!=="I"?` fino al ${fmtD(parseD(x.d.fine))}`:""}`).join(" · ")}</p></details>` : "";
-  const row = (e, sub) => `<tr class="${e.k==="app" && o.app===false ? "di-off" : ""}"><td><b>${esc(e.l)}</b>${e.opt?` <label class="di-tg"><input type="checkbox" data-dio="app" ${o.app!==false?"checked":""}> escludi</label>`:""}<span class="sc-sub">${esc(e.n)}</span>${who(e.k)}</td>
-    <td class="num">${e.auto && A ? `<span class="sc-sub">${esc(autoTxt(e.k)) || "—"}</span>` : ""}${inp(e.k, e.auto && A ? diF(A[e.k] ? (A[e.k].fte!=null ? A[e.k].fte : A[e.k].n) : 0) : "0", e.l)}</td></tr>`;
+  const who = k => A && A[k] && A[k].list && A[k].list.length ? `<details class="di-who"><summary>Chi sono</summary><p>${A[k].list.map(x=>`${esc(dpCap(x.nome))}${["viagg","cantiere"].includes(k) && x.d.mans?` – ${esc(dpCap(x.d.mans))}`:""}${sgPtv(x)<100?` (${sgPtv(x)}%)`:""}${x.d.fine && x.d.t!=="I"?` fino al ${fmtD(parseD(x.d.fine))}`:""}`).join(" · ")}</p></details>` : "";
+  const extra = k => !A ? "" : k==="viagg" && A.viagg.n && !A.tr ? `<span class="sc-sub di-warn">L'azienda non risulta del settore trasporti: spunta «escludi» solo se gli autisti sono personale viaggiante di un'attività di trasporto.</span>` : k==="cantiere" && !A.ed ? `<span class="sc-sub">Il CCNL del cliente non è edile: nessuna esclusione automatica.</span>` : ["viagg","cantiere"].includes(k) && A.senzaMans ? `<span class="sc-sub">${A.senzaMans} ${A.senzaMans===1?"dipendente non ha":"dipendenti non hanno"} la descrizione della qualifica: importa l'estrazione TeamSystem con «Descriz. qualifica».</span>` : "";
+  const row = (e, sub) => { const on = !e.opt || diOn(e.k, A); return `<tr class="${on ? "" : "di-off"}"><td><b>${esc(e.l)}</b>${e.opt?` <label class="di-tg"><input type="checkbox" data-dio="${e.k}" ${on?"checked":""}> escludi</label>`:""}<span class="sc-sub">${esc(e.n)}</span>${extra(e.k)}${who(e.k)}</td>
+    <td class="num">${e.auto && A ? `<span class="sc-sub">${esc(autoTxt(e.k)) || "—"}</span>` : ""}${inp(e.k, e.auto && A ? diF(A[e.k] ? (A[e.k].fte!=null ? A[e.k].fte : A[e.k].n) : 0) : "0", e.l)}</td></tr>`; };
   $("#diForm").innerHTML = `
     <section class="di-sec"><h3>1. Organico</h3>
       <div class="tblwrap"><table class="cl di-tbl"><thead><tr><th>Voce</th><th class="num">Valore (tempo pieno)</th></tr></thead><tbody>
