@@ -6715,7 +6715,7 @@ function subscribeMPX(){
 }
 (window.__hooks = window.__hooks||[]).push(ev=>{ if(ev==="db") subscribeMPX(); });
 if(state.db) subscribeMPX();
-const mpxC = x => ({ _id:x._id, azienda:x.azienda||"", n:x.n, operatore:x.operatore||"", ti:x.dip||0, td:0, extra:true, studio:x.studio||"", sede:x.sede||"", info:x.note||"" });
+const mpxC = x => ({ _id:x._id, azienda:x.azienda||"", n:x.n, operatore:x.operatore||"", ti:x.dip||0, td:0, extra:true, studio:x.studio||"", sede:x.sede||"", info:x.note||"", colf:x.tipo==="colf" });
 const mpC = id => CL.list.find(x=>x._id===id) || (()=>{ const x = MPX.list.find(y=>y._id===id); return x ? mpxC(x) : null; })();
 function mpRows(ym){
   const ids = new Set(CL.list.filter(c=>(c.ti||0)+(c.td||0)>0).map(c=>c._id));
@@ -6723,7 +6723,7 @@ function mpRows(ym){
   MPX.list.filter(x=>x.attivo!==false).forEach(x=>ids.add(x._id));
   return [...ids].map(id=>{ const c = mpC(id); if(!c) return null; const d = mpDoc(ym, id) || null; return {c, d, done: MP_STEPS.filter(s=>d && d.s && d.s[s.k]).length, esc: !!(d && d.escluso)}; }).filter(Boolean);
 }
-function mpLate(r, ym){ const S = mpScad(ym), s = (r.d&&r.d.s)||{}; const late = []; if(!r.esc){ if(today > S.f24 && !s.f24) late.push("F24"); if(today > S.uni && !s.uni) late.push("UniEmens"); } return late; }
+function mpLate(r, ym){ const S = mpScad(ym), s = (r.d&&r.d.s)||{}; const late = []; if(!r.esc && !r.c.colf){   /* le colf versano con MAV trimestrale: niente F24 e UniEmens mensili */ if(today > S.f24 && !s.f24) late.push("F24"); if(today > S.uni && !s.uni) late.push("UniEmens"); } return late; }
 function mpPass(r, f){
   f = f || MP.f;
   if(OPF.op && (r.c.operatore||"").trim()!==OPF.op) return false;
@@ -6803,12 +6803,12 @@ function renderMP(){
   const body = $("#mpBody");
   if(!CL.loaded || !MP.loaded){ body.innerHTML = `<div class="empty"><h3>Caricamento…</h3></div>`; return; }
   if(!rows.length){ body.innerHTML = `<div class="empty"><h3>Nessun cliente con questi filtri</h3><p>${MP.f==="completati"?"Nessun cliente ha ancora completato il mese.":"Cambia filtro o usa «Azzera filtri»."}</p></div>${state.canWrite?`<p><button class="btn" type="button" data-mpadd>Includi cliente</button></p>`:""}`; return; }
-  const cell = (r, s) => { const v = ((r.d&&r.d.s)||{})[s.k], dt = v ? new Date(v) : null; const late = !v && !r.esc && ((s.k==="f24" && today > S.f24) || (s.k==="uni" && today > S.uni));
+  const cell = (r, s) => { const v = ((r.d&&r.d.s)||{})[s.k], dt = v ? new Date(v) : null; const late = !v && !r.esc && !r.c.colf && ((s.k==="f24" && today > S.f24) || (s.k==="uni" && today > S.uni));
     return `<td class="mp-c"><button class="mp-step ${v?"on":late?"late":""}" type="button" data-mps="${esc(r.c._id)}|${s.k}" aria-pressed="${!!v}" title="${esc(s.l)}${v?` il ${fmtD(dt)}`:""}" ${state.canWrite?"":"disabled"}>${v?"✓":"·"}</button>${v?`<small>${dt.getDate()}/${dt.getMonth()+1}</small>`:""}</td>`; };
   body.innerHTML = `<div class="tblwrap"><table class="cl mp-tbl"><thead><tr><th>N.</th><th>Cliente</th>${MP_STEPS.map(s=>`<th class="mp-c">${esc(s.s)}${state.canWrite?`<button class="btn ghost sm mp-all" type="button" data-mpall="${s.k}">Tutti</button>`:""}</th>`).join("")}<th>Stato</th><th></th></tr></thead><tbody>
     ${rows.map(r=>{ const late = mpLate(r, MP.ym);
       const st = r.esc ? `<span class="sc-st none">Escluso</span>` : late.length ? `<span class="sc-st bad">In ritardo: ${late.join(", ")}</span>` : r.done===MP_STEPS.length ? `<span class="sc-st ok">Completato</span>` : r.done ? `<span class="sc-st warn">${r.done} di ${MP_STEPS.length}</span>` : `<span class="sc-st none">Da iniziare</span>`;
-      return `<tr class="${r.esc?"mp-esc":""}"><td class="num">${r.c.n??""}</td><td class="az">${r.c.extra ? `<b>${esc(r.c.azienda)}</b> <span class="ct-tag">${esc(["Studio "+r.c.studio, r.c.sede].filter(x=>x && x!=="Studio ").join(" · ") || "Solo paghe")}</span>` : `<button class="btn ghost sm ck-clb" type="button" data-mpcl="${esc(r.c._id)}">${esc(r.c.azienda)}</button>`}<span class="sc-sub">${[r.c.operatore?`Operatore: ${esc(r.c.operatore)}`:"", r.c.extra ? "" : `${(r.c.ti||0)+(r.c.td||0)} dip.`, r.c.mensilita?esc(r.c.mensilita):"", r.c.info?esc(r.c.info):"", r.d&&r.d.note?esc(r.d.note):""].filter(Boolean).join(" · ")}</span></td>
+      return `<tr class="${r.esc?"mp-esc":""}"><td class="num">${r.c.n??""}</td><td class="az">${r.c.extra ? `<b>${esc(r.c.azienda)}</b> <span class="ct-tag">${esc([r.c.colf ? "Colf" : "", "Studio "+r.c.studio, r.c.sede].filter(x=>x && x!=="Studio ").join(" · ") || "Solo paghe")}</span>` : `<button class="btn ghost sm ck-clb" type="button" data-mpcl="${esc(r.c._id)}">${esc(r.c.azienda)}</button>`}<span class="sc-sub">${[r.c.operatore?`Operatore: ${esc(r.c.operatore)}`:"", r.c.extra ? "" : `${(r.c.ti||0)+(r.c.td||0)} dip.`, r.c.mensilita?esc(r.c.mensilita):"", r.c.info?esc(r.c.info):"", r.d&&r.d.note?esc(r.d.note):""].filter(Boolean).join(" · ")}</span></td>
         ${MP_STEPS.map(s=>cell(r,s)).join("")}<td>${st}</td>
         <td><div class="rowact">${state.canWrite?`<button class="btn ghost sm" type="button" data-mpnote="${esc(r.c._id)}">Nota</button><button class="btn ghost sm" type="button" data-mpesc="${esc(r.c._id)}">${r.esc?"Includi":"Escludi"}</button>`:""}</div></td></tr>`; }).join("")}</tbody></table></div>
     ${state.canWrite?`<p style="margin-top:10px"><button class="btn ghost" type="button" data-mpadd>Includi un altro cliente</button></p>`:""}`;
@@ -6825,7 +6825,7 @@ function openMPNote(c){
 function openMPX(){
   const draw = () => { const L = [...MPX.list].sort((a,b)=>(a.studio||"").localeCompare(b.studio||"") || (a.n??1e9)-(b.n??1e9));
     return `<h2>Aziende solo paghe</h2><p class="sc-sub">Aziende di cui lo studio elabora le paghe senza averle in anagrafica (per esempio quelle dello studio DCA di Roma): compaiono solo in Mese paghe.</p>
-      ${L.length ? `<div class="tblwrap"><table class="cl"><thead><tr><th>Cod.</th><th>Azienda</th><th>Studio · sede</th><th>Operatore</th><th></th></tr></thead><tbody>${L.map(x=>`<tr class="${x.attivo===false?"mp-esc":""}"><td class="num">${esc(String(x.n??""))}</td><td>${esc(x.azienda||"")}${x.note?`<span class="sc-sub">${esc(x.note)}</span>`:""}</td><td>${esc([x.studio, x.sede].filter(Boolean).join(" · "))}</td><td>${esc(x.operatore||"")}</td><td>${state.canWrite?`<button class="btn ghost sm" type="button" data-mpxon="${esc(x._id)}">${x.attivo===false?"Riattiva":"Disattiva"}</button>`:""}</td></tr>`).join("")}</tbody></table></div>` : `<p class="sc-sub">Nessuna azienda.</p>`}
+      ${L.length ? `<div class="tblwrap"><table class="cl"><thead><tr><th>Cod.</th><th>Azienda</th><th>Studio · sede</th><th>Operatore</th><th></th></tr></thead><tbody>${L.map(x=>`<tr class="${x.attivo===false?"mp-esc":""}"><td class="num">${esc(String(x.n??""))}</td><td>${esc(x.azienda||"")}${x.note?`<span class="sc-sub">${esc(x.note)}</span>`:""}</td><td>${esc([x.tipo==="colf" ? "Colf" : "", x.studio, x.sede].filter(Boolean).join(" · "))}</td><td>${esc(x.operatore||"")}</td><td>${state.canWrite?`<button class="btn ghost sm" type="button" data-mpxon="${esc(x._id)}">${x.attivo===false?"Riattiva":"Disattiva"}</button>`:""}</td></tr>`).join("")}</tbody></table></div>` : `<p class="sc-sub">Nessuna azienda.</p>`}
       ${state.canWrite ? `<form class="fg" novalidate><div class="field"><label for="mx-a">Azienda</label><input id="mx-a"></div><div class="field"><label for="mx-n">Codice</label><input id="mx-n" inputmode="numeric"></div><div class="field"><label for="mx-s">Studio</label><input id="mx-s" placeholder="es. DCA"></div><div class="field"><label for="mx-se">Sede</label><input id="mx-se" placeholder="es. Roma"></div><div class="field"><label for="mx-o">Operatore</label><input id="mx-o" list="mx-ol"><datalist id="mx-ol">${opNames().map(o=>`<option value="${esc(o)}">`).join("")}</datalist></div><div class="err full" id="mx-err" style="grid-column:1/-1"></div></form>` : ""}
       <div class="modal-actions"><div class="r"><button class="btn" type="button" id="mx-x">Chiudi</button>${state.canWrite?`<button class="btn primary" type="button" id="mx-s2">Aggiungi</button>`:""}</div></div>`; };
   const bind = () => {
