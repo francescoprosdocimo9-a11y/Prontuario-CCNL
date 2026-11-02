@@ -1077,6 +1077,18 @@ table.cl tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offs
 
 /* Calcolo disabili */
 .di-bar{grid-template-columns:minmax(240px,2fr) minmax(150px,190px) auto}
+/* Mappa obblighi */
+.ob-bar{grid-template-columns:minmax(240px,2fr) auto}
+.ob-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.ob-it{border:1px solid var(--line);border-left:4px solid var(--ok);border-radius:10px;background:var(--surface);padding:10px 12px;min-width:0}
+.ob-it.no,.ob-it.opz{border-left-color:var(--line-strong);opacity:.8}.ob-it.q{border-left-color:var(--warn)}
+.ob-it h4{margin:6px 0 2px;font-size:14.5px;line-height:1.3}.ob-it p{margin:4px 0 0;font-size:13px;line-height:1.45}
+.ob-h{display:flex;flex-wrap:wrap;gap:4px;align-items:center}.ob-h .ct-tag{margin:0;white-space:normal}
+.ob-s{color:var(--muted);font-size:12px!important}.ob-an{font-size:12.5px!important}.ob-an .ct-tag{white-space:normal}
+.ob-it .btn{margin-top:8px}
+.ob-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.ob-tbl td .ct-tag{white-space:normal}.ob-tbl tbody tr{cursor:pointer}
+@media (max-width:820px){.ob-bar{grid-template-columns:1fr}.ob-list{grid-template-columns:1fr}}
 .di-lay{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:16px;align-items:start}
 .di-out{position:sticky;top:12px}
 .di-lay>*{min-width:0}
@@ -1232,6 +1244,7 @@ table.cl tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offs
   <div id="viewMinimi" hidden></div>
   <div id="viewClassifiche" hidden></div>
   <div id="viewDisabili" hidden></div>
+  <div id="viewObblighi" hidden></div>
 </div>
 </div><!-- /app -->
 
@@ -1746,6 +1759,7 @@ function setView(v){
   $("#viewMinimi").hidden = v!=="minimi";
   $("#viewClassifiche").hidden = v!=="classifiche";
   $("#viewDisabili").hidden = v!=="disabili";
+  $("#viewObblighi").hidden = v!=="obblighi";
   const ta = $("#topActions"); if(ta) ta.hidden = !state.canWrite || v!=="prontuario";
   if(v==="clienti") renderClienti();
   if(v==="calcolatori") renderCalc();
@@ -1773,6 +1787,7 @@ function setView(v){
   if(v==="minimi") renderMN();
   if(v==="classifiche") renderRK();
   if(v==="disabili") renderDI();
+  if(v==="obblighi") renderOB();
   try{ opBar(); }catch(e){}
   try{ localStorage.setItem("prontuario.view", v); }catch(e){}
   try{ uxOnView(v); }catch(e){}
@@ -1801,7 +1816,7 @@ function opMap(){ if(_opmSrc!==CL.list){ _opmSrc = CL.list; _opm = new Map(CL.li
 function opOk(clId){ return !OPF.op || (!!clId && opMap().get(clId)===OPF.op); }
 function opL(list, k){ k = k || "cliente"; return OPF.op ? list.filter(x=>opOk(x[k])) : list; }
 function opNames(){ return [...new Set(CL.list.map(c=>(c.operatore||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); }
-const OP_VIEWS = ["oggi","clienti","personale","classifiche","disabili","sicurezza","storico","dipendenti","contatori","assunzioni","ratei","dati","agevolazioni","lettere","controlli","disciplinari","mesepaghe","termine","tirocini","apprendisti","durc"];
+const OP_VIEWS = ["oggi","clienti","personale","classifiche","disabili","obblighi","sicurezza","storico","dipendenti","contatori","assunzioni","ratei","dati","agevolazioni","lettere","controlli","disciplinari","mesepaghe","termine","tirocini","apprendisti","durc"];
 function opBar(){
   const el = document.getElementById("opBar"); if(!el) return;
   if(!OPF.op || !OP_VIEWS.includes(view)){ el.innerHTML = ""; return; }
@@ -4183,6 +4198,7 @@ function calcolaCosto(k){
     const impo = retrTot + accant + bpTax;
     const impoR = Math.round(impo);
     let inpsAz = impoR*k.az/100;
+    const naspiTd = r2(impoR*csTdAdd(k)/100);
     let eson = 0;
     if(k.esPerc>0 && m>=k.esDal && m<=k.esAl){ eson = inpsAz*k.esPerc/100; if(k.esMax>0) eson = Math.min(eson, k.esMax); }
     const inail = r2(impo*k.inail/100), addInail = r2(inail*0.01);
@@ -4218,11 +4234,11 @@ function calcolaCosto(k){
     if(entiM) add("enti", m, entiM);
     if(solidM) add("solid", m, solidM);
     add("retrTot", m, retrTot); add("impo", m, impoR); add("inpsAz", m, inpsAz); if(eson) add("esonero", m, -eson);
-    add("inail", m, inail); add("addInail", m, addInail);
-    add("contrTot", m, inpsAz - eson + inail + addInail);
+    add("inail", m, inail); add("addInail", m, addInail); if(naspiTd) add("naspiTd", m, naspiTd);
+    add("contrTot", m, inpsAz - eson + naspiTd + inail + addInail);
     add("tfr", m, tfr); add("tfrTratt", m, -tratt); add("tfrTot", m, tfr - tratt);
     add("contrattTot", m, entiM + solidM + g("welfare") + bp);
-    add("costo", m, retrTot + accant + inpsAz - eson + inail + addInail + tfr - tratt + entiM + solidM + g("welfare") + bp);
+    add("costo", m, retrTot + accant + inpsAz - eson + naspiTd + inail + addInail + tfr - tratt + entiM + solidM + g("welfare") + bp);
     add("inpsLav", m, inpsLav); add("lavEnti", m, lavEnti);
     const fisc = Math.max(0, retrTot + accant + bpTax - inpsLav - lavDed);
     add("fisc", m, fisc); fiscTot += fisc;
@@ -4304,7 +4320,7 @@ function csRead(){
   const permOpts = clPermessi(CS.cc, R);
   const permIdx = Math.min(+cv("cs-perm",0)||0, Math.max(0,permOpts.length-1));
   return {
-    cc:CS.cc, liv, qual, anno:+cv("cs-anno", today.getFullYear()),
+    cc:CS.cc, liv, qual, anno:+cv("cs-anno", today.getFullYear()), tipo:cv("cs-tipo","ti"), rinn:Math.max(0, parseInt(cv("cs-rinn","0"),10)||0),
     dal:+cv("cs-dal",1), al:Math.max(+cv("cs-dal",1), +cv("cs-al",12)), prima:cv("cs-prima", true)!==false,
     pt:Math.min(100, Math.max(1, num(cv("cs-pt","100"))||100)), orario:num(cv("cs-orario","40"))||40, gg:+cv("cs-gg",5),
     app:!!cv("cs-app",false), appp:num(cv("cs-appp",""))||70, apppFisso: !!num(cv("cs-appp","")) || !APP_RET[CS.cc], appAss: parseD(cv("cs-apass","")), appFine: parseD(cv("cs-apfine","")), apLiv: cv("cs-aplv",""),
@@ -4319,6 +4335,10 @@ function csRead(){
     patr: pat ? {g:+pat[1], m:+pat[2]} : null, ov:CS.ov
   };
 }
+/* contributo addizionale NASpI dei contratti a termine, a carico dell'azienda: 1,40% (art. 2, c. 28, L. 92/2012) più 0,50% per ogni rinnovo (art. 3, c. 2, DL 87/2018).
+   Non lo pagano apprendisti, stagionali e sostituti di lavoratori assenti (art. 2, c. 29). */
+const csTipoTxt = k => k.app ? "Apprendistato" : k.tipo==="td" ? `Tempo determinato${k.rinn?` (${k.rinn} ${k.rinn===1?"rinnovo":"rinnovi"})`:""}` : k.tipo==="tdx" ? "Tempo determinato stagionale o in sostituzione" : "Tempo indeterminato";
+const csTdAdd = k => !k || k.app || k.tipo!=="td" ? 0 : 1.4 + 0.5 * (k.rinn || 0);
 function csInpsDefault(k){
   const C = clProfilo(k.cc);
   if(k.app) return "app";
@@ -4371,6 +4391,8 @@ function renderCosto(){
       <div class="row2">${csSel("cs-liv","Livello", R.livelli.map(l=>[l,l]), k.liv)}${csSel("cs-qual","Qualifica", [["operaio","Operaio"],["impiegato","Impiegato"],["quadro","Quadro"]], k.qual)}</div>
       <div class="row2">${csSel("cs-anno","Anno", yearOpts, k.anno)}${csSel("cs-crit","Criterio", [["competenza","Competenza (ratei)"],["cassa","Cassa (pagato nel mese)"]], k.crit)}</div>
       <div class="row2">${csSel("cs-dal","Dal mese", mesiOpts, k.dal)}${csSel("cs-al","Al mese", mesiOpts, k.al)}</div>
+      ${k.app ? "" : `<div class="row2">${csSel("cs-tipo","Tipo di rapporto", [["ti","Tempo indeterminato"],["td","Tempo determinato"],["tdx","Determinato stagionale o in sostituzione"]], k.tipo)}${k.tipo==="td" ? csSel("cs-rinn","Rinnovi del contratto", [0,1,2,3,4,5,6].map(n=>[n, n ? `${n} (+${fmtN(n*0.5,2)}%)` : "Nessuno (primo contratto)"]), k.rinn) : ""}</div>
+      <small class="cs-hint">${k.tipo==="td" ? `Contributo addizionale NASpI a carico dell'azienda: <b>${fmtN(csTdAdd(k),2)}%</b> dell'imponibile (1,40% più 0,50% per ogni rinnovo; le proroghe non contano). Per gli ultimi 6 mesi è restituito se il contratto è trasformato a tempo indeterminato o il lavoratore è riassunto entro 6 mesi.` : k.tipo==="tdx" ? "Contratti stagionali e sostituzioni di lavoratori assenti: niente contributo addizionale NASpI." : "Il contratto a termine costa l'1,40% in più di contributi (contributo addizionale NASpI)."}</small>`}
       ${csCheck("cs-prima","In forza già dall'anno precedente", k.prima, "Togli la spunta per un'assunzione nell'anno: cambia 14ª, una tantum e iscrizioni.")}
       ${csCheck("cs-rmens","Ratei di 13ª e 14ª pagati ogni mese in busta", k.rMens, "Ogni mese si paga 1/12 delle mensilità aggiuntive invece di erogarle a dicembre e a luglio. Il costo annuo non cambia, cambia la distribuzione mensile. Serve l'accordo con il lavoratore e va verificata la compatibilità con il CCNL.")}
       <div class="row2">${csField("cs-pt","Part-time (%)", fmtN(k.pt,2), 'inputmode="decimal"')}${csField("cs-orario","Orario tempo pieno (ore/sett.)", fmtN(k.orario,0), 'inputmode="decimal"')}</div>
@@ -4448,7 +4470,7 @@ const CS_RIGHE = [
   {k:"accant", l:"Accantonamento Cassa Edile (18,5%)"},
   {k:"retrTot", l:"Totale retribuzione", tot:true, plusAccant:true},
   {sez:"Contributi"},
-  {k:"inpsAz", l:"INPS a carico azienda"}, {k:"esonero", l:"Esonero contributivo"}, {k:"inail", l:"INAIL"}, {k:"addInail", l:"Addizionale INAIL"},
+  {k:"inpsAz", l:"INPS a carico azienda"}, {k:"esonero", l:"Esonero contributivo"}, {k:"naspiTd", l:"Contributo addizionale NASpI (tempo determinato)"}, {k:"inail", l:"INAIL"}, {k:"addInail", l:"Addizionale INAIL"},
   {k:"contrTot", l:"Totale contribuzione", tot:true},
   {sez:"TFR"},
   {k:"tfr", l:"Quota TFR (retribuzione ÷ 13,5)"}, {k:"tfrTratt", l:"Contributo 0,50% (L. 297/1982)"}, {k:"tfrTot", l:"Totale TFR", tot:true},
@@ -4594,7 +4616,8 @@ function csCompute(){
         <dt>Mensilità</dt><dd>${res.edileOp?"Cassa Edile":k.rMens?`${res.agg.n===2?`13ª e ${esc(res.agg.nome14)}`:"13ª"} a ratei mensili in busta`:(res.agg.n===2?`13ª e ${esc(res.agg.nome14)} (pagata a ${MESI_L[res.agg.p14-1]})`:"13ª")}</dd>
         <dt>Divisore giornaliero</dt><dd>${R.divGiorno||26}</dd>
         <dt>Ferie e permessi (tempo pieno)</dt><dd>${fmtN(res.feriSett,2)} settimane · ${fmtN(k.permOre,0)} ore</dd>
-        <dt>INPS azienda / lavoratore</dt><dd>${fmtN(k.az,2)}% / ${fmtN(k.lav,2)}%</dd>
+        <dt>Rapporto</dt><dd>${esc(csTipoTxt(k))}</dd>
+        <dt>INPS azienda / lavoratore</dt><dd>${fmtN(k.az,2)}% / ${fmtN(k.lav,2)}%${csTdAdd(k)?` + ${fmtN(csTdAdd(k),2)}% addizionale NASpI`:""}</dd>
         <dt>INAIL</dt><dd>${fmtN(k.inail,2)}% + addizionale 1%</dd>
         <dt>Prima fascia pensionabile</dt><dd>${fmtE(res.par.fasciaMese)} al mese (${esc(res.par.fonte)})</dd>
       </dl></div>
@@ -4740,6 +4763,7 @@ function xlBuild(ExcelJS, res, k){
     ["CCNL", (state.ccnl[k.cc]||{}).nome || P.ccName(k.cc)],
     ["Livello e qualifica", `${k.liv} · ${k.qual}${k.app?(k.apppFisso?` · apprendista ${fmtN(k.appp,0)}%`:!appFin(k)?" · apprendista (minimo pieno del livello)":k.appAss&&k.appFine?" · apprendista (progressione del CCNL)":(x=>x?` · apprendista (livello finale, primo periodo: ${APP_RET[k.cc].t==="liv"?`livello ${x.liv}`:`${fmtN(x.p,0)}%`})`:" · apprendista")(appPrimo(k.cc,k.liv))):""}`],
     ["Periodo", `${mesiTxt} ${k.anno} (${res.nAtt} mesi)${k.prima?"":" · assunzione nell'anno"}`],
+    ["Rapporto", csTipoTxt(k)],
     ["Orario", `${k.pt<100?`part-time ${fmtN(k.pt,2)}% · `:"tempo pieno · "}${fmtN(k.orario*k.pt/100,1)} ore settimanali su ${k.gg} giorni`],
     ["Mensilità", res.edileOp ? "Ferie e gratifica tramite Cassa Edile (18,5%)" : k.rMens ? `${res.agg.n===2 ? `13ª e ${res.agg.nome14}` : "13ª"} a ratei mensili in busta` : (res.agg.n===2 ? `13ª e ${res.agg.nome14} (pagata a ${MESI_L[res.agg.p14-1]})` : "13ª")],
     ["Contributi", `INPS ${fmtN(k.az,2)}% azienda · ${fmtN(k.lav,2)}% lavoratore · INAIL ${fmtN(k.inail,2)}%`],
@@ -5849,7 +5873,7 @@ function ogGo(g){
 
 /* ================= NAVIGAZIONE, RICERCA GLOBALE, SCHEDA CLIENTE ================= */
 const cnelOf = c => P.cnelOf(c);
-const UX_LABEL = { oggi:"Oggi", prontuario:"Prontuario CCNL", clienti:"Clienti", calcolatori:"Calcolatori", costo:"Costo del lavoro", termine:"Contratti a termine", apprendisti:"Apprendistato", durc:"DURC", agevolazioni:"Agevolazioni", scadenziario:"Scadenziario CCNL", lettere:"Lettere", controlli:"Controlli", mesepaghe:"Mese paghe", disciplinari:"Disciplinari", assunzioni:"Assunzioni", tirocini:"Tirocini", ratei:"Ratei dipendenti", dati:"Aggiorna dati e backup", dipendenti:"Dipendenti", contatori:"Contatori", sicurezza:"Sicurezza", simulatore:"Simula assunzione", storico:"Storico modifiche", personale:"Costo del personale", classifiche:"Classifiche", disabili:"Disabili L. 68", minimi:"Scadenziario minimi" };
+const UX_LABEL = { oggi:"Oggi", prontuario:"Prontuario CCNL", clienti:"Clienti", calcolatori:"Calcolatori", costo:"Costo del lavoro", termine:"Contratti a termine", apprendisti:"Apprendistato", durc:"DURC", agevolazioni:"Agevolazioni", scadenziario:"Scadenziario CCNL", lettere:"Lettere", controlli:"Controlli", mesepaghe:"Mese paghe", disciplinari:"Disciplinari", assunzioni:"Assunzioni", tirocini:"Tirocini", ratei:"Ratei dipendenti", dati:"Aggiorna dati e backup", dipendenti:"Dipendenti", contatori:"Contatori", sicurezza:"Sicurezza", simulatore:"Simula assunzione", storico:"Storico modifiche", personale:"Costo del personale", classifiche:"Classifiche", disabili:"Disabili L. 68", obblighi:"Mappa obblighi", minimi:"Scadenziario minimi" };
 function uxDrawer(open){
   const side = document.getElementById("side"), scrim = document.getElementById("sideScrim"), btn = document.getElementById("menuBtn");
   if(!side) return;
@@ -6016,6 +6040,7 @@ function kshAct(k, arg){
   else if(k==="sic"){ setView("sicurezza"); sicOpen(c._id); }
   else if(k==="cp"){ CP.cl = c._id; cpSaveLocal(); setView("personale"); }
   else if(k==="di"){ diOpen(c._id); }
+  else if(k==="ob"){ obOpen(c._id); }
   else if(k==="rk"){ RK.cat = "pagella"; RK.hl = c._id; RK.q = ""; const q = document.getElementById("rkQ"); if(q) q.value = ""; setView("classifiche"); }
   else if(k==="sim"){ SIM.v["sim-cl"] = c._id; simFromClient(); simSave(); setView("simulatore"); }
   else if(k==="hist"){ HS.cl = c._id; HS.per = "tutto"; setView("storico"); }
@@ -6120,7 +6145,7 @@ function kshRender(){
       ${state.canWrite?`<button class="btn sm" type="button" data-ksh="newpm">+ Promemoria</button><button class="btn sm" type="button" data-ksh="edit">Modifica dati</button>`:""}
       <details class="ksh-more"><summary class="btn sm">Altro</summary><div class="ksh-menu" role="menu">
         ${cc?`<button type="button" role="menuitem" data-ksh="prontuario">Regole del CCNL</button>`:""}
-        ${c.ccnl && rulesOf(c.ccnl)?`<button type="button" role="menuitem" data-ksh="calc">Calcolatori</button><button type="button" role="menuitem" data-ksh="costo">Costo del lavoro</button><button type="button" role="menuitem" data-ksh="sim">Simula un'assunzione</button>`:""}${typeof DP!=="undefined" && DP.docs[c._id] ? `<button type="button" role="menuitem" data-ksh="cp">Costo del personale</button><button type="button" role="menuitem" data-ksh="rep">Report annuale per il cliente (PDF)</button><button type="button" role="menuitem" data-ksh="di">Calcolo disabili (L. 68)</button>` : ""}
+        ${c.ccnl && rulesOf(c.ccnl)?`<button type="button" role="menuitem" data-ksh="calc">Calcolatori</button><button type="button" role="menuitem" data-ksh="costo">Costo del lavoro</button><button type="button" role="menuitem" data-ksh="sim">Simula un'assunzione</button>`:""}${typeof DP!=="undefined" && DP.docs[c._id] ? `<button type="button" role="menuitem" data-ksh="cp">Costo del personale</button><button type="button" role="menuitem" data-ksh="rep">Report annuale per il cliente (PDF)</button><button type="button" role="menuitem" data-ksh="di">Calcolo disabili (L. 68)</button><button type="button" role="menuitem" data-ksh="ob">Mappa obblighi</button>` : ""}
         ${DP.loaded && DP.docs[c._id]?`<button type="button" role="menuitem" data-ksh="va">Verifica prima di assumere</button><button type="button" role="menuitem" data-ksh="cn">Contatori</button>`:""}
         ${state.canWrite?`<button type="button" role="menuitem" data-ksh="newdsc">+ Procedimento disciplinare</button>`:""}
         <button type="button" role="menuitem" data-ksh="hist">Storico modifiche</button>
@@ -8576,7 +8601,7 @@ function subscribeDP(){
   if(!DP.unsub) DP.unsub = state.db.collection("dipendenti").onSnapshot(snap=>{ const m = {}; snap.docs.forEach(d=>{ m[d.id] = {...d.data(), _id:d.id}; }); DP.docs = m; DP.loaded = true; DP.cache = null; dpRefresh(); }, ()=>{ DP.loaded = true; dpRefresh(); });
   if(!DP.unsubM) DP.unsubM = state.db.collection("dipendenti_meta").onSnapshot(snap=>{ const d = snap.docs.find(x=>x.id==="ultimo"); DP.meta = d ? d.data() : null; if(view==="dipendenti") renderDP(); }, ()=>{});
 }
-function dpRefresh(){ if(view==="disabili") renderDI(); if(view==="dipendenti") renderDP(); if(view==="contatori") renderCN(); if(view==="assunzioni" && typeof AS!=="undefined" && AS.loaded) renderAS(); if(view==="dati") renderAGG(); navBadgesSoon(); if(KSH.id) kshRender(); }
+function dpRefresh(){ if(view==="disabili") renderDI(); if(view==="obblighi") renderOB(); if(view==="dipendenti") renderDP(); if(view==="contatori") renderCN(); if(view==="assunzioni" && typeof AS!=="undefined" && AS.loaded) renderAS(); if(view==="dati") renderAGG(); navBadgesSoon(); if(KSH.id) kshRender(); }
 (window.__hooks = window.__hooks||[]).push(ev=>{ if(ev==="db") setTimeout(subscribeDP, 2000); });
 if(state.db) setTimeout(subscribeDP, 2000);
 const dpName = d => `${d.cog||""} ${d.nom||""}`.trim();
@@ -9747,12 +9772,12 @@ const NAV_G = [
   {id:"oggi", l:"Oggi", v:["oggi"]},
   {id:"clienti", l:"Clienti", v:["clienti","dipendenti","contatori","personale","classifiche"]},
   {id:"rapporti", l:"Rapporti di lavoro", v:["assunzioni","termine","apprendisti","tirocini","ratei"]},
-  {id:"adempimenti", l:"Adempimenti", v:["durc","mesepaghe","controlli","sicurezza","disabili","disciplinari"]},
+  {id:"adempimenti", l:"Adempimenti", v:["durc","mesepaghe","controlli","sicurezza","disabili","obblighi","disciplinari"]},
   {id:"strumenti", l:"Strumenti", v:["prontuario","calcolatori","costo","lettere","scadenziario","minimi"]},
   {id:"agevolazioni", l:"Agevolazioni", v:["agevolazioni","simulatore"]},
   {id:"studio", l:"Studio", v:["storico","dati"]}
 ];
-const NAV_SHORT = { clienti:"Anagrafica", dipendenti:"Dipendenti", contatori:"Contatori", personale:"Costo del personale", classifiche:"Classifiche", disabili:"Disabili L. 68", minimi:"Scadenze minimi", assunzioni:"Assunzioni", termine:"Contratti a termine", apprendisti:"Apprendistato", tirocini:"Tirocini", ratei:"Ferie e permessi", durc:"DURC", mesepaghe:"Mese paghe", controlli:"Controlli", sicurezza:"Sicurezza", disciplinari:"Disciplinari", prontuario:"Prontuario CCNL", calcolatori:"Calcolatori", costo:"Costo del lavoro", lettere:"Lettere", scadenziario:"Scadenze CCNL", agevolazioni:"Verifica e pratiche", simulatore:"Simula assunzione", storico:"Storico modifiche", dati:"Aggiorna dati e backup" };
+const NAV_SHORT = { clienti:"Anagrafica", dipendenti:"Dipendenti", contatori:"Contatori", personale:"Costo del personale", classifiche:"Classifiche", disabili:"Disabili L. 68", obblighi:"Mappa obblighi", minimi:"Scadenze minimi", assunzioni:"Assunzioni", termine:"Contratti a termine", apprendisti:"Apprendistato", tirocini:"Tirocini", ratei:"Ferie e permessi", durc:"DURC", mesepaghe:"Mese paghe", controlli:"Controlli", sicurezza:"Sicurezza", disciplinari:"Disciplinari", prontuario:"Prontuario CCNL", calcolatori:"Calcolatori", costo:"Costo del lavoro", lettere:"Lettere", scadenziario:"Scadenze CCNL", agevolazioni:"Verifica e pratiche", simulatore:"Simula assunzione", storico:"Storico modifiche", dati:"Aggiorna dati e backup" };
 const NBV = {};
 let NAV_LAST = {};
 try{ NAV_LAST = JSON.parse(localStorage.getItem("bussola.navLast")||"{}") || {}; }catch(e){}
@@ -10070,7 +10095,7 @@ function simToCosto(){
   if(S.cl){ activeClient = S.cl; CS.fromClient = S.cl._id; renderBanner(); }
   if(CS.cc!==S.cc){ CS.cc = S.cc; CS.ov = {}; delete CS.v["cs-qual"]; }
   Object.assign(CS.v, { "cs-liv":S.liv, "cs-anno":String(S.anno), "cs-pt":String(S.pt), "cs-dal":1, "cs-al":12, "cs-app":false, "cs-scatti":"0", "cs-sm":"", "cs-alt":"" });
-  if(S.tdAdd) CS.v["cs-az"] = itNum(S.k.az); else delete CS.v["cs-az"];
+  CS.v["cs-tipo"] = S.tdAdd ? "td" : "ti"; delete CS.v["cs-rinn"]; delete CS.v["cs-az"];
   const E = S.best && S.best.E;
   if(E){ Object.assign(CS.v, { "cs-es":S.best.A._id, "cs-esp":itNum(E.perc), "cs-esmax":E.mass ? itNum(E.mass) : "", "cs-esdal":1, "cs-esal":E.mesi }); }
   else Object.assign(CS.v, { "cs-es":"", "cs-esp":"", "cs-esmax":"" });
@@ -10331,7 +10356,7 @@ function cpK(c, r, anno, big){
   let pid = csInpsDefault(k); if(pid==="terz" && big) pid = "terz50";
   const P0 = CL_INPS.find(p=>p.id===pid) || CL_INPS[0];
   k.az = P0.az; k.lav = P0.lav; k.inail = P0.inail;
-  if(r.d.t==="D") k.az += 1.4;   /* contributo addizionale NASpI dei contratti a termine (esclusi stagionali e sostituzioni) */
+  if(r.d.t==="D") k.tipo = "td";   /* contributo addizionale NASpI dei contratti a termine (esclusi stagionali e sostituzioni): riga a parte nel calcolo */
   return k;
 }
 /* dirigente con RAL indicata: retribuzione in proporzione ai mesi, contributi stimati, TFR = retribuzione / 13,5 */
@@ -10502,7 +10527,7 @@ function cpToCosto(c, r){
   if(CS.cc!==r.k.cc){ CS.cc = r.k.cc; CS.ov = {}; }
   Object.assign(CS.v, { "cs-liv":r.k.liv, "cs-qual":r.k.qual, "cs-anno":String(r.k.anno), "cs-pt":String(r.k.pt), "cs-dal":r.k.dal, "cs-al":r.k.al, "cs-prima":r.k.prima,
     "cs-app":r.k.app, "cs-apass":r.k.appAss?isoD(r.k.appAss):"", "cs-apfine":r.k.appFine?isoD(r.k.appFine):"", "cs-aplv":r.k.app?"fin":"", "cs-scatti":String(r.k.scatti||0), "cs-sm":r.k.sm?itNum(r.k.sm):"", "cs-alt":"" });
-  if(r.d.t==="D") CS.v["cs-az"] = itNum(r.k.az); else delete CS.v["cs-az"];
+  CS.v["cs-tipo"] = r.d.t==="D" ? "td" : r.d.t && r.d.t!=="I" ? "tdx" : "ti"; delete CS.v["cs-rinn"]; delete CS.v["cs-az"];
   csSave(); setView("costo");
 }
 async function cpExcel(btn){
@@ -10983,10 +11008,276 @@ async function diSave(btn){
 }
 function diOpen(cl){ DI.cl = cl || ""; DI.loaded = false; if(DI.cl) diLoad(); setView("disabili"); }
 
+/* ================= MAPPA OBBLIGHI: adempimenti di legge in base alla dimensione dell'azienda ================= */
+const OB = { tab:"una", cl:"", v:{}, f:"", q:"" };
+try{ const s = JSON.parse(localStorage.getItem("bussola.ob")||"null"); if(s){ OB.tab = s.tab==="tutti" ? "tutti" : "una"; OB.cl = s.cl || ""; } }catch(e){}
+const obSave = () => { try{ localStorage.setItem("bussola.ob", JSON.stringify({tab:OB.tab, cl:OB.cl})); }catch(e){} };
+/* Fondo di Tesoreria INPS: media dei dipendenti dell'anno precedente (L. 199/2025, circ. INPS 12/2026) */
+const obTesSoglia = y => y <= 2027 ? 60 : y <= 2031 ? 50 : 40;
+/* media mensile dei dipendenti in forza (fine mese), da TeamSystem */
+function obMedia(cl, mesi){
+  const L = (DP.byCl.get(cl)||[]); if(!mesi.length) return null;
+  return mesi.reduce((s, at)=>s + L.filter(o=>sgIn(o, at)).length, 0) / mesi.length;
+}
+const obFineMese = (y, m) => isoD(new Date(y, m + 1, 0));
+/* dati di partenza di un cliente: TeamSystem se c'è, altrimenti anagrafica */
+function obAuto(c){
+  const y = today.getFullYear(), set = diEdile(c) ? "edile" : diTrasp(c) ? "trasp" : /AGRIC/i.test(`${c.settore||""} ${c.ccnl||""} ${c.ccnl_testo||""}`) ? "agri" : "gen";
+  const base = { set, video: clAdCat(c.telecamere)==="si", wbAnag:c.whistleblowing, fonte:"anagrafica" };
+  if(typeof DP!=="undefined" && DP.loaded && DP.docs[c._id]){
+    dpAll(); const S = sgCalc(c._id), A = sgApp(S, sgT()), T = sgTd(c._id);
+    const m12 = Array.from({length:12}, (_,i)=>{ const d = addMonths(new Date(y, today.getMonth(), 1), -i - 1); return obFineMese(d.getFullYear(), d.getMonth()); });
+    const mp = Array.from({length:12}, (_,i)=>obFineMese(y - 1, i));
+    const l68s = c.l68_calc && c.l68_calc.base!=null ? c.l68_calc.base : S.l68;
+    return { ...base, fonte:"TeamSystem", n:S.head, app:S.app, td:T.td + T.stag + T.sost, ti:T.ti, tdLim:T.lim, tdN:T.td, qual:A.qual, appLim:A.lim, stab:A.stab,
+      l68:l68s, l68q:sgQuota(l68s), media12:obMedia(c._id, m12), mediaPrev:obMedia(c._id, mp), up:S.comp };
+  }
+  const n = (+c.ti||0) + (+c.td||0);
+  return { ...base, n, app:0, td:+c.td||0, l68:Math.max(0, n - (+c.td||0)), media12:n, mediaPrev:n, up:n };
+}
+/* i valori usati: quelli scritti a mano prevalgono su quelli ricavati */
+function obInput(){
+  const c = OB.cl ? CL.list.find(x=>x._id===OB.cl) : null, A = c ? obAuto(c) : null, v = OB.v;
+  const nv = k => { const x = diN(v[k]); return x==null ? null : Math.max(0, x); };
+  const n = nv("n") ?? (A ? A.n : null);
+  if(n==null) return { c, A, vuoto:true };
+  const app = nv("app") ?? (A && nv("n")==null ? A.app : 0), td = nv("td") ?? (A && nv("n")==null ? A.td : 0);
+  const auto = A && nv("n")==null;   /* dati TeamSystem coerenti con il numero di dipendenti */
+  const F = { c, A, n, app, td,
+    l68: nv("l68") ?? (auto ? A.l68 : Math.max(0, n - app)),
+    media12: nv("media12") ?? (auto && A.media12!=null ? A.media12 : n),
+    mediaPrev: nv("mediaPrev") ?? (auto && A.mediaPrev!=null ? A.mediaPrev : n),
+    up: nv("up") ?? (auto ? A.up : n),
+    set: v.set || (A ? A.set : "gen"), comune: !!v.comune, mog: !!v.mog, video: v.video!=null ? !!v.video : !!(A && A.video), agile: !!v.agile };
+  const ti = auto && A.ti!=null ? A.ti : Math.max(0, n - td);
+  F.tdLim = auto && A.tdLim!=null ? A.tdLim : Math.max(n <= 5 ? 1 : 0, sgRound(ti*0.2, true)); F.tdN = auto && A.tdN!=null ? A.tdN : td;
+  F.qual = auto && A.qual!=null ? A.qual : Math.max(0, n - app); F.appLim = auto && A.appLim!=null ? A.appLim : (F.qual < 3 ? 3 : n < 10 ? F.qual : Math.floor(F.qual*1.5)); F.stab = auto ? A.stab : null;
+  F.l68q = sgQuota(sgRound(F.l68)); F.q18 = sgQuota18(sgRound(F.l68));
+  return F;
+}
+/* stato in anagrafica di un adempimento (colonne dell'analisi tecnica clienti) */
+function obAnag(c, k){ if(!c || !k) return null; const v = c[k]; if(v==null || String(v).trim()==="") return {cls:"none", t:"non indicato"}; const cat = clAdCat(v); return cat==="si" ? {cls:"ok", t:String(v).trim().slice(0,40)} : cat==="no" ? {cls:"bad", t:String(v).trim().slice(0,40)} : {cls:"warn", t:String(v).trim().slice(0,40)}; }
+/* il motore: un elenco di obblighi con stato si / no / verifica / facoltativo */
+function obEval(F){
+  const y = today.getFullYear(), n = F.n, I = [], add = o => I.push(o), fmt = x => fmtN(x, x % 1 ? 1 : 0), tes = obTesSoglia(y);
+  const rlsN = n > 1000 ? 6 : n > 200 ? 3 : 1;
+  // sempre
+  add({ id:"sic", g:"sempre", st:"si", t:"Salute e sicurezza sul lavoro", an:"dlgs81", soglia:"Da 1 lavoratore",
+    d:`Valutazione dei rischi e DVR (artt. 17 e 28); RSPP: il datore di lavoro può svolgerlo direttamente fino a 30 lavoratori nelle aziende artigiane e industriali, fino a 200 nelle altre${n > 30 ? ` (con ${n} lavoratori, nell'industria e nell'artigianato serve un RSPP designato)` : ""}; addetti al primo soccorso (DM 388/2003) e all'antincendio (DM 2 settembre 2021); sorveglianza sanitaria e medico competente se la valutazione la prevede; formazione di lavoratori, preposti e datore di lavoro secondo l'Accordo Stato-Regioni del 17 aprile 2025, che ha reso obbligatorio il corso di 16 ore per il datore di lavoro.`, norma:"D.Lgs. 81/2008", nuovo:"Formazione del datore di lavoro (Accordo Stato-Regioni 2025)" });
+  add({ id:"rls", g:"sempre", st:"si", t:`Rappresentante dei lavoratori per la sicurezza${rlsN > 1 ? ` (${rlsN} RLS)` : ""}`, an:"rls", soglia:"Da 1 lavoratore",
+    d:`${n > 15 ? "Oltre 15 lavoratori l'RLS è eletto o designato nell'ambito delle rappresentanze sindacali aziendali" : "Fino a 15 lavoratori l'RLS è eletto direttamente dai lavoratori al loro interno"}; in mancanza opera l'RLS territoriale dell'organismo paritetico. Numero minimo: 1 fino a 200 lavoratori, 3 da 201 a 1.000, 6 oltre. Il nominativo va comunicato all'INAIL in caso di nuova elezione o designazione.`, norma:"Artt. 47-50 D.Lgs. 81/2008" });
+  add({ id:"rapp", g:"sempre", st:"si", t:"Documenti del rapporto di lavoro", soglia:"Da 1 lavoratore",
+    d:"Comunicazioni obbligatorie (UNILAV), libro unico del lavoro, informativa sulle condizioni di lavoro (D.Lgs. 104/2022) e codice disciplinare affisso (art. 7 L. 300/1970). Dal 1° maggio 2026 il codice CNEL del CCNL applicato va indicato nella lettera di assunzione e nel cedolino.", norma:"D.Lgs. 104/2022; DL 62/2026", nuovo:"Codice CNEL del CCNL in lettera e cedolino" });
+  add({ id:"trasp", g:"sempre", st:"si", t:"Trasparenza retributiva", soglia:"Da 1 lavoratore (dal 7 giugno 2026)",
+    d:`Negli annunci e nella selezione va indicata la retribuzione iniziale o la fascia, con il CCNL applicato; è vietato chiedere ai candidati quanto guadagnano o guadagnavano; i lavoratori possono chiedere per iscritto il proprio livello retributivo e i livelli medi, distinti per genere, di chi svolge lo stesso lavoro.${n >= 50 ? " Con almeno 50 dipendenti vanno resi accessibili i criteri di determinazione e progressione delle retribuzioni." : ""} Con 100 dipendenti o più scatta anche la relazione sul divario retributivo (vedi sotto).`, norma:"D.Lgs. 96/2026 (direttiva UE 2023/970)", nuovo:"In vigore dal 7 giugno 2026" });
+  add({ id:"prev", g:"sempre", st:"si", t:"Previdenza complementare: adesione automatica dei neoassunti", soglia:"Per ogni nuova assunzione",
+    d:"Dal 1° luglio 2026 il neoassunto che entro 60 giorni non sceglie diversamente aderisce in automatico al fondo pensione previsto dal CCNL, con il TFR futuro. All'assunzione va consegnata l'informativa sulle scelte possibili.", norma:"L. 199/2025 (legge di bilancio 2026)", nuovo:"Dal 1° luglio 2026" });
+  add({ id:"td", g:"sempre", st:"si", t:"Limite dei contratti a termine", soglia:"Da 1 lavoratore",
+    d:`Salvo diverso limite del CCNL, i contratti a termine non possono superare il 20% dei lavoratori a tempo indeterminato al 1° gennaio (con 0-5 dipendenti è sempre ammesso un contratto). Esclusi stagionali, sostituzioni, over 50 e start-up; a termine e somministrati a termine insieme non oltre il 30%. Situazione: ${fmt(F.tdN)} contratti soggetti al limite su ${F.tdLim} consentiti.`, norma:"Artt. 23 e 31 D.Lgs. 81/2015", warn: F.tdN > F.tdLim });
+  add({ id:"app", g:"sempre", st: F.app || n ? "si" : "no", t:"Limiti all'apprendistato", soglia:"Da 1 lavoratore; stabilizzazione da 50",
+    d:`Fino a ${F.appLim} apprendisti con ${fmt(F.qual)} lavoratori qualificati (con meno di 3 qualificati al massimo 3; sotto i 10 dipendenti uno per qualificato; da 10 in su 3 ogni 2).${n >= 50 ? ` Con almeno 50 dipendenti le nuove assunzioni in apprendistato richiedono la conferma di almeno il 20% degli apprendisti dei 36 mesi precedenti${F.stab ? `: confermati ${F.stab.mant} su ${F.stab.n}` : ""}.` : ""}${F.app ? ` In forza: ${fmt(F.app)} apprendisti.` : ""}`, norma:"Art. 42, c. 7-8 D.Lgs. 81/2015", warn: F.app > F.appLim || (F.stab && F.stab.n && F.stab.mant / F.stab.n < 0.2) });
+  add({ id:"video", g:"sempre", st: F.video ? "si" : "q", t:"Videosorveglianza e strumenti di controllo a distanza", an:"telecamere", soglia:"Se ci sono impianti",
+    d:"Telecamere e strumenti da cui deriva un controllo a distanza si installano solo con accordo con RSA/RSU o, in mancanza, con l'autorizzazione dell'Ispettorato del lavoro, più l'informativa privacy ai lavoratori.", norma:"Art. 4 L. 300/1970" });
+  add({ id:"agile", g:"sempre", st: F.agile ? "si" : "q", t:"Lavoro agile", soglia:"Se c'è lo smart working",
+    d:"Accordo individuale scritto, comunicazione telematica al Ministero entro 5 giorni dall'avvio o dalla modifica e informativa scritta su salute e sicurezza; priorità per genitori di figli fino a 12 anni, disabili e caregiver.", norma:"L. 81/2017" });
+  add({ id:"amm", g:"sempre", st:"q", t:"Ammortizzatori sociali e contributi", soglia:"Secondo l'inquadramento INPS",
+    d:`Chi non ha la cassa integrazione ordinaria è coperto dal FIS (contributo 0,50% fino a 5 dipendenti, 0,80% oltre)${n > 15 ? "; oltre 15 dipendenti anche la CIGS" : ""}. Verifica l'inquadramento della matricola INPS.`, norma:"D.Lgs. 148/2015, L. 234/2021" });
+  add({ id:"gdpr", g:"sempre", st:"si", t:"Privacy dei dati del personale", soglia:"Da 1 lavoratore",
+    d:`Informativa ai dipendenti, autorizzazioni al trattamento per chi gestisce i dati, misure di sicurezza e registro dei trattamenti${n >= 250 ? " (obbligatorio con 250 dipendenti o più)" : " (obbligatorio da 250 dipendenti, di fatto richiesto anche sotto perché i dati del personale sono trattati in modo non occasionale)"}.`, norma:"Reg. UE 2016/679" });
+  add({ id:"catast", g:"sempre", st:"si", t:"Assicurazione contro i rischi catastrofali", soglia:"Tutte le imprese",
+    d:`Le imprese con sede in Italia devono assicurare terreni, fabbricati, impianti e attrezzature contro sismi, alluvioni, frane, inondazioni ed esondazioni. Termini: grandi imprese 31 marzo 2025, medie 1° ottobre 2025, micro e piccole 31 dicembre 2025${n < 50 ? " (con meno di 50 dipendenti l'impresa è di norma piccola o micro: conta anche il fatturato)" : n < 250 ? " (con meno di 250 dipendenti l'impresa è di norma media: conta anche il fatturato)" : ""}. Senza polizza si perde l'accesso a contributi e agevolazioni pubbliche.`, norma:"Art. 1, c. 101-111 L. 213/2023", nuovo:"Obbligo in vigore per tutte le imprese dal 2026" });
+  // soglia 15
+  const l68 = sgRound(F.l68);
+  add({ id:"l68", g:"15", st: l68 >= 15 ? "si" : "no", t:`Collocamento obbligatorio dei disabili${l68 >= 15 ? `: ${F.l68q} ${F.l68q===1?"lavoratore":"lavoratori"}${F.q18 ? ` più ${F.q18} categorie protette` : ""}` : ""}`, soglia:"Da 15 dipendenti computabili",
+    d:`Base di computo ${fmt(F.l68)} (esclusi apprendisti, contratti fino a 6 mesi, dirigenti e le altre esclusioni). Quota: 1 da 15 a 35 computabili, 2 da 36 a 50, 7% oltre 50, più le categorie protette oltre 50 (1 fino a 150, poi l'1%). Assunzione o richiesta di avviamento entro 60 giorni; prospetto informativo entro il 31 gennaio se la situazione è cambiata.`, norma:"L. 68/1999", link:"di" });
+  const statuto = F.up > 15 || n > 60;
+  add({ id:"statuto", g:"15", st: statuto ? "si" : "no", t:"Diritti sindacali (Titolo III dello Statuto)", soglia:"Più di 15 nell'unità produttiva o più di 60 in tutto",
+    d:"Costituzione di RSA, assemblee retribuite fino a 10 ore l'anno, permessi sindacali, locali e bacheche, trattenuta dei contributi sindacali.", norma:"Art. 35 L. 300/1970" });
+  add({ id:"licenz", g:"15", st: statuto ? "si" : "no", t:"Tutele contro il licenziamento delle imprese maggiori", soglia:"Più di 15 nell'unità produttiva o più di 60 in tutto",
+    d:`${statuto ? "Si applicano le tutele piene" : "Fino alla soglia valgono le tutele ridotte delle piccole imprese"}: art. 18 L. 300/1970 per gli assunti fino al 6 marzo 2015, D.Lgs. 23/2015 per i successivi. Oltre 15 dipendenti, 5 licenziamenti in 120 giorni nella stessa provincia richiedono la procedura di licenziamento collettivo.`, norma:"Art. 18 L. 300/1970; D.Lgs. 23/2015; L. 223/1991" });
+  add({ id:"riun", g:"15", st: n > 15 ? "si" : "no", t:"Riunione periodica sulla sicurezza", soglia:"Più di 15 lavoratori",
+    d:"Almeno una volta l'anno con datore di lavoro, RSPP, medico competente e RLS, con verbale.", norma:"Art. 35 D.Lgs. 81/2008" });
+  // soglia 50
+  add({ id:"wb", g:"50", st: F.media12 >= 50 ? "si" : F.mog ? "si" : "no", t:"Whistleblowing: canale interno di segnalazione", an:"whistleblowing", soglia:"Media di 50 lavoratori nell'ultimo anno (o modello 231)",
+    d:`Media dell'ultimo anno: ${fmt(F.media12)}. Canale interno che garantisca la riservatezza, gestore autonomo e formato, procedura scritta, informazioni chiare pubblicate, sentite le rappresentanze sindacali. Vale anche sotto i 50 per chi ha adottato il modello organizzativo 231.`, norma:"D.Lgs. 24/2023" });
+  add({ id:"bienn", g:"50", st: n > 50 ? "si" : "no", t:"Rapporto biennale sulla situazione del personale maschile e femminile", an:"rapporto_biennale", soglia:"Più di 50 dipendenti",
+    d:`Da inviare in via telematica al Ministero del lavoro entro il 30 aprile dell'anno successivo al biennio (biennio ${y % 2 ? y - 1 : y}-${y % 2 ? y : y + 1}: entro il 30 aprile ${y % 2 ? y + 1 : y + 2}). Facoltativo fino a 50 dipendenti. Il rapporto non inviato comporta sanzioni e, se persiste, la sospensione per un anno dei benefici contributivi.`, norma:"Art. 46 D.Lgs. 198/2006" });
+  add({ id:"tes", g:"50", st: F.mediaPrev >= tes ? "si" : "no", t:"TFR al Fondo di Tesoreria INPS", an:"tfr_inps", soglia:`Media di ${tes} dipendenti nell'anno precedente (${y})`,
+    d:`Media del ${y - 1}: ${fmt(F.mediaPrev)}. Il TFR dei lavoratori che non lo destinano a un fondo pensione va versato ogni mese al Fondo di Tesoreria. La soglia è 60 nel 2026-2027, 50 dal 2028 e 40 dal 2032; il controllo si ripete ogni anno sulla media dell'anno prima.`, norma:"L. 296/2006; L. 199/2025; circ. INPS 12/2026", nuovo:"Nuove soglie dal 2026" });
+  add({ id:"infc", g:"50", st: n >= 50 ? "si" : "no", t:"Informazione e consultazione dei lavoratori", soglia:"Da 50 lavoratori",
+    d:"Informazione e consultazione dei rappresentanti dei lavoratori sull'andamento dell'impresa, sull'occupazione e sulle decisioni che possono cambiare l'organizzazione del lavoro, secondo le modalità del CCNL.", norma:"D.Lgs. 25/2007" });
+  // soglia 100
+  const rel = n >= 250 ? "ogni anno, la prima entro il 7 giugno 2027" : n >= 150 ? "ogni 3 anni, la prima entro il 7 giugno 2027" : "ogni 3 anni, la prima entro il 7 giugno 2031";
+  add({ id:"rel", g:"100", st: n >= 100 ? "si" : "no", t:"Relazione sul divario retributivo di genere", soglia:"Da 100 dipendenti",
+    d:`${n >= 100 ? `Con ${n} dipendenti: ${rel}. ` : "Da 250 dipendenti ogni anno e da 150 ogni 3 anni, dal 7 giugno 2027; da 100 a 149 ogni 3 anni, dal 7 giugno 2031. "}Un divario non giustificato del 5% o più in una categoria di lavoratori obbliga alla valutazione congiunta con le rappresentanze.`, norma:"D.Lgs. 96/2026", nuovo:"Nuovo obbligo" });
+  const mob = F.up > 100;
+  add({ id:"mob", g:"100", st: mob ? (F.comune ? "si" : "q") : "no", t:"Mobility manager e piano degli spostamenti casa-lavoro", soglia:"Più di 100 dipendenti in un'unità locale, in comuni grandi",
+    d:`Per le unità locali con più di 100 dipendenti in un capoluogo di regione o di provincia, in una città metropolitana o in un comune con più di 50.000 abitanti: nomina del mobility manager e piano degli spostamenti casa-lavoro entro il 31 dicembre di ogni anno.${mob && !F.comune ? " Spunta «comune grande» se l'unità è in uno di questi comuni." : ""}`, norma:"Art. 229 DL 34/2020; DM 12 maggio 2021" });
+  // settore
+  if(F.set==="edile") add({ id:"edile", g:"settore", st:"si", t:"Edilizia: patente a crediti, congruità e Cassa Edile", soglia:"Cantieri temporanei o mobili",
+    d:"Patente a crediti per operare nei cantieri (in vigore dal 1° ottobre 2024); verifica di congruità della manodopera per i lavori privati da 70.000 € e per tutti quelli pubblici; iscrizione alla Cassa Edile e tessera di riconoscimento nei cantieri.", norma:"Art. 27 D.Lgs. 81/2008; DM 143/2021" });
+  if(F.set==="trasp") add({ id:"trasp2", g:"settore", st:"si", t:"Trasporti: personale viaggiante", soglia:"Datori del trasporto",
+    d:"Il personale viaggiante e navigante non conta per la quota disabili (art. 5, c. 2 L. 68/1999); tempi di guida e di riposo e cronotachigrafo (Reg. CE 561/2006); carta di qualificazione del conducente.", norma:"L. 68/1999; Reg. CE 561/2006", link:"di" });
+  if(F.set==="agri") add({ id:"agri", g:"settore", st:"si", t:"Agricoltura: operai a tempo determinato", soglia:"Datori agricoli",
+    d:"Gli operai agricoli a tempo determinato non rientrano nel limite del 20% dei contratti a termine (art. 29 D.Lgs. 81/2015); denuncia aziendale e DMAG trimestrale all'INPS.", norma:"D.Lgs. 81/2015" });
+  // facoltativi
+  add({ id:"pari", g:"opz", st:"opz", t:"Certificazione della parità di genere", an:"parita_genere", soglia:"Facoltativa",
+    d:"Certificazione secondo la UNI/PdR 125:2022: esonero dell'1% dei contributi a carico del datore fino a 50.000 € l'anno e punteggi premiali negli appalti e nei bandi.", norma:"Art. 46-bis D.Lgs. 198/2006" });
+  // prossime soglie
+  const nx = [];
+  const pt = (val, lim, txt, unit) => { if(val < lim) nx.push({ k: lim - val, txt, unit }); };
+  pt(l68, 15, "scatta la quota disabili (1 lavoratore)", "computabili"); if(l68 >= 15) pt(l68, 36, "la quota disabili sale a 2", "computabili"); if(l68 >= 36) pt(l68, 51, "quota disabili al 7% e categorie protette", "computabili");
+  pt(Math.max(F.up, n > 60 ? 99 : 0), 16, "Statuto dei lavoratori (Titolo III) e tutele piene contro il licenziamento", "nell'unità produttiva");
+  pt(n, 16, "riunione periodica sulla sicurezza", "dipendenti"); pt(F.media12, 50, "whistleblowing", "dipendenti di media"); pt(n, 50, "informazione e consultazione", "dipendenti");
+  pt(n, 51, "rapporto biennale sul personale", "dipendenti"); pt(F.mediaPrev, tes, "TFR al Fondo di Tesoreria (dall'anno dopo quello in cui la media arriva alla soglia)", "dipendenti di media"); pt(n, 100, "relazione sul divario retributivo", "dipendenti");
+  if(n >= 100) pt(n, 150, "relazione sul divario retributivo dal 2027", "dipendenti"); pt(n, 201, "servono 3 RLS", "dipendenti");
+  nx.sort((a,b)=>a.k-b.k);
+  return { I, nx: nx.slice(0, 5), tes, y };
+}
+const OB_G = [["sempre","Per tutte le aziende"],["15","Oltre i 15 dipendenti"],["50","Intorno ai 50 dipendenti"],["100","Da 100 dipendenti"],["settore","Obblighi del settore"],["opz","Facoltativi con vantaggi"]];
+const OB_ST = { si:["ok","Si applica"], no:["none","Non ancora"], q:["warn","Da verificare"], opz:["none","Facoltativo"] };
+function renderOB(){
+  const root = $("#viewObblighi");
+  if(!root.dataset.built){
+    root.dataset.built = "1";
+    root.innerHTML = `<div class="toolbar"><div style="flex:1;min-width:240px"><h2 style="margin:0 0 2px;font-size:20px">Mappa degli obblighi</h2>
+        <p class="sc-sub" style="margin:0">Gli adempimenti di legge che scattano in base al numero di dipendenti: per un cliente con i dati di TeamSystem o come stima per un'azienda nuova.</p></div>
+        <button class="btn" type="button" id="obPdf" hidden>Scarica PDF</button><button class="btn" type="button" id="obXls" hidden>Scarica Excel</button></div>
+      <div class="calc-nav" role="group" aria-label="Vista"><button class="chip" type="button" data-obtab="una">Singola azienda</button><button class="chip" type="button" data-obtab="tutti">Tutti i clienti</button></div>
+      <div id="obBody"></div>`;
+    root.addEventListener("click", e=>{
+      const t = e.target.closest("[data-obtab],[data-obcl],[data-obdi],[data-obreset],[data-obksh]"); if(!t) return;
+      if(t.dataset.obtab){ OB.tab = t.dataset.obtab; obSave(); renderOB(); }
+      else if(t.dataset.obcl!==undefined){ OB.cl = t.dataset.obcl; OB.v = {}; OB.tab = "una"; obSave(); renderOB(); window.scrollTo({top:0}); }
+      else if(t.dataset.obdi!==undefined){ diOpen(OB.cl); }
+      else if(t.dataset.obreset!==undefined){ OB.v = {}; renderOB(); }
+      else if(t.dataset.obksh) kshOpen(t.dataset.obksh);
+    });
+    const onEdit = e => { const t = e.target; if(t.dataset.obv===undefined) return; OB.v[t.dataset.obv] = t.type==="checkbox" ? t.checked : t.value; if(t.tagName==="SELECT" || t.type==="checkbox") obForm(); obOut(); };
+    root.addEventListener("input", onEdit); root.addEventListener("change", e=>{ if(e.target.type==="checkbox" || e.target.tagName==="SELECT") onEdit(e); });
+    root.addEventListener("change", e=>{ if(e.target.id==="obCl"){ OB.cl = e.target.value; OB.v = {}; obSave(); renderOB(); } });
+    $("#obPdf").addEventListener("click", e=>obPdf(e.currentTarget));
+    $("#obXls").addEventListener("click", e=>obExcel(e.currentTarget));
+    (async()=>{ try{ const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null; root.dataset.dl = dl ? "1" : ""; obBtns(); }catch(e){} })();
+  }
+  if(typeof DP!=="undefined" && !DP.unsub) subscribeDP();
+  root.querySelectorAll("[data-obtab]").forEach(b=>b.setAttribute("aria-pressed", b.dataset.obtab===OB.tab));
+  if(OB.tab==="tutti"){ obTutti(); obBtns(); return; }
+  const cls = opL(CL.list, "_id").sort((a,b)=>a.azienda.localeCompare(b.azienda));
+  if(OB.cl && !cls.some(c=>c._id===OB.cl)) OB.cl = "";
+  $("#obBody").innerHTML = `<div class="ct-bar di-bar ob-bar"><div class="az"><label for="obCl">Cliente</label><select id="obCl"><option value="">Stima per un'azienda nuova</option>${cls.map(c=>`<option value="${esc(c._id)}" ${c._id===OB.cl?"selected":""}>${esc(c.azienda)}${c.n!=null?` · n. ${c.n}`:""}</option>`).join("")}</select></div><button class="btn ghost" type="button" data-obreset>Azzera le modifiche</button></div>
+    <div class="di-lay" data-noact1><div id="obForm"></div><aside class="di-out" id="obOut" aria-live="polite"></aside></div><div id="obList"></div>`;
+  if(OB.cl && (typeof DP==="undefined" || !DP.loaded)){ $("#obForm").innerHTML = `<div class="empty"><h3>Caricamento dei dipendenti…</h3></div>`; clearTimeout(OB.t); OB.t = setTimeout(()=>{ if(view==="obblighi") renderOB(); }, 800); return; }
+  obForm(); obOut(); obBtns();
+}
+function obBtns(){ const r = $("#viewObblighi"), dl = r && r.dataset.dl==="1"; const p = $("#obPdf"), x = $("#obXls"); if(p) p.hidden = !dl || OB.tab!=="una"; if(x) x.hidden = !dl || OB.tab!=="tutti"; }
+function obForm(){
+  const c = OB.cl ? CL.list.find(x=>x._id===OB.cl) : null, A = c ? obAuto(c) : null, F = obInput(), v = OB.v;
+  const ph = (k, d) => A && A[k]!=null ? fmtN(A[k], A[k] % 1 ? 1 : 0) : d;
+  const inp = (k, l, sub, d) => `<tr><td><b>${l}</b>${sub?`<span class="sc-sub">${sub}</span>`:""}</td><td class="num"><input class="di-in" inputmode="decimal" data-obv="${k}" value="${esc(v[k]??"")}" placeholder="${esc(ph(k, d))}" aria-label="${esc(l)}"></td></tr>`;
+  const chk = (k, l, on) => `<label class="check di-opt"><input type="checkbox" data-obv="${k}" ${on?"checked":""}> ${l}</label>`;
+  const y = today.getFullYear(), set = v.set || (A ? A.set : "gen");
+  $("#obForm").innerHTML = `<section class="di-sec"><h3>Dati dell'azienda</h3>
+    <div class="tblwrap"><table class="cl di-tbl"><tbody>
+      ${inp("n", "Dipendenti in forza", "Tutti i lavoratori subordinati, apprendisti compresi; esclusi tirocinanti, collaboratori e amministratori.", "es. 20")}
+      ${inp("app", "di cui apprendisti", "", "0")}
+      ${inp("td", "di cui a tempo determinato", "", "0")}
+      ${inp("l68", "Base di computo disabili (L. 68/1999)", A ? "Da TeamSystem o dal calcolo disabili salvato. Per il dettaglio usa il calcolo disabili." : "Senza esclusioni particolari: dipendenti meno apprendisti e contratti fino a 6 mesi.", F.vuoto ? "" : fmtN(Math.max(0, (diN(v.n)??0) - (diN(v.app)??0)),0))}
+      ${inp("media12", "Media dei dipendenti negli ultimi 12 mesi", "Serve per il whistleblowing.", "come i dipendenti in forza")}
+      ${inp("mediaPrev", `Media dei dipendenti nel ${y - 1}`, "Serve per il Fondo di Tesoreria INPS.", "come i dipendenti in forza")}
+      ${inp("up", "Dipendenti nell'unità produttiva più grande", "Statuto dei lavoratori, tutele contro il licenziamento e mobility manager. Part-time in proporzione all'orario.", "come i dipendenti in forza")}
+      <tr><td><b>Settore</b></td><td class="num"><select data-obv="set" aria-label="Settore"><option value="gen" ${set==="gen"?"selected":""}>Altri settori</option><option value="edile" ${set==="edile"?"selected":""}>Edilizia</option><option value="trasp" ${set==="trasp"?"selected":""}>Trasporti</option><option value="agri" ${set==="agri"?"selected":""}>Agricoltura</option></select></td></tr>
+    </tbody></table></div>
+    ${chk("video", "Ha telecamere o altri strumenti di controllo a distanza", F.vuoto ? !!v.video : F.video)}
+    ${chk("agile", "Usa il lavoro agile (smart working)", !!v.agile)}
+    ${chk("mog", "Ha adottato il modello organizzativo 231", !!v.mog)}
+    ${chk("comune", "L'unità più grande è in un capoluogo, in una città metropolitana o in un comune con più di 50.000 abitanti", !!v.comune)}
+    <p class="sc-sub">${A ? `Valori da ${A.fonte}${A.fonte==="TeamSystem" && DP.meta && DP.meta.importatoIl ? ` del ${fmtD(parseD(DP.meta.importatoIl.slice(0,10)))}` : ""}: scrivi un numero per sostituirli.` : "Inserisci almeno il numero di dipendenti: gli altri campi, se vuoti, lo riprendono."}</p></section>`;
+}
+function obOut(){
+  const F = obInput(), out = $("#obOut"), list = $("#obList"); if(!out) return;
+  if(F.vuoto){ out.innerHTML = `<div class="di-res"><p class="sc-sub" style="margin:0">Inserisci il numero di dipendenti per vedere gli obblighi.</p></div>`; list.innerHTML = ""; return; }
+  const R = obEval(F), si = R.I.filter(x=>x.st==="si"), q = R.I.filter(x=>x.st==="q"), c = F.c;
+  ["app","td","l68","media12","mediaPrev","up"].forEach(k=>{ const el = document.querySelector(`[data-obv="${k}"]`); if(el && !String(OB.v[k]??"").trim()) el.placeholder = fmtN(F[k], F[k] % 1 ? 1 : 0); });   /* i campi vuoti mostrano il valore usato */
+  const manc = c ? si.filter(x=>x.an && obAnag(c, x.an).cls!=="ok") : [];
+  const k = (val, l, s, cls) => `<div class="big ${cls||""}"><div class="lbl">${l}</div><div class="val">${val}</div>${s?`<div class="sub">${s}</div>`:""}</div>`;
+  out.innerHTML = `<div class="di-res ${manc.length ? "warn" : ""}">${c ? `<span class="sc-st ${manc.length?"warn":"ok"}">${esc(c.azienda)}</span>` : `<span class="sc-st none">Stima per un'azienda nuova</span>`}
+    <div class="cs-kpis di-k">${k(fmtN(F.n), "Dipendenti", `${F.app?`${fmtN(F.app)} apprendisti · `:""}${F.td?`${fmtN(F.td)} a termine`:"nessuno a termine"}`)}${k(si.length, "Obblighi che si applicano", q.length ? `${q.length} da verificare` : "")}${c ? k(manc.length, "Da sistemare in anagrafica", manc.length ? manc.map(x=>x.t.split(":")[0]).slice(0,2).join(", ") : "tutto indicato", manc.length?"bad":"ok") : ""}${k(R.nx.length ? `+${fmtN(Math.ceil(R.nx[0].k))}` : "—", "Prossima soglia", R.nx.length ? esc(R.nx[0].txt) : "nessuna")}</div>
+    ${R.nx.length ? `<h4>Prossime soglie</h4><ul class="di-steps">${R.nx.map(x=>`<li>Con <b>${fmtN(Math.ceil(x.k))}</b> ${esc(x.unit)} in più: ${esc(x.txt)}</li>`).join("")}</ul>` : ""}
+    ${R.I.some(x=>x.nuovo && x.st!=="no") ? `<h4>Novità da tenere d'occhio</h4><ul class="di-steps">${R.I.filter(x=>x.nuovo && x.st!=="no").map(x=>`<li><b>${esc(x.t.split(":")[0])}</b>: ${esc(x.nuovo)}</li>`).join("")}</ul>` : ""}
+    ${c ? `<button class="btn ghost sm" type="button" data-obksh="${esc(c._id)}">Scheda cliente</button>` : ""}</div>`;
+  list.innerHTML = OB_G.map(([g, l])=>{ const its = R.I.filter(x=>x.g===g); if(!its.length) return "";
+    return `<section class="di-sec ob-sec"><h3>${esc(l)}</h3><div class="ob-list">${its.map(x=>{ const [cls, lbl] = OB_ST[x.st], an = c && x.an ? obAnag(c, x.an) : null;
+      return `<article class="ob-it ${x.st}"><div class="ob-h"><span class="sc-st ${x.warn && x.st==="si" ? "bad" : cls}">${x.warn && x.st==="si" ? "Oltre il limite" : lbl}</span>${x.nuovo?`<span class="ct-tag warn">${esc(x.nuovo)}</span>`:""}</div>
+        <h4>${esc(x.t)}</h4><p class="ob-s">${esc(x.soglia)} · ${esc(x.norma)}</p><p>${esc(x.d)}</p>
+        ${an ? `<p class="ob-an">In anagrafica: <span class="ct-tag ${an.cls}">${esc(an.t)}</span></p>` : ""}${x.link==="di" && c ? `<button class="btn ghost sm" type="button" data-obdi>Calcolo disabili</button>` : ""}</article>`; }).join("")}</div></section>`; }).join("")
+    + `<p class="sc-sub">Quadro aggiornato a novembre 2026, da verificare caso per caso: contano anche il CCNL applicato, l'inquadramento INPS, il settore e le unità produttive. Gli obblighi indicati come «da verificare» dipendono da elementi che qui non sono noti.</p>`;
+}
+/* tutti i clienti: soglie superate e adempimenti non indicati in anagrafica */
+function obTuttiRows(){
+  return opL(CL.list, "_id").map(c=>{ const A = obAuto(c); if(!A.n) return null;
+    const F = obInputFor(c, A), R = obEval(F), si = R.I.filter(x=>x.st==="si" && ["l68","statuto","wb","bienn","tes","rel","mob"].includes(x.id));
+    const manc = R.I.filter(x=>x.st==="si" && x.g!=="sempre" && x.an && obAnag(c, x.an).cls!=="ok");   /* DVR, RLS e telecamere li segue la sezione Sicurezza */
+    return { c, A, F, si, manc }; }).filter(Boolean).sort((a,b)=>b.F.n - a.F.n || a.c.azienda.localeCompare(b.c.azienda));
+}
+function obInputFor(c, A){ const sv = { cl:OB.cl, v:OB.v }; OB.cl = c._id; OB.v = {}; const F = obInput(); OB.cl = sv.cl; OB.v = sv.v; return F; }
+function obTutti(){
+  const body = $("#obBody");
+  if(!CL.loaded){ body.innerHTML = `<div class="empty"><h3>Caricamento clienti…</h3></div>`; return; }
+  if(typeof DP!=="undefined" && !DP.loaded){ body.innerHTML = `<div class="empty"><h3>Caricamento dei dipendenti…</h3></div>`; clearTimeout(OB.t); OB.t = setTimeout(()=>{ if(view==="obblighi") renderOB(); }, 800); return; }
+  const rows = obTuttiRows(); OB.rows = rows;
+  const f = OB.f, q = norm(OB.q||""), vis = rows.filter(r=>(!f || (f==="manc" ? r.manc.length : r.si.some(x=>x.id===f))) && (!q || norm(r.c.azienda).includes(q)));
+  const cnt = id => rows.filter(r=>r.si.some(x=>x.id===id)).length;
+  const chip = (id, l) => `<button class="chip" type="button" data-obf="${id}" aria-pressed="${OB.f===id}">${esc(l)} <b>${id==="" ? rows.length : id==="manc" ? rows.filter(r=>r.manc.length).length : cnt(id)}</b></button>`;
+  const short = { l68:"Disabili", statuto:"Statuto art. 35 e tutele piene", wb:"Whistleblowing", bienn:"Rapporto biennale", tes:"Fondo Tesoreria", infc:"Informazione e consultazione", rel:"Relazione retributiva", mob:"Mobility manager", licenz:"Tutele piene", riun:"Riunione periodica" };
+  body.innerHTML = `<div class="ct-bar ds-bar"><div><label for="obQ">Cerca</label><input id="obQ" type="search" autocomplete="off" placeholder="Azienda" value="${esc(OB.q||"")}"></div></div>
+    <div class="chips ob-chips">${chip("", "Tutti")}${chip("manc", "Da sistemare in anagrafica")}${chip("l68", "Disabili")}${chip("wb", "Whistleblowing")}${chip("bienn", "Rapporto biennale")}${chip("tes", "Fondo Tesoreria")}${chip("statuto", "Statuto art. 35")}${chip("rel", "Relazione retributiva")}</div>
+    ${!vis.length ? `<div class="empty"><h3>Nessun cliente in questa vista</h3></div>` : `<div class="tblwrap"><table class="cl ob-tbl"><thead><tr><th>Cliente</th><th class="num">In forza</th><th class="num">Media 12 mesi</th><th class="num">Base L. 68</th><th>Soglie superate</th><th>Da sistemare in anagrafica</th><th></th></tr></thead><tbody>
+      ${vis.map(r=>`<tr data-obcl="${esc(r.c._id)}" title="Apri la mappa degli obblighi"><td class="az">${esc(r.c.azienda)}<span class="sc-sub">${[r.c.n!=null?`n. ${esc(String(r.c.n))}`:"", r.A.fonte==="anagrafica"?"dati dell'anagrafica":""].filter(Boolean).join(" · ")}</span></td>
+        <td class="num">${fmtN(r.F.n)}</td><td class="num">${fmtN(r.F.media12, r.F.media12 % 1 ? 1 : 0)}</td><td class="num">${fmtN(r.F.l68, r.F.l68 % 1 ? 1 : 0)}</td>
+        <td>${r.si.map(x=>`<span class="ct-tag ok">${esc(short[x.id]||x.t)}</span>`).join("") || `<span class="sc-sub">Solo obblighi di base</span>`}</td>
+        <td>${r.manc.map(x=>`<span class="ct-tag ${obAnag(r.c, x.an).cls==="bad"?"bad":"warn"}">${esc(short[x.id]||x.t.split(":")[0])}</span>`).join("")}</td>
+        <td><button class="btn ghost sm" type="button" data-obcl="${esc(r.c._id)}">Apri</button></td></tr>`).join("")}</tbody></table></div>`}
+    <p class="sc-sub">Dati di TeamSystem dove ci sono, altrimenti dipendenti T.I. e T.D. dell'anagrafica. «Da sistemare in anagrafica»: obblighi legati alle soglie che si applicano ma che nella scheda del cliente non risultano adempiuti (whistleblowing, rapporto biennale, Fondo Tesoreria). Sicurezza, RLS e telecamere sono nella sezione Sicurezza.</p>`;
+  body.querySelectorAll("[data-obf]").forEach(b=>b.onclick = ()=>{ OB.f = b.dataset.obf; obTutti(); });
+  const qi = $("#obQ"); qi.oninput = ()=>{ OB.q = qi.value; const pos = qi.selectionStart; obTutti(); const n = $("#obQ"); n.focus(); try{ n.setSelectionRange(pos, pos); }catch(e){} };
+}
+function obHTML(){
+  const F = obInput(); if(F.vuoto) return "";
+  const R = obEval(F), c = F.c;
+  return `<div class="rp"><div class="rp-h"><div><h1>Mappa degli obblighi</h1><p class="sub"><b>${esc(c ? c.azienda : "Stima per una nuova azienda")}</b> · ${fmtN(F.n)} dipendenti${F.app?`, ${fmtN(F.app)} apprendisti`:""}${F.td?`, ${fmtN(F.td)} a termine`:""}</p></div><div class="st"><b>Studio Prosdocimo S.r.l.</b>Situazione al ${fmtD(today)}</div></div>
+    ${OB_G.map(([g, l])=>{ const its = R.I.filter(x=>x.g===g); if(!its.length) return ""; return `<h2>${esc(l)}</h2><table><tbody>${its.map(x=>`<tr><td style="width:24%"><b class="${x.warn && x.st==="si" ? "bad" : ""}">${esc(x.warn && x.st==="si" ? "Oltre il limite" : OB_ST[x.st][1])}</b></td><td><b>${esc(x.t)}</b><br><span class="note" style="margin:0">${esc(x.soglia)} · ${esc(x.norma)}</span><br>${esc(x.d)}${c && x.an ? `<br><i>In anagrafica: ${esc(obAnag(c, x.an).t)}</i>` : ""}</td></tr>`).join("")}</tbody></table>`; }).join("")}
+    ${R.nx.length ? `<h2>Prossime soglie</h2><ul>${R.nx.map(x=>`<li>Con ${fmtN(Math.ceil(x.k))} ${esc(x.unit)} in più: ${esc(x.txt)}</li>`).join("")}</ul>` : ""}
+    <div class="rp-f">Documento predisposto da Studio Prosdocimo S.r.l. Il quadro è indicativo e va verificato in base al CCNL applicato, all'inquadramento INPS, al settore e alle unità produttive.</div></div>`;
+}
+async function obPdf(btn){ const h = obHTML(); if(!h){ P.toast("Inserisci il numero di dipendenti"); return; } const F = obInput();
+  await savePdf(h, RP_CSS, `Mappa obblighi - ${(F.c ? F.c.azienda : "stima").replace(/[\\/:*?"<>|]+/g," ")}.pdf`, btn, {light:true, width:"190mm", margin:[10,10,12,10]}); }
+async function obExcel(btn){
+  const rows = OB.rows || []; if(!rows.length){ P.toast("Nessun cliente da esportare"); return; }
+  const downloads = window.claude && window.claude.use ? await window.claude.use("downloads") : null; if(!downloads){ P.toast("Il download non è disponibile in questa vista"); return; }
+  const lbl = btn.textContent; btn.disabled = true; btn.textContent = "Preparo il file…";
+  try{
+    const ExcelJS = await xlLoad(), wb = new ExcelJS.Workbook(); wb.creator = "Bussola Lavoro";
+    const ids = [["l68","Disabili L. 68"],["statuto","Statuto art. 35 / tutele piene"],["riun","Riunione periodica sicurezza"],["wb","Whistleblowing"],["bienn","Rapporto biennale"],["tes","Fondo Tesoreria INPS"],["infc","Informazione e consultazione"],["rel","Relazione divario retributivo"],["mob","Mobility manager"]];
+    const ws = wb.addWorksheet("Obblighi", {views:[{state:"frozen", ySplit:4, xSplit:2}], pageSetup:{paperSize:9, orientation:"landscape", fitToPage:true, fitToWidth:1, fitToHeight:0}});
+    const head = ["N.","Azienda","Dipendenti","Media 12 mesi",`Media ${today.getFullYear()-1}`,"Base L. 68","Quota disabili", ...ids.map(x=>x[1]), "Da sistemare in anagrafica"];
+    ws.columns = head.map((h,i)=>({width: i===1?34 : i===head.length-1?50 : i<7?11 : 14}));
+    ws.mergeCells(1,1,1,10); const t = ws.getCell(1,1); t.value = `Mappa degli obblighi dei clienti · ${fmtD(today)}`; t.font = {bold:true, size:15, color:{argb:"FFFFFFFF"}}; t.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FF8B1A14"}}; ws.getRow(1).height = 24;
+    ws.getCell(2,1).value = "Sì = l'obbligo si applica · Verifica = dipende da elementi da controllare"; ws.getCell(2,1).font = {italic:true, color:{argb:"FF555555"}};
+    const hr = ws.getRow(4); head.forEach((h,i)=>{ const c = hr.getCell(i+1); c.value = h; c.font = {bold:true}; c.alignment = {wrapText:true, vertical:"middle"}; c.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FFE9EDF1"}}; });
+    ws.autoFilter = {from:{row:4,column:1}, to:{row:4,column:head.length}};
+    rows.forEach((r,i)=>{ const R = obEval(r.F), st = id => { const x = R.I.find(y=>y.id===id); return !x ? "" : x.st==="si" ? "Sì" : x.st==="q" ? "Verifica" : ""; };
+      ws.getRow(5+i).values = [r.c.n??"", r.c.azienda, r.F.n, Math.round(r.F.media12*10)/10, Math.round(r.F.mediaPrev*10)/10, Math.round(r.F.l68*10)/10, r.F.l68q || "", ...ids.map(([id])=>st(id)), r.manc.map(x=>x.t.split(":")[0]).join("; ")]; });
+    const buf = await xlBuf(wb);
+    await downloads.save({filename:`Mappa obblighi clienti ${fmtD(today).replace(/\//g,".")}.xlsx`, data:new Blob([buf])}); P.toast("File Excel salvato");
+  }catch(e){ if(!(e && e.code==="declined")) P.toast("Salvataggio non riuscito"); } finally{ btn.disabled = false; btn.textContent = lbl; }
+}
+function obOpen(cl){ OB.cl = cl || ""; OB.v = {}; OB.tab = "una"; obSave(); setView("obblighi"); }
+
 let startView = "oggi";
 try{ const v = localStorage.getItem("prontuario.view"); if(v && localStorage.getItem("bussola.oggiVisto")) startView = v; localStorage.setItem("bussola.oggiVisto","1"); }catch(e){}
 const h = (location.hash||"").replace("#","");
-if(["oggi","prontuario","clienti","calcolatori","costo","scadenziario","termine","apprendisti","durc","agevolazioni","lettere","controlli","mesepaghe","disciplinari","assunzioni","tirocini","ratei","dati","dipendenti","contatori","sicurezza","simulatore","storico","personale","minimi","classifiche","disabili"].includes(h)) startView = h;
+if(["oggi","prontuario","clienti","calcolatori","costo","scadenziario","termine","apprendisti","durc","agevolazioni","lettere","controlli","mesepaghe","disciplinari","assunzioni","tirocini","ratei","dati","dipendenti","contatori","sicurezza","simulatore","storico","personale","minimi","classifiche","disabili","obblighi"].includes(h)) startView = h;
 setView(startView);
 })();
 </script>
