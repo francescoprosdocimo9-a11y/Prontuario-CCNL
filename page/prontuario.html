@@ -1812,7 +1812,7 @@ const CL = { list:[], loaded:false, q:"", f:"tutti", ad:"", unsub:null };
 var OPF = { op:"", autoDone:false };
 try{ OPF.op = localStorage.getItem("bussola.op") || ""; }catch(e){}
 let _opmSrc = null, _opm = null;
-function opMap(){ if(_opmSrc!==CL.list){ _opmSrc = CL.list; _opm = new Map(CL.list.map(c=>[c._id, (c.operatore||"").trim()])); } return _opm; }
+function opMap(){ if(_opmSrc!==CL.list){ _opmSrc = CL.list; _opm = new Map(CL.list.map(c=>[c._id, (c.operatore||"").trim()])); if(typeof MPX!=="undefined") MPX.list.forEach(x=>_opm.set(x._id, (x.operatore||"").trim())); } return _opm; }
 function opOk(clId){ return !OPF.op || (!!clId && opMap().get(clId)===OPF.op); }
 function opL(list, k){ k = k || "cliente"; return OPF.op ? list.filter(x=>opOk(x[k])) : list; }
 function opNames(){ return [...new Set(CL.list.map(c=>(c.operatore||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); }
@@ -6707,10 +6707,21 @@ function scadenzeLegge(from, to){
   return out.filter(s=>s.d>=from && s.d<=to);
 }
 const mpDoc = (ym, cl) => MP.list.find(x=>x._id===`${ym}--${cl}`);
+/* aziende seguite solo per le paghe (per esempio quelle dello studio DCA di Roma): compaiono solo in Mese paghe, non nell'anagrafica clienti */
+const MPX = { list:[], loaded:false };
+function subscribeMPX(){
+  if(MPX.unsub || !state.db) return;
+  MPX.unsub = state.db.collection("paghe_extra").onSnapshot(snap=>{ MPX.list = snap.docs.map(d=>({...d.data(), _id:d.id})); MPX.loaded = true; _opmSrc = null; if(view==="mesepaghe") renderMP(); }, ()=>{ MPX.loaded = true; });
+}
+(window.__hooks = window.__hooks||[]).push(ev=>{ if(ev==="db") subscribeMPX(); });
+if(state.db) subscribeMPX();
+const mpxC = x => ({ _id:x._id, azienda:x.azienda||"", n:x.n, operatore:x.operatore||"", ti:x.dip||0, td:0, extra:true, studio:x.studio||"", sede:x.sede||"", info:x.note||"" });
+const mpC = id => CL.list.find(x=>x._id===id) || (()=>{ const x = MPX.list.find(y=>y._id===id); return x ? mpxC(x) : null; })();
 function mpRows(ym){
   const ids = new Set(CL.list.filter(c=>(c.ti||0)+(c.td||0)>0).map(c=>c._id));
   MP.list.filter(x=>x.ym===ym).forEach(x=>ids.add(x.cliente));
-  return [...ids].map(id=>{ const c = CL.list.find(x=>x._id===id); if(!c) return null; const d = mpDoc(ym, id) || null; return {c, d, done: MP_STEPS.filter(s=>d && d.s && d.s[s.k]).length, esc: !!(d && d.escluso)}; }).filter(Boolean);
+  MPX.list.filter(x=>x.attivo!==false).forEach(x=>ids.add(x._id));
+  return [...ids].map(id=>{ const c = mpC(id); if(!c) return null; const d = mpDoc(ym, id) || null; return {c, d, done: MP_STEPS.filter(s=>d && d.s && d.s[s.k]).length, esc: !!(d && d.escluso)}; }).filter(Boolean);
 }
 function mpLate(r, ym){ const S = mpScad(ym), s = (r.d&&r.d.s)||{}; const late = []; if(!r.esc){ if(today > S.f24 && !s.f24) late.push("F24"); if(today > S.uni && !s.uni) late.push("UniEmens"); } return late; }
 function mpPass(r, f){
@@ -6738,7 +6749,7 @@ function renderMP(){
     root.dataset.built = "1";
     root.innerHTML = `<div class="toolbar"><div style="flex:1"><h2 style="margin:0 0 2px;font-size:20px">Mese paghe</h2>
         <p class="sc-sub" style="margin:0">L'avanzamento delle paghe di ogni cliente: presenze, cedolini, invio, F24 e UniEmens, con le scadenze del mese.</p></div>
-        <button class="btn" type="button" id="mpXls" hidden>Scarica Excel</button></div>
+        <button class="btn ghost" type="button" data-mpx>Aziende solo paghe</button><button class="btn" type="button" id="mpXls" hidden>Scarica Excel</button></div>
       <div class="ct-bar mp-bar">
         <div><label for="mpYm">Mese di competenza</label><select id="mpYm"></select></div>
         <div><label for="mpOp">Operatore</label><select id="mpOp"></select></div>
@@ -6754,11 +6765,12 @@ function renderMP(){
     $("#mpReset").addEventListener("click", ()=>{ MP.q=""; MP.op=""; MP.f="tutti"; $("#mpQ").value=""; renderMP(); });
     $("#mpXls").addEventListener("click", e=>mpExcel(e.currentTarget));
     root.addEventListener("click", async e=>{
-      const t = e.target.closest("[data-mpf],[data-mps],[data-mpall],[data-mpnote],[data-mpesc],[data-mpadd],[data-mpcl]"); if(!t) return;
+      const t = e.target.closest("[data-mpf],[data-mps],[data-mpall],[data-mpnote],[data-mpesc],[data-mpadd],[data-mpcl],[data-mpx]"); if(!t) return;
+      if(t.dataset.mpx!==undefined){ openMPX(); return; }
       if(t.dataset.mpf){ MP.f = t.dataset.mpf; renderMP(); return; }
       if(!state.canWrite && !t.dataset.mpcl) return;
       if(t.dataset.mpcl){ kshOpen(t.dataset.mpcl); return; }
-      if(t.dataset.mps){ const [cl, k] = t.dataset.mps.split("|"); const c = CL.list.find(x=>x._id===cl); if(!c) return; const d = mpDoc(MP.ym, cl); const s = {...((d&&d.s)||{})};
+      if(t.dataset.mps){ const [cl, k] = t.dataset.mps.split("|"); const c = mpC(cl); if(!c) return; const d = mpDoc(MP.ym, cl); const s = {...((d&&d.s)||{})};
         if(s[k]) delete s[k]; else s[k] = new Date().toISOString(); t.disabled = true; try{ await mpSave(MP.ym, c, {s}); }catch(err){ P.toast(P.errMsg(err)); t.disabled = false; } return; }
       if(t.dataset.mpall){ const k = t.dataset.mpall, rows = (MP.shown||[]).filter(r=>!r.esc && !((r.d&&r.d.s)||{})[k]);
         if(!rows.length){ P.toast("Nessun cliente da segnare"); return; }
@@ -6767,8 +6779,8 @@ function renderMP(){
         let n = 0; const ko = [];
         for(const r of rows){ const d = mpDoc(MP.ym, r.c._id); const res = await dbRetry(()=>mpSave(MP.ym, r.c, {s:{...((d&&d.s)||{}), [k]:now}})); if(res.ok) n++; else ko.push(r.c.azienda); await new Promise(z=>setTimeout(z, 200)); }
         P.toast(`${MP_STEPS.find(s=>s.k===k).l}: ${n} clienti segnati${ko.length?`; non salvati ${ko.length} (${ko.slice(0,3).join(", ")}${ko.length>3?"…":""}): riprova`:""}`); return; }
-      if(t.dataset.mpnote){ openMPNote(CL.list.find(x=>x._id===t.dataset.mpnote)); return; }
-      if(t.dataset.mpesc){ const c = CL.list.find(x=>x._id===t.dataset.mpesc); const d = mpDoc(MP.ym, c._id); try{ await mpSave(MP.ym, c, {escluso: !(d && d.escluso)}); P.toast(d && d.escluso ? "Cliente incluso nel mese" : "Cliente escluso da questo mese"); }catch(err){ P.toast(P.errMsg(err)); } return; }
+      if(t.dataset.mpnote){ openMPNote(mpC(t.dataset.mpnote)); return; }
+      if(t.dataset.mpesc){ const c = mpC(t.dataset.mpesc); const d = mpDoc(MP.ym, c._id); try{ await mpSave(MP.ym, c, {escluso: !(d && d.escluso)}); P.toast(d && d.escluso ? "Cliente incluso nel mese" : "Cliente escluso da questo mese"); }catch(err){ P.toast(P.errMsg(err)); } return; }
       if(t.dataset.mpadd!==undefined){ openMPAdd(); return; }
     });
     (async()=>{ try{ const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null; $("#mpXls").hidden = !dl; }catch(e){} })();
@@ -6776,7 +6788,7 @@ function renderMP(){
   const yms = []; for(let i=-1;i<=11;i++) yms.push(ymOf(addMonths(new Date(today.getFullYear(), today.getMonth(), 1), -i)));
   MP.list.forEach(x=>{ if(x.ym && !yms.includes(x.ym)) yms.push(x.ym); }); yms.sort().reverse();
   $("#mpYm").innerHTML = yms.map(y=>`<option value="${y}" ${y===MP.ym?"selected":""}>${esc(ymLabel(y))}</option>`).join("");
-  const ops = [...new Set(CL.list.map(c=>c.operatore).filter(Boolean))].sort();
+  const ops = [...new Set([...CL.list, ...MPX.list].map(c=>c.operatore).filter(Boolean))].sort();
   $("#mpOp").innerHTML = `<option value="">Tutti</option>` + ops.map(o=>`<option ${o===OPF.op?"selected":""}>${esc(o)}</option>`).join("") + (ops.length?"":`<option value="" disabled>Nessun operatore: impostalo nella scheda cliente</option>`);
   const S = mpScad(MP.ym), all = mpRows(MP.ym).filter(r=>opOk(r.c._id)), act = all.filter(r=>!r.esc);
   const pct = k => act.length ? Math.round(act.filter(r=>((r.d&&r.d.s)||{})[k]).length/act.length*100) : 0;
@@ -6786,7 +6798,7 @@ function renderMP(){
   const cnt = f => all.filter(r=>mpPass(r, f)).length;
   const chip = (k,l,col) => `<button class="chip" type="button" data-mpf="${k}" aria-pressed="${MP.f===k}"><span class="dot" style="--cc:${col}"></span>${l} <span class="n">${cnt(k)}</span></button>`;
   $("#mpChips").innerHTML = chip("tutti","Tutti","var(--ink)") + chip("dainiziare","Da iniziare","var(--muted)") + chip("incorso","In corso","var(--warn)") + chip("completati","Completati","var(--ok)") + chip("ritardo","In ritardo","var(--danger)") + MP_STEPS.map(s=>chip("manca:"+s.k, s.m, "var(--muted)")).join("") + chip("esclusi","Esclusi dal mese","var(--muted)");
-  const rows = all.filter(r=>mpPass(r)).sort((a,b)=>(a.c.n??1e9)-(b.c.n??1e9) || a.c.azienda.localeCompare(b.c.azienda));
+  const rows = all.filter(r=>mpPass(r)).sort((a,b)=>(a.c.extra?1:0)-(b.c.extra?1:0) || (a.c.studio||"").localeCompare(b.c.studio||"") || (a.c.n??1e9)-(b.c.n??1e9) || a.c.azienda.localeCompare(b.c.azienda));
   MP.shown = rows;
   const body = $("#mpBody");
   if(!CL.loaded || !MP.loaded){ body.innerHTML = `<div class="empty"><h3>Caricamento…</h3></div>`; return; }
@@ -6796,7 +6808,7 @@ function renderMP(){
   body.innerHTML = `<div class="tblwrap"><table class="cl mp-tbl"><thead><tr><th>N.</th><th>Cliente</th>${MP_STEPS.map(s=>`<th class="mp-c">${esc(s.s)}${state.canWrite?`<button class="btn ghost sm mp-all" type="button" data-mpall="${s.k}">Tutti</button>`:""}</th>`).join("")}<th>Stato</th><th></th></tr></thead><tbody>
     ${rows.map(r=>{ const late = mpLate(r, MP.ym);
       const st = r.esc ? `<span class="sc-st none">Escluso</span>` : late.length ? `<span class="sc-st bad">In ritardo: ${late.join(", ")}</span>` : r.done===MP_STEPS.length ? `<span class="sc-st ok">Completato</span>` : r.done ? `<span class="sc-st warn">${r.done} di ${MP_STEPS.length}</span>` : `<span class="sc-st none">Da iniziare</span>`;
-      return `<tr class="${r.esc?"mp-esc":""}"><td class="num">${r.c.n??""}</td><td class="az"><button class="btn ghost sm ck-clb" type="button" data-mpcl="${esc(r.c._id)}">${esc(r.c.azienda)}</button><span class="sc-sub">${[r.c.operatore?`Operatore: ${esc(r.c.operatore)}`:"", `${(r.c.ti||0)+(r.c.td||0)} dip.`, r.c.mensilita?esc(r.c.mensilita):"", r.d&&r.d.note?esc(r.d.note):""].filter(Boolean).join(" · ")}</span></td>
+      return `<tr class="${r.esc?"mp-esc":""}"><td class="num">${r.c.n??""}</td><td class="az">${r.c.extra ? `<b>${esc(r.c.azienda)}</b> <span class="ct-tag">${esc(["Studio "+r.c.studio, r.c.sede].filter(x=>x && x!=="Studio ").join(" · ") || "Solo paghe")}</span>` : `<button class="btn ghost sm ck-clb" type="button" data-mpcl="${esc(r.c._id)}">${esc(r.c.azienda)}</button>`}<span class="sc-sub">${[r.c.operatore?`Operatore: ${esc(r.c.operatore)}`:"", r.c.extra ? "" : `${(r.c.ti||0)+(r.c.td||0)} dip.`, r.c.mensilita?esc(r.c.mensilita):"", r.c.info?esc(r.c.info):"", r.d&&r.d.note?esc(r.d.note):""].filter(Boolean).join(" · ")}</span></td>
         ${MP_STEPS.map(s=>cell(r,s)).join("")}<td>${st}</td>
         <td><div class="rowact">${state.canWrite?`<button class="btn ghost sm" type="button" data-mpnote="${esc(r.c._id)}">Nota</button><button class="btn ghost sm" type="button" data-mpesc="${esc(r.c._id)}">${r.esc?"Includi":"Escludi"}</button>`:""}</div></td></tr>`; }).join("")}</tbody></table></div>
     ${state.canWrite?`<p style="margin-top:10px"><button class="btn ghost" type="button" data-mpadd>Includi un altro cliente</button></p>`:""}`;
@@ -6808,6 +6820,24 @@ function openMPNote(c){
     <div class="modal-actions"><div class="r"><button class="btn" type="button" id="mn-c">Annulla</button><button class="btn primary" type="button" id="mn-s">Salva</button></div></div>`);
   $("#mn-c").onclick = P.closeModal;
   $("#mn-s").onclick = async ()=>{ try{ await mpSave(MP.ym, c, {note:$("#mn-t").value.trim()}); P.closeModal(); P.toast("Nota salvata"); }catch(e){ $("#mn-err").textContent = P.errMsg(e); } };
+}
+/* aziende solo paghe: elenco, aggiunta e disattivazione */
+function openMPX(){
+  const draw = () => { const L = [...MPX.list].sort((a,b)=>(a.studio||"").localeCompare(b.studio||"") || (a.n??1e9)-(b.n??1e9));
+    return `<h2>Aziende solo paghe</h2><p class="sc-sub">Aziende di cui lo studio elabora le paghe senza averle in anagrafica (per esempio quelle dello studio DCA di Roma): compaiono solo in Mese paghe.</p>
+      ${L.length ? `<div class="tblwrap"><table class="cl"><thead><tr><th>Cod.</th><th>Azienda</th><th>Studio · sede</th><th>Operatore</th><th></th></tr></thead><tbody>${L.map(x=>`<tr class="${x.attivo===false?"mp-esc":""}"><td class="num">${esc(String(x.n??""))}</td><td>${esc(x.azienda||"")}${x.note?`<span class="sc-sub">${esc(x.note)}</span>`:""}</td><td>${esc([x.studio, x.sede].filter(Boolean).join(" · "))}</td><td>${esc(x.operatore||"")}</td><td>${state.canWrite?`<button class="btn ghost sm" type="button" data-mpxon="${esc(x._id)}">${x.attivo===false?"Riattiva":"Disattiva"}</button>`:""}</td></tr>`).join("")}</tbody></table></div>` : `<p class="sc-sub">Nessuna azienda.</p>`}
+      ${state.canWrite ? `<form class="fg" novalidate><div class="field"><label for="mx-a">Azienda</label><input id="mx-a"></div><div class="field"><label for="mx-n">Codice</label><input id="mx-n" inputmode="numeric"></div><div class="field"><label for="mx-s">Studio</label><input id="mx-s" placeholder="es. DCA"></div><div class="field"><label for="mx-se">Sede</label><input id="mx-se" placeholder="es. Roma"></div><div class="field"><label for="mx-o">Operatore</label><input id="mx-o" list="mx-ol"><datalist id="mx-ol">${opNames().map(o=>`<option value="${esc(o)}">`).join("")}</datalist></div><div class="err full" id="mx-err" style="grid-column:1/-1"></div></form>` : ""}
+      <div class="modal-actions"><div class="r"><button class="btn" type="button" id="mx-x">Chiudi</button>${state.canWrite?`<button class="btn primary" type="button" id="mx-s2">Aggiungi</button>`:""}</div></div>`; };
+  const bind = () => {
+    $("#mx-x").onclick = P.closeModal;
+    document.querySelectorAll("[data-mpxon]").forEach(b=>b.onclick = async ()=>{ const x = MPX.list.find(y=>y._id===b.dataset.mpxon); if(!x) return; const doc = Object.fromEntries(Object.entries(x).filter(([k])=>k!=="_id")); doc.attivo = x.attivo===false; doc.aggiornatoIl = new Date().toISOString(); try{ await state.db.collection("paghe_extra").doc(x._id).set(doc); x.attivo = doc.attivo; P.modal(draw()); bind(); }catch(e){ P.toast(P.errMsg(e)); } });
+    const sv = $("#mx-s2"); if(sv) sv.onclick = async ()=>{ const a = $("#mx-a").value.trim(); if(!a){ $("#mx-err").textContent = "Indica il nome dell'azienda."; return; }
+      const st = $("#mx-s").value.trim(), n = $("#mx-n").value.trim(), id = `${(st||"px").toLowerCase().replace(/[^a-z0-9]+/g,"")}-${n || Date.now().toString(36)}`;
+      if(MPX.list.some(x=>x._id===id)){ $("#mx-err").textContent = "Esiste già un'azienda con questo codice."; return; }
+      const doc = { azienda:a, n: /^\d+$/.test(n) ? +n : n, studio:st, sede:$("#mx-se").value.trim(), operatore:$("#mx-o").value.trim(), note:"", attivo:true, aggiornatoIl:new Date().toISOString(), aggiornatoDa:state.myId||"" };
+      try{ await state.db.collection("paghe_extra").doc(id).set(doc); MPX.list.push({...doc, _id:id}); P.modal(draw()); bind(); P.toast("Azienda aggiunta"); }catch(e){ $("#mx-err").textContent = P.errMsg(e); } };
+  };
+  P.modal(draw()); bind();
 }
 function openMPAdd(){
   const inn = new Set(mpRows(MP.ym).map(r=>r.c._id));
@@ -8301,8 +8331,8 @@ function rtCessHTML(){
 
 /* ================= AGGIORNA I DATI DEL MESE + BACKUP ================= */
 var AGG = { ym:"", docs:{}, loaded:false, unsub:null, bk:null, unsubB:null, busy:false };
-const BK_COLL = ["clienti","dipendenti","dipendenti_meta","ccnl","schede","contratti","apprendisti","tirocini","assunzioni","agevolazioni","pratiche_agevolazioni","durc","dpa","mesepaghe","promemoria","controlli_ok","lettere","disciplinari","ratei","ratei_meta","impostazioni","aggiornamenti","costo_personale","storico"];
-const BK_LABEL = { dipendenti:"Dipendenti (TeamSystem)", dipendenti_meta:"Dipendenti (import)", clienti:"Anagrafica clienti", ccnl:"CCNL", schede:"Schede CCNL", contratti:"Contratti a termine", apprendisti:"Apprendisti", tirocini:"Tirocini", assunzioni:"Assunzioni", agevolazioni:"Agevolazioni (catalogo)", pratiche_agevolazioni:"Pratiche agevolazioni", durc:"DURC", dpa:"DPA", mesepaghe:"Mese paghe", promemoria:"Promemoria", controlli_ok:"Controlli verificati", lettere:"Registro lettere", disciplinari:"Disciplinari", ratei:"Ratei dipendenti", ratei_meta:"Ratei (import)", impostazioni:"Impostazioni", aggiornamenti:"Aggiornamenti mensili", costo_personale:"Costo del personale (livelli e superminimi)", storico:"Storico modifiche" };
+const BK_COLL = ["clienti","dipendenti","dipendenti_meta","ccnl","schede","contratti","apprendisti","tirocini","assunzioni","agevolazioni","pratiche_agevolazioni","durc","dpa","mesepaghe","paghe_extra","promemoria","controlli_ok","lettere","disciplinari","ratei","ratei_meta","impostazioni","aggiornamenti","costo_personale","storico"];
+const BK_LABEL = { paghe_extra:"Aziende solo paghe", dipendenti:"Dipendenti (TeamSystem)", dipendenti_meta:"Dipendenti (import)", clienti:"Anagrafica clienti", ccnl:"CCNL", schede:"Schede CCNL", contratti:"Contratti a termine", apprendisti:"Apprendisti", tirocini:"Tirocini", assunzioni:"Assunzioni", agevolazioni:"Agevolazioni (catalogo)", pratiche_agevolazioni:"Pratiche agevolazioni", durc:"DURC", dpa:"DPA", mesepaghe:"Mese paghe", promemoria:"Promemoria", controlli_ok:"Controlli verificati", lettere:"Registro lettere", disciplinari:"Disciplinari", ratei:"Ratei dipendenti", ratei_meta:"Ratei (import)", impostazioni:"Impostazioni", aggiornamenti:"Aggiornamenti mensili", costo_personale:"Costo del personale (livelli e superminimi)", storico:"Storico modifiche" };
 function subscribeAGG(){
   if(!state.db) return;
   if(!AGG.unsub) AGG.unsub = state.db.collection("aggiornamenti").onSnapshot(snap=>{ const m = {}; snap.docs.forEach(d=>{ m[d.id] = d.data(); }); AGG.docs = m; AGG.loaded = true; if(view==="dati") renderAGG(); navBadgesSoon(); }, ()=>{ AGG.loaded = true; });
