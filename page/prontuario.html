@@ -626,12 +626,12 @@ tr.lt-done td{opacity:.7}
 .ck-d{max-width:460px;font-size:13.5px;line-height:1.45}.ck-clb{text-align:left;white-space:normal}
 .mp-bar{grid-template-columns:minmax(170px,220px) minmax(150px,200px) minmax(200px,1fr) auto}
 @media (max-width:800px){.mp-bar{grid-template-columns:1fr}}
-.mp-head{display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,1fr) minmax(280px,2fr);gap:10px;margin-bottom:12px}
+.mp-head{display:grid;grid-template-columns:minmax(200px,1fr) minmax(280px,2fr);gap:10px;margin-bottom:12px}
 @media (max-width:900px){.mp-head{grid-template-columns:1fr}}
 .mp-due{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line);border-left:4px solid var(--ok);border-radius:12px;background:var(--surface);font-size:13.5px}
 .mp-due.warn{border-left-color:var(--warn)}.mp-due.bad{border-left-color:var(--danger)}.mp-due b{font-size:14.5px}
 .mp-prog{display:flex;flex-direction:column;gap:5px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:13px}
-.mp-prog div{display:grid;grid-template-columns:90px 1fr 42px;gap:8px;align-items:center}.mp-prog b{text-align:right}
+.mp-prog div{display:grid;grid-template-columns:120px 1fr 42px;gap:8px;align-items:center}.mp-prog b{text-align:right}
 .mp-tbl th.mp-c,.mp-tbl td.mp-c{text-align:center;white-space:nowrap}.mp-tbl td.mp-c small{display:block;font-size:11px;color:var(--muted)}
 .mp-all{display:block;margin:4px auto 0;font-size:11.5px;padding:2px 8px}
 .mp-step{all:unset;box-sizing:border-box;cursor:pointer;width:30px;height:30px;border-radius:8px;border:1.5px solid var(--line-strong);display:inline-grid;place-items:center;font-weight:700;color:var(--muted);background:var(--surface)}
@@ -5721,7 +5721,7 @@ function ogCollect(){
   // Scadenze di legge e mese paghe
   scadenzeLegge(addDays(today,-3), addDays(today,30)).forEach(sl=>{
     let txt = sl.t, sev = dayDiff(today, sl.d)<=3 ? "warn" : "none";
-    if(sl.k && MP.loaded && CL.loaded){ const rows = mpRows(sl.ym).filter(r=>!r.esc && opOk(r.c._id)), miss = rows.filter(r=>!((r.d&&r.d.s)||{})[sl.k]).length; txt += miss ? `: ${miss} ${miss===1?"cliente":"clienti"} ancora da inviare` : ": tutto inviato"; if(!miss) sev = "ok"; else if(sl.d < today) sev = "bad"; }
+    if(sl.k && MP_STEPS.some(x=>x.k===sl.k) && MP.loaded && CL.loaded){ const rows = mpRows(sl.ym).filter(r=>!r.esc && opOk(r.c._id)), miss = rows.filter(r=>!((r.d&&r.d.s)||{})[sl.k]).length; txt += miss ? `: ${miss} ${miss===1?"cliente":"clienti"} ancora da inviare` : ": tutto inviato"; if(!miss) sev = "ok"; else if(sl.d < today) sev = "bad"; }
     add({d:sl.d, t:"paghe", az:OPF.op?`Clienti di ${OPF.op}`:"Studio", txt, sev, go:{v:"mesepaghe", ym:sl.ym}});
   });
   // Contratti a termine
@@ -5898,7 +5898,7 @@ function navBadges(){
     if(typeof RT!=="undefined" && RT.loaded){ const s = new Set(rtAll().filter(o=>o.sev==="bad" && opOk(o.doc.cliente)).map(o=>o.doc._id)); set("ratei", s.size, "warn", "Aziende con ferie o permessi residui critici"); }
     if(typeof TR!=="undefined" && TR.loaded){ const I = opL(TR.list).map(trInfo); set("tirocini", I.filter(x=>x.st==="scaduto"||x.st==="15").length, "bad", "Tirocini terminati o in scadenza entro 15 giorni"); }
     if(AP.loaded){ const I = opL(AP.list).map(apInfo); set("apprendisti", I.filter(x=>x.st==="scaduto"||x.st==="30").length, "bad", "Fine formazione entro 30 giorni o già superata"); }
-    if(CL.loaded && MP.loaded){ const ym = ymOf(addMonths(new Date(today.getFullYear(), today.getMonth(), 1), -1)); set("mesepaghe", mpRows(ym).filter(r=>opOk(r.c._id) && mpLate(r, ym).length).length, "bad", "Clienti con F24 o UniEmens in ritardo"); }
+    if(CL.loaded && MP.loaded){ const ym = ymOf(addMonths(new Date(today.getFullYear(), today.getMonth(), 1), -1)); set("mesepaghe", mpRows(ym).filter(r=>opOk(r.c._id) && mpLate(r, ym).length).length, "bad", "Clienti con F24 in ritardo"); }
     if(CL.loaded && CK.okLoaded){ set("controlli", ckCollect().filter(o=>!o.okDoc && o.sev==="bad").length, "bad", "Controlli da sistemare"); }
     if(typeof AS!=="undefined" && AS.loaded && CT.loaded && AP.loaded){ const lim = isoD(addDays(today,-120)); set("assunzioni", opL(asAll()).filter(r=>asD(r)>=lim).map(asCheck).filter(k=>k.ctMiss||k.apMiss||k.trMiss).length, "warn", "Assunzioni recenti non presenti negli scadenziari"); }
     if(typeof DSC!=="undefined" && DSC.loaded){ set("disciplinari", opL(DSC.list).map(dscInfo).filter(I=>I.st==="decidere" || (I.st==="bozza" && I.sev!=="none") || I.st==="consegna").length, "bad", "Procedimenti da decidere o contestazioni da inviare"); }
@@ -6670,12 +6670,10 @@ async function ckUndo(btn){ try{ await state.db.collection("controlli_ok").doc(b
 
 /* ================= MESE PAGHE (checklist mensile) e SCADENZE DI LEGGE ================= */
 var MP = { list:[], loaded:false, unsub:null, ym:"", f:"tutti", q:"", op:"" };
-const MP_STEPS = [
-  {k:"pres", l:"Presenze ricevute", s:"Presenze", m:"Senza presenze"},
-  {k:"ced", l:"Cedolini elaborati", s:"Cedolini", m:"Cedolini da fare"},
-  {k:"inv", l:"Cedolini inviati al cliente", s:"Invio", m:"Cedolini da inviare"},
-  {k:"f24", l:"F24 inviato", s:"F24", m:"F24 da inviare"},
-  {k:"uni", l:"UniEmens inviato", s:"UniEmens", m:"UniEmens da inviare"}
+const MP_STEPS = [   /* le chiavi restano quelle storiche: «ced» sono le bozze, «inv» l'invio definitivo */
+  {k:"ced", l:"Cedolini in bozza", s:"Bozza", m:"Bozza da fare"},
+  {k:"inv", l:"Invio definitivo dei cedolini", s:"Invio definitivo", m:"Invio definitivo da fare"},
+  {k:"f24", l:"F24 inviato", s:"F24", m:"F24 da inviare"}
 ];
 MP.ym = ymOf(addMonths(new Date(today.getFullYear(), today.getMonth(), 1), -1));
 function subscribeMP(){
@@ -6723,7 +6721,7 @@ function mpRows(ym){
   MPX.list.filter(x=>x.attivo!==false).forEach(x=>ids.add(x._id));
   return [...ids].map(id=>{ const c = mpC(id); if(!c) return null; const d = mpDoc(ym, id) || null; return {c, d, done: MP_STEPS.filter(s=>d && d.s && d.s[s.k]).length, esc: !!(d && d.escluso)}; }).filter(Boolean);
 }
-function mpLate(r, ym){ const S = mpScad(ym), s = (r.d&&r.d.s)||{}; const late = []; if(!r.esc && !r.c.colf){   /* le colf versano con MAV trimestrale: niente F24 e UniEmens mensili */ if(today > S.f24 && !s.f24) late.push("F24"); if(today > S.uni && !s.uni) late.push("UniEmens"); } return late; }
+function mpLate(r, ym){ const S = mpScad(ym), s = (r.d&&r.d.s)||{}; const late = []; if(!r.esc && !r.c.colf){   /* le colf versano con MAV trimestrale: niente F24 mensile */ if(today > S.f24 && !s.f24) late.push("F24"); } return late; }
 function mpPass(r, f){
   f = f || MP.f;
   if(OPF.op && (r.c.operatore||"").trim()!==OPF.op) return false;
@@ -6748,7 +6746,7 @@ function renderMP(){
   if(!root.dataset.built){
     root.dataset.built = "1";
     root.innerHTML = `<div class="toolbar"><div style="flex:1"><h2 style="margin:0 0 2px;font-size:20px">Mese paghe</h2>
-        <p class="sc-sub" style="margin:0">L'avanzamento delle paghe di ogni cliente: presenze, cedolini, invio, F24 e UniEmens, con le scadenze del mese.</p></div>
+        <p class="sc-sub" style="margin:0">L'avanzamento delle paghe di ogni cliente: bozza dei cedolini, invio definitivo e F24, con la scadenza del mese.</p></div>
         <button class="btn ghost" type="button" data-mpx>Aziende solo paghe</button><button class="btn" type="button" id="mpXls" hidden>Scarica Excel</button></div>
       <div class="ct-bar mp-bar">
         <div><label for="mpYm">Mese di competenza</label><select id="mpYm"></select></div>
@@ -6759,7 +6757,7 @@ function renderMP(){
       <div id="mpHead"></div>
       <div class="chips" id="mpChips" role="group" aria-label="Filtra per avanzamento"></div>
       <div id="mpBody"></div>
-      <p class="sc-legend">Un clic su una fase la segna come fatta con la data di oggi; un secondo clic la toglie. «Tutti» in testa alla colonna la segna per tutti i clienti mostrati. I clienti senza dipendenti in anagrafica non compaiono: li aggiungi da «Includi cliente». Le date di F24 e UniEmens slittano al primo giorno lavorativo se cadono di sabato, domenica o festivo.</p>`;
+      <p class="sc-legend">Un clic su una fase la segna come fatta con la data di oggi; un secondo clic la toglie. «Tutti» in testa alla colonna la segna per tutti i clienti mostrati. I clienti senza dipendenti in anagrafica non compaiono: li aggiungi da «Includi cliente». La scadenza dell'F24 slitta al primo giorno lavorativo se cade di sabato, domenica o festivo.</p>`;
     $("#mpYm").addEventListener("change", e=>{ MP.ym = e.target.value; renderMP(); });
     $("#mpQ").addEventListener("input", e=>{ MP.q = e.target.value.trim(); renderMP(); });
     $("#mpReset").addEventListener("click", ()=>{ MP.q=""; MP.op=""; MP.f="tutti"; $("#mpQ").value=""; renderMP(); });
@@ -6793,7 +6791,7 @@ function renderMP(){
   const S = mpScad(MP.ym), all = mpRows(MP.ym).filter(r=>opOk(r.c._id)), act = all.filter(r=>!r.esc);
   const pct = k => act.length ? Math.round(act.filter(r=>((r.d&&r.d.s)||{})[k]).length/act.length*100) : 0;
   const due = (lbl, d, k) => { const g = dayDiff(today, d), n = act.filter(r=>!((r.d&&r.d.s)||{})[k]).length; return `<div class="mp-due ${n && g<0?"bad":n && g<=5?"warn":"ok"}"><b>${lbl}</b><span>${fmtD(d)} · ${esc(ggTxt(g))}</span><span>${n?`${n} ${n===1?"cliente":"clienti"} da completare`:"tutto inviato"}</span></div>`; };
-  $("#mpHead").innerHTML = `<div class="mp-head">${due("Scadenza F24", S.f24, "f24")}${due("Scadenza UniEmens", S.uni, "uni")}
+  $("#mpHead").innerHTML = `<div class="mp-head">${due("Scadenza F24", S.f24, "f24")}
     <div class="mp-prog">${MP_STEPS.map(s=>`<div><span>${esc(s.s)}</span><span class="meter"><span style="width:${pct(s.k)}%"></span></span><b>${pct(s.k)}%</b></div>`).join("")}</div></div>`;
   const cnt = f => all.filter(r=>mpPass(r, f)).length;
   const chip = (k,l,col) => `<button class="chip" type="button" data-mpf="${k}" aria-pressed="${MP.f===k}"><span class="dot" style="--cc:${col}"></span>${l} <span class="n">${cnt(k)}</span></button>`;
@@ -6803,7 +6801,7 @@ function renderMP(){
   const body = $("#mpBody");
   if(!CL.loaded || !MP.loaded){ body.innerHTML = `<div class="empty"><h3>Caricamento…</h3></div>`; return; }
   if(!rows.length){ body.innerHTML = `<div class="empty"><h3>Nessun cliente con questi filtri</h3><p>${MP.f==="completati"?"Nessun cliente ha ancora completato il mese.":"Cambia filtro o usa «Azzera filtri»."}</p></div>${state.canWrite?`<p><button class="btn" type="button" data-mpadd>Includi cliente</button></p>`:""}`; return; }
-  const cell = (r, s) => { const v = ((r.d&&r.d.s)||{})[s.k], dt = v ? new Date(v) : null; const late = !v && !r.esc && !r.c.colf && ((s.k==="f24" && today > S.f24) || (s.k==="uni" && today > S.uni));
+  const cell = (r, s) => { const v = ((r.d&&r.d.s)||{})[s.k], dt = v ? new Date(v) : null; const late = !v && !r.esc && !r.c.colf && s.k==="f24" && today > S.f24;
     return `<td class="mp-c"><button class="mp-step ${v?"on":late?"late":""}" type="button" data-mps="${esc(r.c._id)}|${s.k}" aria-pressed="${!!v}" title="${esc(s.l)}${v?` il ${fmtD(dt)}`:""}" ${state.canWrite?"":"disabled"}>${v?"✓":"·"}</button>${v?`<small>${dt.getDate()}/${dt.getMonth()+1}</small>`:""}</td>`; };
   body.innerHTML = `<div class="tblwrap"><table class="cl mp-tbl"><thead><tr><th>N.</th><th>Cliente</th>${MP_STEPS.map(s=>`<th class="mp-c">${esc(s.s)}${state.canWrite?`<button class="btn ghost sm mp-all" type="button" data-mpall="${s.k}">Tutti</button>`:""}</th>`).join("")}<th>Stato</th><th></th></tr></thead><tbody>
     ${rows.map(r=>{ const late = mpLate(r, MP.ym);
@@ -6858,7 +6856,7 @@ async function mpExcel(btn){
     const cols = [["N.",6],["Cliente",36],["Operatore",14],["Dipendenti",10], ...MP_STEPS.map(s=>[s.s,12]), ["Stato",22],["Note",40]];
     ws.columns = cols.map(([,w])=>({width:w}));
     ws.mergeCells(1,1,1,cols.length); const t = ws.getCell(1,1); t.value = `Mese paghe · ${ymLabel(MP.ym)}`; t.font = {bold:true, size:16, color:{argb:"FFFFFFFF"}}; t.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FF8E1B1B"}}; ws.getRow(1).height = 26;
-    const S = mpScad(MP.ym); ws.mergeCells(2,1,2,cols.length); ws.getCell(2,1).value = `Situazione al ${fmtD(today)} · F24 entro il ${fmtD(S.f24)} · UniEmens entro il ${fmtD(S.uni)}`; ws.getCell(2,1).font = {italic:true, color:{argb:"FF566371"}};
+    const S = mpScad(MP.ym); ws.mergeCells(2,1,2,cols.length); ws.getCell(2,1).value = `Situazione al ${fmtD(today)} · F24 entro il ${fmtD(S.f24)}`; ws.getCell(2,1).font = {italic:true, color:{argb:"FF566371"}};
     const hr = ws.getRow(4); cols.forEach(([h],i)=>{ const c = hr.getCell(i+1); c.value = h; c.font = {bold:true}; c.fill = {type:"pattern", pattern:"solid", fgColor:{argb:"FFE9EDF1"}}; c.border = {bottom:{style:"medium", color:{argb:"FF8E1B1B"}}}; });
     ws.autoFilter = {from:{row:4,column:1}, to:{row:4,column:cols.length}};
     rows.forEach((r,i)=>{ const s = (r.d&&r.d.s)||{}, late = mpLate(r, MP.ym);
@@ -8358,8 +8356,8 @@ function aggVoci(ym){
         btns:[["Importa il file", ()=>{ setView("dipendenti"); openDPImport(); }], ["Controlla le differenze", ()=>{ DP.vista = "controlli"; setView("dipendenti"); }]] }); } }
   // mese paghe
   if(MP.loaded && CL.loaded){ const rows = mpRows(ym).filter(r=>!r.esc && opOk(r.c._id)), tot = rows.length, done = rows.filter(r=>r.done===MP_STEPS.length).length, late = rows.filter(r=>mpLate(r, ym).length).length;
-    add({ k:"mesepaghe", t:`Mese paghe di ${M}`, src:"Spunte di cedolini, F24 e UniEmens", last: aggLast(MP.list.filter(x=>x.ym===ym)),
-      st: !tot ? "none" : late ? "bad" : done===tot ? "ok" : "warn", txt: tot ? `${done} di ${tot} clienti completati${late?` · ${late} in ritardo su F24 o UniEmens`:""}` : "Nessun cliente con dipendenti",
+    add({ k:"mesepaghe", t:`Mese paghe di ${M}`, src:"Spunte di bozza, invio definitivo e F24", last: aggLast(MP.list.filter(x=>x.ym===ym)),
+      st: !tot ? "none" : late ? "bad" : done===tot ? "ok" : "warn", txt: tot ? `${done} di ${tot} clienti completati${late?` · ${late} in ritardo sull'F24`:""}` : "Nessun cliente con dipendenti",
       btns:[["Apri il mese", ()=>{ MP.ym = ym; MP.f = "tutti"; setView("mesepaghe"); }]] }); }
   // assunzioni
   if(typeof AS!=="undefined"){ if(!AS.unsub) subscribeAS();
