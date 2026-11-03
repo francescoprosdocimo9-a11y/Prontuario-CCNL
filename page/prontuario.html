@@ -1077,6 +1077,9 @@ table.cl tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offs
 
 /* Calcolo disabili */
 .di-bar{grid-template-columns:minmax(240px,2fr) minmax(150px,190px) auto}
+.rec-bar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:60;width:min(680px,calc(100vw - 32px));display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);box-shadow:var(--shadow)}
+.rec-bar b{display:block;font-size:14px}.rec-bar span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+@media (max-width:600px){.rec-bar{flex-direction:column;align-items:stretch}}
 /* Mappa obblighi */
 .ob-bar{grid-template-columns:minmax(240px,2fr) auto}
 .ob-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
@@ -1864,6 +1867,34 @@ const CL_AD_TAG_SKIP = ["federdat","forfettario"]; /* federdat ha una colonna pr
 function clAdCat(v){ v = String(v||"").trim().toUpperCase(); if(!v) return "vuoto"; if(/^(SI|OK)\b/.test(v)) return /NON ABBIAMO|NON PI[UÙ]|\/\s*NO\b/.test(v) ? "altro" : "si"; if(/^NO\b/.test(v)) return /PASSATO|CONTATTO/.test(v) ? "altro" : "no"; return "altro"; }
 function clAdTone(f, v){ const c = clAdCat(v); if(c==="vuoto") return "none"; if(c==="si") return "ok"; if(c==="no"){ const d = CL_AD.find(x=>x.k===f); return d && d.neg ? "bad" : "none"; } return /NON CHIAMARE/i.test(v) ? "none" : "warn"; }
 const CL_AD_CAT = { si:"Sì", no:"No", altro:"Da aggiornare / in corso", vuoto:"Non indicato" };
+/* recupero dei dati: se accanto alla pagina è pubblicato «recupero.json» (un backup) e il ripristino non è ancora stato fatto, una barra propone di caricarlo con un clic */
+const REC = {};
+async function recCheck(){
+  if(REC.busy || REC.shown || !state.db) return;
+  if(!state.canWrite){ if((REC.tries = (REC.tries||0) + 1) < 10) setTimeout(()=>recCheck().catch(()=>{}), 3000); return; }   /* i permessi arrivano dopo l'apertura */
+  try{ const imp = await state.db.collection("impostazioni").get(); const d = imp.docs.find(x=>x.id==="recupero"); if(d && d.data().fatto) return; }catch(e){ return; }
+  let j; try{ const res = await fetch("recupero.json", {cache:"no-store"}); if(!res.ok) return; j = await res.json(); }catch(e){ return; }
+  if(!j || j.app!=="Bussola Lavoro" || !j.collezioni) return;
+  REC.bk = j; REC.shown = true;
+  const tot = Object.values(j.collezioni).reduce((a,v)=>a+v.length, 0);
+  const bar = document.createElement("div"); bar.className = "rec-bar"; bar.setAttribute("role", "status");
+  bar.innerHTML = `<div><b>Dati da ripristinare</b><span id="recTxt">È disponibile la copia dei dati del ${esc(fmtD(new Date(j.creatoIl)))} (${fmtN(tot)} documenti: clienti, CCNL, dipendenti, contratti, Mese paghe e altro).</span></div><button class="btn primary" type="button" id="recGo">Ripristina ora</button>`;
+  document.body.appendChild(bar);
+  $("#recGo").onclick = async ()=>{
+    const btn = $("#recGo"), txt = $("#recTxt"); btn.disabled = true; REC.busy = true; let n = 0, ko = 0;
+    for(const [c, docs] of Object.entries(j.collezioni)){
+      for(let i=0; i<docs.length; i+=5){
+        const res = await Promise.all(docs.slice(i,i+5).filter(d=>d && d.id && d.data).map(d=>dbRetry(()=>state.db.collection(c).doc(d.id).set(d.data), 5)));
+        n += res.filter(x=>x.ok).length; ko += res.filter(x=>!x.ok).length;
+        txt.textContent = `Ripristino in corso: ${fmtN(n)} di ${fmtN(tot)} documenti (${BK_LABEL[c]||c})… Non chiudere la pagina.`;
+      }
+    }
+    try{ await state.db.collection("impostazioni").doc("recupero").set({ fatto: !ko, il:new Date().toISOString(), da:state.myId||"", documenti:n, errori:ko }); }catch(e){}
+    REC.busy = false;
+    if(ko){ txt.textContent = `Ripristinati ${fmtN(n)} documenti, ${fmtN(ko)} non salvati: premi di nuovo per riprovare.`; btn.disabled = false; btn.textContent = "Riprova"; }
+    else { txt.textContent = `Ripristino completato: ${fmtN(n)} documenti. Ricarica la pagina per vedere tutto.`; btn.disabled = false; btn.textContent = "Ricarica"; btn.onclick = ()=>location.reload(); }
+  };
+}
 function subscribeClients(){
   if(CL.unsub || !state.db) return;
   CL.unsub = state.db.collection("clienti").onSnapshot(snap=>{
@@ -1874,6 +1905,7 @@ function subscribeClients(){
     if(view==="termine") renderCT();
     if(view==="durc") renderDU();
     if(view==="oggi") renderOggi(); navBadgesSoon(); if(KSH.id) kshRender();
+    if(!REC.t) REC.t = setTimeout(()=>recCheck().catch(()=>{}), 2500);
     opfFill(); opfAuto(); if(view==="disciplinari") renderDSC(); if(view==="sicurezza") renderSIC(); if(view==="storico") renderHS();
     if(activeClient){ const u = CL.list.find(x=>x._id===activeClient._id); if(u){ activeClient=u; renderBanner(); } }
   }, ()=>{ CL.loaded=true; if(view==="clienti") renderClienti(); });
