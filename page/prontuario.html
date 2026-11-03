@@ -8610,7 +8610,11 @@ function openBKRestore(){
         const docs = bk.collezioni[c] || []; btn.textContent = `Ripristino ${BK_LABEL[c]||c}…`;
         let have = new Set(); if(mode==="mancanti"){ const snap = await state.db.collection(c).get(); have = new Set(snap.docs.map(d=>d.id)); }
         const todo = docs.filter(d=>d && d.id && d.data && !have.has(d.id)); skip += docs.length - todo.length;
-        for(let i=0; i<todo.length; i+=10){ await Promise.all(todo.slice(i,i+10).map(d=>state.db.collection(c).doc(d.id).set(d.data))); n += Math.min(10, todo.length-i); }
+        for(let i=0; i<todo.length; i+=5){   /* a piccoli gruppi, con nuovi tentativi se il database rallenta */
+          const res = await Promise.all(todo.slice(i,i+5).map(d=>dbRetry(()=>state.db.collection(c).doc(d.id).set(d.data), 5)));
+          const ko = res.find(x=>!x.ok); if(ko) throw ko.err;
+          n += res.length; btn.textContent = `Ripristino ${BK_LABEL[c]||c}: ${fmtN(n)}…`;
+        }
       }
       P.closeModal(); P.toast(`Ripristino completato: ${fmtN(n)} documenti scritti${skip?`, ${fmtN(skip)} già presenti`:""}`);
     }catch(e){ $("#br-err").textContent = `Ripristino interrotto dopo ${n} documenti: ${P.errMsg(e)}`; btn.disabled = false; btn.textContent = "Ripristina"; }
