@@ -3354,7 +3354,8 @@ const APP_PV = {
   "turismo-catene":{g:30, txt:"30 giorni di calendario"},
   "ced":{g:15, txt:"15 giorni di calendario"},
   "abbigliamento-pmi":{g:14, txt:"2 settimane"},
-  "turismo-cifa":{g:30, txt:"30 giorni dal termine del periodo di apprendistato (art. 18.5)"}
+  "turismo-cifa":{g:30, txt:"30 giorni dal termine del periodo di apprendistato (art. 18.5)"},
+  "formazione-professionale":{g:45, txt:"45 giorni (all. 12, lett. A c. 9)"}
 };
 /* progressione retributiva dell'apprendista, dalle schede «Apprendistato professionalizzante» del prontuario */
 const APP_RET = {
@@ -3376,7 +3377,8 @@ const APP_RET = {
   "autorimesse":{t:"perc", mesi:[[12,85],[999,90]], fonte:"Art. 32: 85% il 1° anno, 90% il 2°"},
   "studi-professionali":{t:"perc", mesi:[[12,70],[24,85],[999,93]], fonte:"Artt. 28, 30: 70% per i primi 12 mesi, 85% fino al 24°, 93% dopo"},
   "edilizia-industria":{t:"perc", mesi:[[6,72],[12,72],[18,78],[24,78],[30,85],[999,90]], fonte:"Art. 92: per semestri 72%, 72%, 78%, 78%, 85%, 90% del livello finale"},
-  "formazione-fidef":{t:"perc", mesiLiv:l=>/^(II|III|IV)$/.test(l)?[[6,75],[12,80],[18,85],[999,90]] : /^VII$/.test(l)?[[6,70],[12,75],[18,80],[999,90]] : [[6,75],[12,80],[18,85],[999,90]], fonte:"Art. 10: per semestri II-IV 75/80/85/90%, V-VI 75/80/85/90/90%, VII 70/75/80/90/90/90%"}
+  "formazione-fidef":{t:"perc", mesiLiv:l=>/^(II|III|IV)$/.test(l)?[[6,75],[12,80],[18,85],[999,90]] : /^VII$/.test(l)?[[6,70],[12,75],[18,80],[999,90]] : [[6,75],[12,80],[18,85],[999,90]], fonte:"Art. 10: per semestri II-IV 75/80/85/90%, V-VI 75/80/85/90/90%, VII 70/75/80/90/90/90%"},
+  "formazione-professionale":{t:"perc", mesi:[[12,70],[24,75],[999,80]], fonte:"All. 12, lett. B: 70% del tabellare il 1° anno, 75% il 2°, 80% il 3°"}
 };
 function paMesi(a, b){ let m = (b.getFullYear()-a.getFullYear())*12 + (b.getMonth()-a.getMonth()); if(b.getDate() < a.getDate()) m--; return Math.max(0, m); }
 function paLivSotto(R, cc, liv, k){
@@ -3872,6 +3874,17 @@ const COSTI = {
       {id:"ebiefo", g:"bil", n:"Ebiefo", t:"contr", calc:"perc", base:"imp", perc:0.36, lav:{perc:0.24}, cond:"ader"},
       {id:"coasco", g:"bil", n:"Co.As.Co. (W470)", t:"contr", calc:"perc", base:"imp", perc:0.10, cond:"sempre"},
       {id:"edr_eb", g:"bil", n:"EDR mancata adesione Ebiefo", t:"retr", calc:"perc", base:"imp", perc:0.36, mens:12, tfr:true, cond:"opz", nota:"Non dovuto finché l'ente non è operativo."}
+    ]},
+  "formazione-professionale": { inps:"terz", fonte:"Testo unico 27/8/2024: artt. 3, 25 G, all. 8, 9 e 14. Aliquota INPS da verificare sulla matricola dell'ente.",
+    voci:[
+      {id:"ebirfop", g:"bil", n:"Ente bilaterale regionale (EBiRFoP)", t:"contr", calc:"perc", base:"imp", perc:0.35, lav:{perc:0.15}, cond:"ader", nota:"Minimo 0,50% dell'imponibile (70% ente, 30% lavoratore); la misura esatta la fissa il contratto regionale."},
+      {id:"rappr", g:"bil", n:"Fondo nazionale rappresentanza sindacale", t:"contr", calc:"anno", imp:10, spread:true, pt:"int", cond:"sempre", nota:"10 € annui per dipendente, versati a EBiNFoP tra il 15 e il 30 giugno."},
+      {id:"agidae", g:"san", n:"AGIDAE Salus Istruzione", t:"contr", calc:"mese", imp:7, impDal:[{dal:"2025-01-01", imp:7.59}], pt:"int", solid:true, cond:"sempre", nota:"7,59 € per 12 mensilità dal 2025 (prima 7 €); per tempo indeterminato e termine oltre 3 mesi."},
+      {id:"espero", g:"prev", n:"Fondo Espero", t:"contr", calc:"perc", base:"tfr", perc:1, lav:{perc:1, ded:true}, solid:true, cond:"fondo"},
+      {id:"ear_bil", g:"bil", n:"Elemento aggiuntivo mancata adesione bilateralità", t:"retr", calc:"perc", base:"imp", perc:1.625, mens:12, tfr:true, cond:"nonader", nota:"1,5% dell'imponibile annuo su 13 mensilità, diviso per 12 (qui 1,625% al mese); incide su tutti gli istituti."},
+      {id:"ind_conv", g:"ind", n:"Indennità assistenza serale e notturna nei convitti", t:"retr", calc:"mese", imp:53.85, mens:13, tfr:true, cond:"opz", nota:"Minimo 700 € annui, qui ripartiti su 13 mensilità."},
+      {id:"ind_pena", g:"ind", n:"Indennità istituti di pena e comunità di recupero", t:"retr", calc:"mese", imp:107.69, mens:13, tfr:true, cond:"opz", nota:"Minimo 1.400 € annui (su 13 mensilità), in proporzione all'orario svolto in quelle strutture."},
+      {id:"ind_rspp", g:"ind", n:"Indennità RSPP", t:"retr", calc:"mese", imp:53.85, mens:13, tfr:true, cond:"opz", nota:"Minimo 700 € annui, qui ripartiti su 13 mensilità."}
     ]},
   "impianti-sportivi": { inps:"terz", quadri:["Quadri"], fonte:"Schede Riepilogo costi, Superminimo ex 14ª.",
     voci:[
@@ -5019,6 +5032,7 @@ const APP_DUR = {
   "terziario-cnai":{max:36, art:60, fonte:"artt. 73-93: 36 mesi, 60 per i profili di tipo artigiano"},
   "edilizia-industria":{max:36, art:48, fonte:"art. 92: 36 mesi, 48 per le lavorazioni artistiche"},
   "formazione-fidef":{max:36, liv:{"II":24,"III":24,"IV":24,"V":30,"VI s/A":30,"VI s/B":30,"VI s/C":30}, fonte:"art. 10: 24 mesi (II-IV), 30 (V-VI), 36 (VII)"},
+  "formazione-professionale":{max:36, fonte:"all. 12, lett. E: da 6 a 36 mesi, per i primi 6 livelli (esclusa la direzione)"},
   "pulizia":{max:48, fonte:"artt. 4, 12: da 24 a 48 mesi secondo il livello finale"},
   "acconciatura":{max:60, fonte:"art. 25: fino a 5 anni secondo il profilo"},
   "legno-artigianato":{max:60, fonte:"art. 55: da 2 anni e 6 mesi a 5 anni secondo il gruppo"}
@@ -6981,7 +6995,8 @@ const DSC_R = {
   "pulizia":{d:5, i:15, lav:true, base:"giust", acc:true},
   "portieri":{d:5, i:30},
   "logistica-trasporto-merci":{c:20, d:10, i:20},
-  "turismo-cifa":{c:15, d:10, nota:"contestazione entro 15 giorni dal fatto, 30 nei casi complessi"}
+  "turismo-cifa":{c:15, d:10, nota:"contestazione entro 15 giorni dal fatto, 30 nei casi complessi"},
+  "formazione-professionale":{d:10, i:10, base:"giust", acc:true, nota:"provvedimento con raccomandata; i termini si sospendono se le parti si incontrano per un tentativo di composizione"}
 };
 const DSC_SANZ = [
   {k:"verbale", l:"Rimprovero verbale"},
